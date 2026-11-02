@@ -54,35 +54,35 @@
     position: sticky; top: 0; z-index: 200;
     height: 64px; background: var(--header-bg);
     border-bottom: 1px solid var(--border);
-    padding: 0 24px; display: flex; align-items: center; justify-content: space-between; gap: 18px;
+    padding: 0 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
   }
-  .mw-header-left { display: flex; align-items: center; gap: 22px; flex-shrink: 0; }
+  .mw-header-left { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
   .mw-brand {
-    display: flex; align-items: center; gap: 10px;
-    text-decoration: none; color: var(--text); font-weight: 900; font-size: 20px; letter-spacing: -0.4px;
+    display: flex; align-items: center; gap: 8px;
+    text-decoration: none; color: var(--text); font-weight: 900; font-size: 19px; letter-spacing: -0.4px;
     cursor: pointer;
   }
   .mw-brand-cube {
-    width: 34px; height: 34px; border-radius: 8px;
+    width: 32px; height: 32px; border-radius: 8px;
     background: var(--green); color: #fff;
     display: flex; align-items: center; justify-content: center;
-    font-weight: 900; font-size: 18px;
+    font-weight: 900; font-size: 17px;
   }
   .mw-brand-sub {
     font-size: 10px; font-weight: 700; color: var(--green);
-    background: var(--green-soft); padding: 2px 6px; border-radius: 4px; margin-left: 4px;
+    background: var(--green-soft); padding: 2px 6px; border-radius: 4px; margin-left: 2px;
   }
-  .mw-nav { display: flex; align-items: center; gap: 4px; }
+  .mw-nav { display: flex; align-items: center; gap: 2px; }
   .mw-nav-item {
-    position: relative; padding: 8px 13px; border-radius: 8px;
-    color: var(--text-sub); font-size: 14px; font-weight: 600;
+    position: relative; padding: 7px 10px; border-radius: 8px;
+    color: var(--text-sub); font-size: 13px; font-weight: 600;
     cursor: pointer; transition: 0.15s; border: none; background: transparent;
-    display: flex; align-items: center; gap: 6px; white-space: nowrap;
+    display: flex; align-items: center; gap: 5px; white-space: nowrap;
   }
   .mw-nav-item:hover { color: var(--text); background: var(--surface2); }
   .mw-nav-item.active { color: var(--green); font-weight: 700; }
   .mw-nav-item.active::after {
-    content: ""; position: absolute; bottom: -12px; left: 14px; right: 14px;
+    content: ""; position: absolute; bottom: -12px; left: 10px; right: 10px;
     height: 3px; background: var(--green); border-radius: 3px;
   }
   .mw-nav-badge {
@@ -92,33 +92,33 @@
 
   /* Global Pill Search Bar */
   .mw-search-wrap {
-    flex: 1; max-width: 520px; position: relative;
+    flex: 1; min-width: 140px; max-width: 340px; position: relative;
   }
   .mw-search-input {
-    width: 100%; height: 40px; padding: 0 38px 0 38px;
+    width: 100%; height: 38px; padding: 0 32px 0 34px;
     border-radius: 999px; border: 1px solid transparent;
     background: var(--surface2); color: var(--text);
-    font-size: 13.5px; outline: none; transition: 0.18s;
+    font-size: 13px; outline: none; transition: 0.18s;
   }
   .mw-search-input:focus {
     background: var(--surface); border-color: var(--green);
     box-shadow: 0 0 0 3px var(--green-soft);
   }
   .mw-search-icon {
-    position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
-    color: var(--muted); font-size: 14px; pointer-events: none;
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    color: var(--muted); font-size: 13px; pointer-events: none;
   }
   .mw-search-clear {
-    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
     color: var(--muted); font-size: 13px; cursor: pointer; display: none;
     background: none; border: none;
   }
 
-  .mw-header-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .mw-header-right { display: flex; align-items: center; gap: 7px; flex-shrink: 0; }
   .mw-btn {
-    height: 38px; padding: 0 15px; border-radius: 999px;
-    font-size: 13px; font-weight: 700; cursor: pointer;
-    display: inline-flex; align-items: center; gap: 6px;
+    height: 36px; padding: 0 12px; border-radius: 999px;
+    font-size: 12.5px; font-weight: 700; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 5px;
     border: 1px solid var(--border); background: var(--surface); color: var(--text);
     transition: 0.15s; white-space: nowrap;
   }
@@ -441,7 +441,7 @@
     .mw-header { padding: 0 10px; gap: 6px; height: 56px; }
     .mw-brand span.mw-brand-text, .mw-brand span.mw-brand-sub { display: none; }
     .mw-search-input { height: 34px; font-size: 12px; padding: 0 26px 0 30px; }
-    .mw-btn { height: 32px; padding: 0 9px; font-size: 11px; }
+    .mw-btn { height: 32px; padding: 0 8px; font-size: 10.5px; }
     .mw-container { padding: 10px 10px 50px; }
     .mw-hero-main { flex-direction: column; align-items: flex-start; padding: 14px; }
     .mw-hero-main-left, .mw-hero-main-right { max-width: 100%; width: 100%; }
@@ -449,6 +449,165 @@
     .mw-card-body { padding: 8px 9px 10px; }
     .mw-card-title { font-size: 12.5px; min-height: 34px; }
     .mw-price-tag { font-size: 12px; }
+  }
+
+  /* 8. OLD WEB 60FPS 3D RUNNER + LIGHTNING FLASH STREAK WHEN LIKING A PRODUCT */
+  #kx-mascot-runner-stage {
+    position: fixed; left: 0; right: 0; bottom: 52px; height: 265px;
+    pointer-events: none; z-index: 2147483000; overflow: hidden; display: none;
+  }
+  #kx-mascot-runner-stage.active { display: block; }
+  .kx-runner-track-line {
+    position: absolute; left: 0; right: 0; bottom: 16px; height: 3px;
+    background: linear-gradient(90deg, rgba(255,77,79,0.9) 0%, rgba(0,174,66,0.75) 40%, transparent 100%);
+    box-shadow: 0 0 14px rgba(255,77,79,0.55);
+    transition: height 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
+  }
+  #kx-mascot-runner-stage.flashing .kx-runner-track-line {
+    height: 6px;
+    background: linear-gradient(90deg, rgba(255,77,79,0.25) 0%, rgba(0,174,66,0.95) 28%, rgba(251,191,36,1) 65%, rgba(255,77,79,1) 95%, #fff 100%);
+    box-shadow: 0 0 28px rgba(251,191,36,0.95), 0 0 48px rgba(255,77,79,0.85);
+  }
+  .kx-mascot-actor {
+    position: absolute; bottom: 10px; left: 0;
+    display: flex; flex-direction: column; align-items: flex-start;
+    transform: translate3d(2.4vw, 0, 0); will-change: transform, opacity;
+  }
+  .kx-mascot-actor.running {
+    animation: kxHold15sThenFlashRight 1.96s linear forwards;
+  }
+  @keyframes kxHold15sThenFlashRight {
+    0%   { transform: translate3d(0.5vw, 14px, 0) scale(0.86); opacity: 0; }
+    7%   { transform: translate3d(2.4vw, -2px, 0) scale(1.02); opacity: 1; }
+    12%  { transform: translate3d(2.4vw, 0px, 0) scale(1); opacity: 1; }
+    42%  { transform: translate3d(2.4vw, -4px, 0) scale(1.01); opacity: 1; }
+    73%  { transform: translate3d(2.4vw, 0px, 0) scale(1); opacity: 1; }
+    76.5%{ transform: translate3d(1.6vw, -2px, 0) scale(0.97); opacity: 1; }
+    82%  { transform: translate3d(24vw, -8px, 0) scaleX(1.1) scaleY(0.95); opacity: 1; }
+    90%  { transform: translate3d(68vw, -12px, 0) scaleX(1.14) scaleY(0.94); opacity: 1; }
+    96%  { transform: translate3d(90vw, -16px, 0) scale(1.02); opacity: 1; }
+    100% { transform: translate3d(102vw, -20px, 0) scale(0.82); opacity: 0; }
+  }
+  .kx-mascot-bubble {
+    background: rgba(12, 16, 26, 0.96); border: 2px solid #ff4d4f;
+    border-radius: 16px; padding: 8px 14px; color: #fff;
+    font-size: 12.5px; font-weight: 800; white-space: nowrap;
+    max-width: calc(100vw - 28px); overflow: hidden;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.8), 0 0 22px rgba(255,77,79,0.45);
+    display: flex; align-items: center; gap: 10px; margin-bottom: -6px; margin-left: 4px; z-index: 3;
+  }
+  .kx-mascot-bubble.shooting {
+    border-color: #fbbf24;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.85), 0 0 32px rgba(251,191,36,0.9), 0 0 50px rgba(255,77,79,0.8);
+  }
+  .kx-mascot-bubble .badge-plus {
+    background: linear-gradient(135deg, #ff4d4f, #f59e0b); color: #fff;
+    font-weight: 900; padding: 2px 9px; border-radius: 999px; font-size: 10.5px;
+  }
+  .kx-load-bar-track {
+    width: 100%; height: 6px; border-radius: 999px; background: rgba(255,255,255,0.14); overflow: hidden;
+  }
+  .kx-load-bar-fill {
+    height: 100%; width: 100%; border-radius: 999px;
+    background: linear-gradient(90deg, #ff4d4f, #fbbf24, #00ae42);
+    transform-origin: left center; transform: scaleX(0);
+  }
+  .kx-runner-visual-wrap { position: relative; width: 290px; height: 175px; }
+  .kx-flash-tail-beam {
+    position: absolute; right: 145px; top: 38px; width: 340px; height: 100px;
+    pointer-events: none; z-index: 0; opacity: 0; transform: scaleX(0.15); transform-origin: right center;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,77,79,0.32) 35%, rgba(251,191,36,0.7) 75%, rgba(255,255,255,0.95) 100%);
+    filter: blur(4px); border-radius: 999px; transition: opacity 0.08s ease, transform 0.14s ease;
+  }
+  .kx-mascot-actor.flashing .kx-flash-tail-beam { opacity: 1; transform: scaleX(1.25); }
+  .kx-speed-trails {
+    position: absolute; left: -36px; top: 44px; width: 185px; height: 88px;
+    pointer-events: none; z-index: 1; display: flex; flex-direction: column; justify-content: space-between;
+    opacity: 0; transition: opacity 0.1s ease;
+  }
+  .kx-mascot-actor.flashing .kx-speed-trails { opacity: 1; }
+  .kx-speed-trails span {
+    display: block; height: 6px; border-radius: 999px;
+    background: linear-gradient(90deg, rgba(255,77,79,0), rgba(255,77,79,0.9), rgba(251,191,36,1), #ffffff);
+    box-shadow: 0 0 14px rgba(251,191,36,0.9);
+  }
+  .kx-speed-trails span:nth-child(1) { width: 140px; margin-left: 20px; }
+  .kx-speed-trails span:nth-child(2) { width: 180px; height: 7px; }
+  .kx-speed-trails span:nth-child(3) { width: 130px; margin-left: 30px; }
+
+  @keyframes mwHeartPulse {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.22); box-shadow: 0 0 22px rgba(255,77,79,0.75); border-color: #ff4d4f; }
+    100% { transform: scale(1); }
+  }
+  .mw-wishlist-bump { animation: mwHeartPulse 0.55s cubic-bezier(0.16, 1, 0.3, 1); }
+
+  /* 9. OLD WEB CSKH MASCOT WIDGET (MÈO BÉO & 10 THÚ CƯNG — DIRECT FORM & ZALO/PHONE, NO BOT CHAT) */
+  #studio3d-omni-wrap {
+    position: fixed; right: 16px; bottom: 18px; z-index: 9995;
+    display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
+    touch-action: none; user-select: none; pointer-events: none;
+  }
+  #studio3d-omni-wrap > * { pointer-events: auto; }
+  #s3d-btn-open-livechat {
+    position: relative; display: flex; flex-direction: column; align-items: center; gap: 2px;
+    background: transparent !important; border: 0 !important; padding: 4px !important;
+    cursor: grab; outline: none;
+  }
+  #s3d-btn-open-livechat:active { cursor: grabbing; }
+  #meo-beo-codex-pet-sprite, #meo-beo-pet-3d-canvas {
+    width: 124px; height: 134px; display: block;
+    filter: drop-shadow(0 10px 18px rgba(0,0,0,0.55));
+    pointer-events: none; transition: transform 0.15s ease;
+    image-rendering: pixelated;
+  }
+  #s3d-btn-open-livechat:hover #meo-beo-codex-pet-sprite,
+  #s3d-btn-open-livechat:hover #meo-beo-pet-3d-canvas { transform: scale(1.07); }
+  .meo-beo-badge {
+    margin-top: 2px; background: rgba(20,16,14,0.94); color: #fef3c7;
+    font-size: 11px; font-weight: 800; padding: 4px 11px; border-radius: 999px;
+    border: 1.5px solid rgba(251,191,36,0.85); white-space: nowrap;
+    display: flex; align-items: center; gap: 6px; box-shadow: 0 6px 16px rgba(0,0,0,0.45);
+  }
+  .omni-online-dot {
+    width: 7px; height: 7px; border-radius: 999px; background: #22c55e;
+    box-shadow: 0 0 0 2px #fff; display: inline-block;
+  }
+  #studio3d-livechat-panel {
+    display: none; width: min(440px, calc(100vw - 24px));
+    background: linear-gradient(180deg, #1c1917 0%, #0f1420 100%);
+    color: #f8fafc; border: 2px solid #f59e0b; border-radius: 22px;
+    box-shadow: 0 28px 70px rgba(0,0,0,0.85); overflow: hidden; flex-direction: column;
+  }
+  #studio3d-livechat-panel.open { display: flex; }
+  .lc-header {
+    background: linear-gradient(135deg, #78350f, #451a03); padding: 12px 14px;
+    border-bottom: 1px solid rgba(251,191,36,0.35);
+    display: flex; justify-content: space-between; align-items: center; gap: 8px;
+  }
+  .meo-beo-belly-stage {
+    width: 100%; padding: 10px 12px; border-radius: 16px;
+    background: radial-gradient(circle at 50% 42%, #fffbeb 0%, #fef3c7 68%, #fde68a 100%);
+    border: 2px solid #f59e0b; color: #451a03; text-align: center;
+  }
+  .lc-direct-channels { display: grid; grid-template-columns: repeat(2, 1fr); gap: 7px; margin-top: 7px; }
+  .lc-mini-ch {
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+    height: 36px; border-radius: 999px; font-size: 11.5px; font-weight: 900;
+    color: #fff; text-decoration: none; padding: 0 10px; cursor: pointer; border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25); transition: transform 0.15s;
+  }
+  .lc-mini-ch:hover { transform: scale(1.03); }
+  .lc-inp {
+    height: 38px; border-radius: 10px; border: 1px solid #2b3856;
+    background: #161d2e; color: #fff; padding: 0 11px; font-size: 12.5px;
+    outline: none; width: 100%;
+  }
+  .lc-inp:focus { border-color: #14b8a6; }
+  @media (max-width: 640px) {
+    #meo-beo-codex-pet-sprite, #meo-beo-pet-3d-canvas { width: 76px !important; height: 82px !important; }
+    .meo-beo-badge { font-size: 9.5px; padding: 3px 8px; }
+    #studio3d-omni-wrap { right: 10px; bottom: 12px; }
   }
 </style>
 </head>
@@ -469,7 +628,6 @@
       </button>
       <button class="mw-nav-item" id="nav-ams" onclick="setFeedMode('ams')">Bambu .3MF AMS</button>
       <button class="mw-nav-item" id="nav-custom" onclick="filterByCat('custom')">Customizable</button>
-      <button class="mw-nav-item" onclick="openMakerLabModal('stl')">Báo Giá File .STL</button>
     </nav>
   </div>
 
@@ -481,8 +639,13 @@
 
   <div class="mw-header-right">
     <button class="mw-btn mw-btn-green" onclick="openMakerLabModal('stl')">+ Upload / Báo Giá .STL</button>
+    <button class="mw-btn" id="mwWishlistBtn" onclick="openWishlistModal()" style="border-color:rgba(255,77,79,0.55);color:#ff4d4f;">
+      ❤️ Yêu Thích (<span id="wishlistCount">0</span>)
+    </button>
+    <button class="mw-btn" id="mwAccountBtn" onclick="openAuthModal('login')">
+      👤 <span id="mwAccountLabel">Đăng Nhập</span>
+    </button>
     <button class="mw-btn" id="themeToggleBtn" onclick="toggleTheme()" title="Chuyển giao diện Sáng / Tối">🌙 Tối</button>
-    <button class="mw-btn" onclick="openOrderModal()">🛒 Giỏ Đặt In (<span id="cartCount">0</span>)</button>
   </div>
 </header>
 
@@ -535,6 +698,7 @@
   <section class="mw-discovery-bar">
     <div class="mw-cat-scroll" id="mwCatBar">
       <button class="mw-cat-pill active" data-cat="all" onclick="filterByCat('all')">🔥 All Models <span class="mw-cat-count" id="cnt-all"></span></button>
+      <button class="mw-cat-pill" data-cat="wishlist" onclick="filterByCat('wishlist')" style="border-color:rgba(255,77,79,0.5);">❤️ Đã Yêu Thích <span class="mw-cat-count" id="cnt-wishlist">(0)</span></button>
       <button class="mw-cat-pill" data-cat="custom" onclick="filterByCat('custom')">🎨 Customizable (MakerLab) <span class="mw-cat-count" id="cnt-custom"></span></button>
       <button class="mw-cat-pill" data-cat="dragon" onclick="filterByCat('dragon')">🐉 Dragons & Flexi <span class="mw-cat-count" id="cnt-dragon"></span></button>
       <button class="mw-cat-pill" data-cat="desk" onclick="filterByCat('desk')">🗂️ Desk Organizers <span class="mw-cat-count" id="cnt-desk"></span></button>
@@ -609,17 +773,20 @@
         </div>
 
         <div style="background:var(--green-soft);border:1px solid var(--green);border-radius:12px;padding:14px;">
-          <div style="font-size:11.5px;font-weight:800;color:var(--green);">GIÁ ĐẶT IN 3D HOÀN THIỆN (PLA+ / PETG CAO CẤP)</div>
+          <div style="font-size:11.5px;font-weight:800;color:var(--green);">GIÁ ĐẶT IN 3D CÁ NHÂN HÓA RIÊNG TƯ (CẦN ĐẶT CỌC TRƯỚC KHI BẤM MÁY)</div>
           <div style="display:flex;align-items:baseline;justify-content:space-between;margin-top:4px;">
             <div id="detPrice" style="font-size:26px;font-weight:900;color:var(--green);">149.000₫</div>
             <div id="detSpecs" style="font-size:12px;font-weight:700;color:var(--text-sub);">⏱️ 2.5h · ⚖️ 65g</div>
           </div>
-          <div style="font-size:11.5px;color:var(--text-sub);margin-top:4px;">🚚 Thời gian hoàn thiện & giao hàng: <b>3 – 5 ngày</b> toàn quốc</div>
+          <div style="font-size:11.5px;color:var(--text-sub);margin-top:4px;">🔒 Hàng in riêng theo yêu cầu (không bán đại trà có sẵn) · Đặt cọc 30%–50% & tư vấn trực tiếp Zalo/SĐT · Giao <b>3 – 5 ngày</b></div>
         </div>
 
         <div style="display:flex;flex-direction:column;gap:8px;">
-          <button class="mw-btn mw-btn-green" style="height:44px;justify-content:center;font-size:14px;" onclick="addCurrentDetailToCart()">
-            🛒 Đặt In 3D Mẫu Này Ngay (Giao 3–5 Ngày)
+          <button class="mw-btn" id="btnDetLikeMain" style="height:44px;justify-content:center;font-size:14px;background:#ff4d4f;border-color:#ff4d4f;color:#fff;" onclick="likeFromDetailModal(event)">
+            ❤️ Thả Tim Lưu Vào Danh Sách Yêu Thích (Kèm Hiệu Ứng 3D)
+          </button>
+          <button class="mw-btn mw-btn-green" style="height:44px;justify-content:center;font-size:14px;" onclick="addCurrentDetailToCart(event)">
+            💬 Đặt Cọc & Liên Hệ CSKH Tư Vấn Trực Tiếp (Zalo / SĐT)
           </button>
           <button class="mw-btn" id="btnDetCustomize" style="height:42px;justify-content:center;font-size:13.5px;border-color:var(--green);color:var(--green);" onclick="triggerDetailCustomize()">
             🎨 Customize in MakerLab (Tùy Chỉnh Chữ / Kích Thước 3D)
@@ -685,7 +852,7 @@
           <input type="range" min="0.6" max="4.5" step="0.2" value="1.8" oninput="document.getElementById('lblReliefH').textContent=this.value;updateReliefMesh()">
           <div style="margin-top:auto;display:flex;flex-direction:column;gap:8px;">
             <button class="mw-btn mw-btn-green" style="justify-content:center;height:42px;" onclick="exportReliefSTL()">⬇ Tải File Khối Nổi .STL</button>
-            <button class="mw-btn" style="justify-content:center;height:40px;" onclick="addCustomToolToCart('Huy Hiệu 3D Relief Từ Ảnh 2D', 69000)">🛒 Đặt In Mẫu Này (69.000₫)</button>
+            <button class="mw-btn" style="justify-content:center;height:40px;border-color:#ff4d4f;color:#ff4d4f;" onclick="addCustomToolToCart('Huy Hiệu 3D Relief Từ Ảnh 2D', 69000, 'mw_thumbs/custom_relief_3d.jpg', event)">❤️ Lưu Yêu Thích & Đặt Cọc CSKH (69.000₫)</button>
           </div>
         </div>
         <div class="mw-tool-view" id="reliefViewport"></div>
@@ -704,7 +871,7 @@
           <input type="range" min="45" max="120" step="5" value="70" oninput="document.getElementById('lblQrSize').textContent=this.value;rebuildQR3D()">
           <div style="margin-top:auto;display:flex;flex-direction:column;gap:8px;">
             <button class="mw-btn mw-btn-green" style="justify-content:center;height:42px;" onclick="exportQR3DSTL()">⬇ Tải File Bảng QR .STL</button>
-            <button class="mw-btn" style="justify-content:center;height:40px;" onclick="addCustomToolToCart('Bảng QR 3D Z-Stacking Cá Nhân Hóa', 79000)">🛒 Đặt In Bảng QR (79.000₫)</button>
+            <button class="mw-btn" style="justify-content:center;height:40px;border-color:#ff4d4f;color:#ff4d4f;" onclick="addCustomToolToCart('Bảng QR 3D Z-Stacking Cá Nhân Hóa', 79000, 'mw_thumbs/custom_qr_3d.jpg', event)">❤️ Lưu Yêu Thích & Đặt Cọc CSKH (79.000₫)</button>
           </div>
         </div>
         <div class="mw-tool-view" id="qrViewport"></div>
@@ -731,7 +898,7 @@
             <div style="font-size:12.5px;margin-top:4px;">⚖️ Khối lượng in: <b id="stlWeightTxt">12.4 g</b></div>
             <div style="font-size:18px;font-weight:900;color:var(--green);margin-top:8px;">💰 Giá in: <span id="stlPriceTxt">39.000₫</span></div>
           </div>
-          <button class="mw-btn mw-btn-green" style="margin-top:auto;justify-content:center;height:42px;" onclick="addStlQuoteToCart()">🛒 Đặt In File .STL Này</button>
+          <button class="mw-btn mw-btn-green" style="margin-top:auto;justify-content:center;height:42px;" onclick="addStlQuoteToCart(event)">❤️ Lưu Yêu Thích & Liên Hệ Đặt Cọc .STL</button>
         </div>
         <div class="mw-tool-view" id="stlViewport"></div>
       </div>
@@ -739,26 +906,223 @@
   </div>
 </div>
 
-<!-- 5. ORDER / CART MODAL -->
+<!-- 5. WISHLIST & PRIVATE DEPOSIT / DIRECT CSKH CONSULTATION MODAL -->
 <div class="mw-modal-backdrop" id="mwOrderModal" onclick="if(event.target===this)closeOrderModal()">
-  <div class="mw-detail-dialog" style="max-width:560px;">
+  <div class="mw-detail-dialog" style="max-width:740px;">
     <div class="mw-detail-header">
-      <h3 style="font-size:17px;font-weight:800;">🛒 Giỏ Hàng & Đặt In 3D Theo Yêu Cầu</h3>
+      <h3 style="font-size:17px;font-weight:800;">❤️ Danh Sách Yêu Thích & Đặt Cọc Tư Vấn Trực Tiếp CSKH</h3>
       <button class="mw-btn" onclick="closeOrderModal()">✕ Đóng</button>
     </div>
-    <div style="padding:20px;display:flex;flex-direction:column;gap:12px;">
-      <div id="cartItemsList" style="max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;"></div>
-      <div style="display:flex;justify-content:space-between;font-weight:900;font-size:16px;padding-top:8px;border-top:1px solid var(--border);">
-        <span>Tổng cộng (Giao nhanh 3–5 ngày):</span>
-        <span id="cartTotalTxt" style="color:var(--green);">0₫</span>
+    <div style="padding:18px 20px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;">
+      <div style="background:rgba(245,158,11,0.12);border:1.5px solid #f59e0b;border-radius:12px;padding:11px 14px;font-size:12.5px;line-height:1.45;">
+        🔒 <b>Chính Sách Sản Phẩm Cá Nhân Hóa Riêng Tư Cao (Không Bán Hàng Có Sẵn Đại Trà):</b><br>
+        Mỗi mẫu thiết kế & in 3D được tinh chỉnh riêng theo yêu cầu cá nhân hóa của bạn (3 – 5 ngày). Vì tính chất riêng tư và làm theo đơn, quý khách vui lòng <b>Chuyển khoản Đặt cọc (30% – 50%)</b> và <b>Liên hệ trực tiếp CSKH qua Zalo / SĐT</b> hoặc điền Form bên dưới để chốt mẫu trước khi bấm máy.
       </div>
-      <input type="text" id="ordName" class="mw-inp" placeholder="Họ tên người nhận...">
-      <input type="tel" id="ordPhone" class="mw-inp" placeholder="Số điện thoại / Zalo liên hệ...">
-      <input type="text" id="ordNote" class="mw-inp" placeholder="Ghi chú màu sắc, chữ cần khắc hoặc địa chỉ nhận hàng...">
-      <button class="mw-btn mw-btn-green" style="height:44px;justify-content:center;font-size:14px;" onclick="submitMakerWorldOrder()">✅ Xác Nhận Đặt In 3D Ngay</button>
+
+      <div id="cartItemsList" style="max-height:210px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;"></div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 12px;background:var(--surface2);border-radius:10px;border:1px solid var(--border);">
+        <div>
+          <div style="font-size:11.5px;color:var(--text-sub);">Tổng giá trị mẫu đã tim:</div>
+          <div id="cartTotalTxt" style="font-size:18px;font-weight:900;color:var(--text);">0₫</div>
+        </div>
+        <div>
+          <div style="font-size:11.5px;color:var(--green);font-weight:700;">Mức chuyển khoản đặt cọc (50%):</div>
+          <div id="cartDepositTxt" style="font-size:18px;font-weight:900;color:var(--green);">0₫</div>
+        </div>
+      </div>
+
+      <!-- KHUNG CHUYỂN KHOẢN ĐẶT CỌC & LIÊN HỆ ZALO/PHONE TRỰC TIẾP -->
+      <div style="display:grid;grid-template-columns:130px 1fr;gap:14px;align-items:center;padding:12px;border:1.5px dashed var(--green);border-radius:12px;background:var(--green-soft);">
+        <div style="background:#fff;padding:6px;border-radius:10px;border:1px solid var(--border);text-align:center;">
+          <canvas id="depositQrCanvas" width="110" height="110" style="width:110px;height:110px;display:block;margin:0 auto;"></canvas>
+          <div style="font-size:9.5px;font-weight:800;color:#111;margin-top:3px;">VIETQR ĐẶT CỌC</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:5px;font-size:12.5px;">
+          <div style="font-weight:800;color:var(--green);">🏦 THÔNG TIN CHUYỂN KHOẢN ĐẶT CỌC IN 3D RIÊNG TƯ</div>
+          <div>Ngân hàng: <b id="depBankName">MBBank / Vietcombank (Xưởng In 3D Góc Nhỏ)</b></div>
+          <div>Nội dung CK: <b id="depTransferMemo" style="color:#d97706;">COC3D + SĐT Zalo của bạn</b></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;">
+            <a href="https://zalo.me/0909123456" id="btnDirectZaloModal" target="_blank" rel="noopener" class="mw-btn" style="background:#0068ff;border-color:#0068ff;color:#fff;height:34px;font-size:12px;">💙 Nhắn Zalo CSKH Kèm Bill Cọc</a>
+            <a href="tel:0909123456" id="btnDirectPhoneModal" class="mw-btn" style="background:#059669;border-color:#059669;color:#fff;height:34px;font-size:12px;">📞 Gọi Trực Tiếp CSKH</a>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <input type="text" id="ordName" class="mw-inp" placeholder="Họ và tên của bạn *">
+        <input type="tel" id="ordPhone" class="mw-inp" placeholder="Số điện thoại / Zalo tư vấn trực tiếp *" oninput="updateDepositQrMemo()">
+      </div>
+      <input type="text" id="ordNote" class="mw-inp" placeholder="Ghi chú riêng tư (Chữ cần khắc, màu sắc, link FB/Zalo nhận ảnh duyệt mẫu, xác nhận đã CK cọc)...">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="mw-btn mw-btn-green" style="flex:1;height:44px;justify-content:center;font-size:13.5px;" onclick="submitMakerWorldOrder()">📩 Gửi Yêu Cầu & Danh Sách Yêu Thích Cho CSKH Tư Vấn Ngay</button>
+        <button class="mw-btn" style="height:44px;border-color:#f59e0b;color:#d97706;" onclick="closeOrderModal();openMascotConsultPanel()">🐱 Mở Thú Cưng CSKH</button>
+      </div>
       <div id="ordSuccessMsg" style="display:none;padding:12px;border-radius:8px;background:var(--green-soft);color:var(--green);font-size:13px;font-weight:700;"></div>
     </div>
   </div>
+</div>
+
+<!-- 6. MULTI-PROVIDER LOGIN, SOCIAL LINKING & GOOGLE AUTHENTICATOR (2FA) MODAL -->
+<div class="mw-modal-backdrop" id="mwAuthModal" onclick="if(event.target===this)closeAuthModal()">
+  <div class="mw-detail-dialog" style="max-width:640px;">
+    <div class="mw-detail-header">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:18px;">🛡️</span>
+        <h3 style="font-size:16.5px;font-weight:800;">Tài Khoản Cá Nhân, Liên Kết MXH & Google Authenticator (2FA)</h3>
+      </div>
+      <button class="mw-btn" onclick="closeAuthModal()">✕ Đóng</button>
+    </div>
+
+    <div style="display:flex;gap:6px;padding:10px 20px;background:var(--surface2);border-bottom:1px solid var(--border);flex-wrap:wrap;">
+      <button class="mw-weapon-tab active" id="atab-login" onclick="switchAuthTab('login')">🔑 1. Đăng Nhập Đa Kênh</button>
+      <button class="mw-weapon-tab" id="atab-social" onclick="switchAuthTab('social')">🔗 2. Liên Kết Mạng Xã Hội</button>
+      <button class="mw-weapon-tab" id="atab-2fa" onclick="switchAuthTab('2fa')">🛡️ 3. Google Authenticator (2FA)</button>
+    </div>
+
+    <!-- TAB 1: LOGIN BY GOOGLE / FACEBOOK / EMAIL / PHONE -->
+    <div id="apane-login" style="padding:20px;display:flex;flex-direction:column;gap:14px;overflow-y:auto;">
+      <div id="authLoggedBanner" style="display:none;padding:12px 14px;border-radius:12px;background:var(--green-soft);border:1px solid var(--green);align-items:center;justify-content:space-between;gap:10px;">
+        <div>
+          <div id="authUserTitle" style="font-weight:900;font-size:14px;color:var(--green);">✅ Đã đăng nhập</div>
+          <div id="authUserSub" style="font-size:12px;color:var(--text-sub);margin-top:2px;">Đồng bộ Danh Sách Yêu Thích & Bảo mật riêng tư</div>
+        </div>
+        <button class="mw-btn" style="height:32px;border-color:#ff4d4f;color:#ff4d4f;" onclick="logoutAccount()">Đăng xuất</button>
+      </div>
+
+      <div style="font-size:12.5px;color:var(--text-sub);">Chọn phương thức đăng nhập nhanh để lưu trữ <b>Danh Sách Yêu Thích</b> và bảo mật các file in 3D cá nhân hóa của bạn:</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <button class="mw-btn" style="height:42px;justify-content:center;background:#1877f2;border-color:#1877f2;color:#fff;font-size:13px;" onclick="quickProviderLogin('Facebook', 'Khách Hàng Facebook')">
+          📘 Đăng nhập bằng Facebook
+        </button>
+        <button class="mw-btn" style="height:42px;justify-content:center;background:#ea4335;border-color:#ea4335;color:#fff;font-size:13px;" onclick="quickProviderLogin('Google', 'Tài Khoản Google')">
+          🔵 Đăng nhập bằng Google
+        </button>
+        <button class="mw-btn" style="height:42px;justify-content:center;background:#0068ff;border-color:#0068ff;color:#fff;font-size:13px;" onclick="quickProviderLogin('Zalo / Phone OTP', 'Tài Khoản Zalo')">
+          📱 Đăng nhập bằng SĐT / Zalo
+        </button>
+        <button class="mw-btn" style="height:42px;justify-content:center;background:#0f172a;border-color:#334155;color:#fff;font-size:13px;" onclick="switchAuthTab('2fa')">
+          🛡️ Đăng nhập bằng Google Authen
+        </button>
+      </div>
+
+      <div style="border-top:1px solid var(--border);padding-top:12px;display:flex;flex-direction:column;gap:8px;">
+        <div style="font-size:12.5px;font-weight:800;">✉️ Hoặc Đăng Nhập Bằng Email / Số Điện Thoại & Mã OTP:</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <input type="text" id="authEmailPhoneInput" class="mw-inp" placeholder="Nhập Email hoặc Số điện thoại / Zalo...">
+          <input type="password" id="authPasswordInput" class="mw-inp" placeholder="Mật khẩu hoặc Mã OTP 6 số...">
+        </div>
+        <input type="text" id="authLogin2faInput" class="mw-inp" placeholder="Mã 6 số Google Authenticator (nếu đã bật bảo mật 2FA)...">
+        <button class="mw-btn mw-btn-green" style="height:42px;justify-content:center;font-size:13.5px;" onclick="submitManualLogin()">🔑 Xác Nhận Đăng Nhập & Đồng Bộ Yêu Thích</button>
+      </div>
+      <div id="authStatusMsg" style="display:none;padding:10px 12px;border-radius:8px;background:var(--green-soft);color:var(--green);font-size:12.5px;font-weight:700;"></div>
+    </div>
+
+    <!-- TAB 2: SOCIAL NETWORK LINKING -->
+    <div id="apane-social" style="padding:20px;display:none;flex-direction:column;gap:10px;overflow-y:auto;">
+      <div style="font-size:12.5px;color:var(--text-sub);margin-bottom:4px;">
+        Liên kết tài khoản với các trang Mạng Xã Hội bạn hay dùng để CSKH gửi video/ảnh duyệt mẫu 3D riêng tư và nhận thông báo tiến độ in:
+      </div>
+      <div id="socialLinksContainer" style="display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
+
+    <!-- TAB 3: GOOGLE AUTHENTICATOR (2FA TOTP) -->
+    <div id="apane-2fa" style="padding:20px;display:none;flex-direction:column;gap:12px;overflow-y:auto;">
+      <div style="display:grid;grid-template-columns:140px 1fr;gap:16px;align-items:center;padding:14px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;">
+        <div style="background:#fff;padding:8px;border-radius:10px;border:1px solid var(--border);text-align:center;">
+          <canvas id="totpQrCanvas" width="120" height="120" style="width:120px;height:120px;display:block;margin:0 auto;"></canvas>
+          <div style="font-size:9.5px;font-weight:800;color:#111;margin-top:4px;">GOOGLE AUTHENTICATOR</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:12.5px;">
+          <div style="font-weight:900;font-size:14px;color:var(--green);">🛡️ Bảo Mật 2 Lớp Google Authenticator (TOTP 2FA)</div>
+          <p style="color:var(--text-sub);line-height:1.45;">Bảo vệ tuyệt đối danh sách mẫu in riêng tư, file .STL cá nhân và lịch sử đặt cọc. Mở ứng dụng <b>Google Authenticator</b> trên điện thoại và quét mã QR bên cạnh hoặc nhập mã khóa:</p>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <code id="totpSecretTxt" style="padding:5px 10px;border-radius:6px;background:var(--surface);border:1px solid var(--border);font-weight:900;letter-spacing:1px;">JBSW-Y3DP-EHPK-3PXP</code>
+            <button class="mw-btn" style="height:30px;font-size:11.5px;" onclick="copyTotpSecret()">📋 Sao chép</button>
+          </div>
+        </div>
+      </div>
+
+      <label style="font-size:12.5px;font-weight:800;">Nhập mã xác thực 6 chữ số hiển thị trên ứng dụng Google Authenticator:</label>
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="totpCodeInput" maxlength="6" class="mw-inp" placeholder="Ví dụ: 482910 (6 chữ số)..." style="font-size:16px;font-weight:900;letter-spacing:4px;text-align:center;">
+        <button class="mw-btn mw-btn-green" style="height:38px;padding:0 18px;" onclick="enableGoogleAuthenticator()">🛡️ Kích Hoạt 2FA</button>
+      </div>
+      <div id="totpStatusMsg" style="display:none;padding:10px 12px;border-radius:8px;background:var(--green-soft);color:var(--green);font-size:12.5px;font-weight:700;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 7. OLD WEB 60FPS 3D RUNNER STAGE (FLIES WHEN CUSTOMER HEARTS A PRODUCT) -->
+<div id="kx-mascot-runner-stage" aria-hidden="true">
+  <div class="kx-runner-track-line"></div>
+  <div class="kx-mascot-actor" id="kx-mascot-actor">
+    <div class="kx-mascot-bubble" id="kx-mascot-bubble">
+      <img id="kx-mascot-thumb" alt="" onerror="this.style.display='none'" style="width:42px;height:42px;border-radius:9px;object-fit:cover;background:#090d16;border:1.5px solid #ff4d4f;flex-shrink:0;" />
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;align-items:center;gap:8px;overflow:hidden;">
+          <span class="badge-plus" id="kx-mascot-badge">❤️ ĐÃ LƯU YÊU THÍCH</span>
+          <span id="kx-mascot-bubble-text" style="font-size:13px;font-weight:800;color:#fff;overflow:hidden;text-overflow:ellipsis;">Sản phẩm 3D</span>
+        </div>
+        <div class="kx-load-bar-track"><div class="kx-load-bar-fill" id="kx-mascot-load-fill"></div></div>
+      </div>
+    </div>
+    <div class="kx-runner-visual-wrap">
+      <div class="kx-flash-tail-beam"></div>
+      <div class="kx-speed-trails"><span></span><span></span><span></span></div>
+      <canvas id="kx-runner-3d-canvas" width="290" height="175" style="position:relative;z-index:2;width:290px;height:175px;display:block;"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- 8. OLD WEB CSKH PET MASCOT (MÈO BÉO & 10 THÚ CƯNG — DIRECT FORM & ZALO/PHONE ONLY, NO BOT CHAT) -->
+<div id="studio3d-omni-wrap">
+  <div id="studio3d-livechat-panel" role="dialog" aria-label="Thú Cưng CSKH — Điền Form Tư Vấn & Liên Hệ Trực Tiếp Zalo / Phone">
+    <div class="lc-header" id="s3d-lc-drag-header" title="Giữ chuột để kéo di chuyển hộp Thú Cưng CSKH">
+      <div>
+        <div style="font-weight:900;font-size:14.5px;color:#fef3c7;" id="s3d-panel-pet-title">🐱 Mèo Béo CSKH Trực Tiếp</div>
+        <div style="font-size:11px;color:#fde68a;">● Hàng riêng tư đặt cọc theo đơn · Tư vấn trực tiếp Zalo / SĐT</div>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <button type="button" id="s3d-btn-cycle-codex-pet" onclick="cycleCodexPet(event)" title="Đổi thú cưng đồng hành 3D" style="background:rgba(255,255,255,0.14);border:1px solid rgba(253,230,138,0.45);color:#fde68a;padding:4px 9px;border-radius:999px;font-size:10.5px;font-weight:800;cursor:pointer;">🐾 Đổi Thú Cưng</button>
+        <button type="button" onclick="toggleMascotConsultPanel(false)" style="background:rgba(255,255,255,0.15);border:0;color:#fff;width:28px;height:28px;border-radius:999px;cursor:pointer;font-weight:900;">×</button>
+      </div>
+    </div>
+
+    <div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px;max-height:76vh;overflow-y:auto;">
+      <!-- KÊNH LIÊN HỆ TRỰC TIẾP ZALO / PHONE -->
+      <div class="meo-beo-belly-stage">
+        <div style="font-size:10.5px;font-weight:900;color:#92400e;text-transform:uppercase;letter-spacing:0.04em;">🐾 LIÊN HỆ CSKH TƯ VẤN & ĐẶT CỌC TRỰC TIẾP 🐾</div>
+        <div class="lc-direct-channels">
+          <a href="https://zalo.me/0909123456" target="_blank" rel="noopener" class="lc-mini-ch" style="background:linear-gradient(135deg,#0068ff,#0091ff);">💙 Tư Vấn Zalo Ngay</a>
+          <a href="tel:0909123456" class="lc-mini-ch" style="background:linear-gradient(135deg,#059669,#10b981);">📞 Gọi Điện SĐT CSKH</a>
+          <button type="button" onclick="toggleMascotConsultPanel(false);openWishlistModal()" class="lc-mini-ch" style="background:linear-gradient(135deg,#e11d48,#f43f5e);grid-column:span 2;">❤️ Xem Danh Sách Yêu Thích & Mã QR Đặt Cọc (<span id="petWishlistCount">0</span> mẫu)</button>
+        </div>
+      </div>
+
+      <!-- FORM ĐIỀN THÔNG TIN ĐỂ CSKH GỌI / ZALO TRỰC TIẾP (KHÔNG CHAT TỰ ĐỘNG) -->
+      <div style="background:linear-gradient(145deg,rgba(15,23,42,0.96),rgba(20,30,48,0.96));border:1.5px solid #14b8a6;border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px;">
+        <div style="font-size:12px;font-weight:900;color:#5eead4;">📋 ĐIỀN FORM ĐỂ CSKH LIÊN HỆ ZALO / SĐT TRỰC TIẾP</div>
+        <div style="font-size:11.5px;color:#cbd5e1;line-height:1.4;">
+          Vì sản phẩm in 3D cá nhân hóa có tính riêng tư cao và cần đặt cọc trước khi in, bạn vui lòng để lại SĐT/Zalo bên dưới — CSKH người thật sẽ gọi hoặc nhắn Zalo tư vấn trực tiếp ngay:
+        </div>
+        <input type="text" id="s3d-cb-name" class="lc-inp" placeholder="Họ và tên của bạn *" />
+        <input type="tel" id="s3d-cb-phone" class="lc-inp" placeholder="Số điện thoại / Zalo nhận tư vấn trực tiếp *" />
+        <input type="text" id="s3d-cb-note" class="lc-inp" placeholder="Mẫu đã tim / Yêu cầu riêng tư (khắc chữ, kích thước, đặt cọc)..." />
+        <button type="button" onclick="submitMascotDirectForm()" style="height:38px;border-radius:10px;border:0;background:linear-gradient(135deg,#14b8a6,#0d9488);color:#042f2e;font-weight:900;font-size:12.5px;cursor:pointer;">
+          📩 Gửi Thông Tin — CSKH Nhắn Zalo / Gọi Tư Vấn Ngay
+        </button>
+        <div id="s3d-cb-status" style="display:none;font-size:11.5px;font-weight:800;line-height:1.4;color:#5eead4;"></div>
+      </div>
+    </div>
+  </div>
+
+  <button type="button" id="s3d-btn-open-livechat" title="Thú Cưng CSKH — Bấm để Điền Form hoặc Liên hệ Zalo / SĐT Trực Tiếp!">
+    <canvas id="meo-beo-codex-pet-sprite" width="192" height="208"></canvas>
+    <canvas id="meo-beo-pet-3d-canvas" width="192" height="208" style="display:none;"></canvas>
+    <span class="meo-beo-badge"><span class="omni-online-dot"></span><span id="meo-beo-pet-label">🐱 Mèo Béo CSKH</span></span>
+  </button>
 </div>
 
 <script>
@@ -768,7 +1132,14 @@ let currentCat = 'all';
 let currentFeedMode = 'trending';
 let searchQuery = '';
 let activeDetailItem = null;
+const WISHLIST_KEY = 'mw_wishlist_v1';
+const AUTH_KEY = 'mw_user_account_v1';
+const SOCIAL_KEY = 'mw_linked_socials_v1';
 let cart = [];
+try {
+  const savedW = JSON.parse(localStorage.getItem(WISHLIST_KEY) || '[]');
+  if (Array.isArray(savedW)) cart = savedW;
+} catch (_) {}
 
 const fmtVnd = (n) => new Intl.NumberFormat('vi-VN').format(Math.round(Number(n)||0)) + '₫';
 const fmtNum = (n) => {
@@ -776,8 +1147,19 @@ const fmtNum = (n) => {
   return n >= 1000 ? (n/1000).toFixed(1).replace('.0','') + 'k' : String(n);
 };
 
+function isItemLiked(id) {
+  return cart.some(x => x.id === id);
+}
+
+function saveWishlistToStorage() {
+  try {
+    localStorage.setItem(WISHLIST_KEY, JSON.stringify(cart));
+  } catch (_) {}
+  updateCategoryCounts();
+}
+
 function updateCategoryCounts() {
-  const counts = { all: CATALOG.length, custom: 0, dragon: 0, desk: 0, household: 0, toys: 0, decor: 0, kitchen: 0, vn_stem: 0 };
+  const counts = { all: CATALOG.length, wishlist: cart.length, custom: 0, dragon: 0, desk: 0, household: 0, toys: 0, decor: 0, kitchen: 0, vn_stem: 0 };
   CATALOG.forEach(item => {
     if (item.customizable) counts.custom++;
     if (counts[item.cat] !== undefined) counts[item.cat]++;
@@ -786,6 +1168,10 @@ function updateCategoryCounts() {
     const el = document.getElementById('cnt-' + k);
     if (el) el.textContent = '(' + counts[k] + ')';
   });
+  const wCnt = document.getElementById('wishlistCount');
+  if (wCnt) wCnt.textContent = String(cart.length);
+  const pCnt = document.getElementById('petWishlistCount');
+  if (pCnt) pCnt.textContent = String(cart.length);
 }
 
 function filterByCat(cat) {
@@ -814,8 +1200,9 @@ function clearSearch() {
 
 function renderModelGrid() {
   let list = CATALOG.filter(item => {
+    if (currentCat === 'wishlist' && !isItemLiked(item.id)) return false;
     if (currentCat === 'custom' && !item.customizable) return false;
-    if (currentCat !== 'all' && currentCat !== 'custom' && item.cat !== currentCat) return false;
+    if (currentCat !== 'all' && currentCat !== 'custom' && currentCat !== 'wishlist' && item.cat !== currentCat) return false;
     if (currentFeedMode === 'ams' && !String(item.badge).includes('.3MF') && !item.customizable) return false;
     if (searchQuery) {
       const hay = (item.title + ' ' + item.creator + ' ' + item.cat + ' ' + item.code).toLowerCase();
@@ -842,13 +1229,14 @@ function renderModelGrid() {
   const grid = document.getElementById('mwModelsGrid');
   grid.innerHTML = list.map(item => {
     const isCust = item.customizable;
+    const liked = isItemLiked(item.id);
     const avatarChar = (item.creator || '@M').replace('@','').charAt(0).toUpperCase();
     return `
       <article class="mw-card" onclick="openModelDetail('${item.id}')">
         <div class="mw-card-thumb-wrap">
           <img class="mw-card-thumb" src="${item.thumb}" alt="${item.title}" loading="lazy">
           <span class="mw-card-badge-tl ${isCust ? 'is-custom' : ''}">${item.badge}</span>
-          <button class="mw-card-like-tr" onclick="event.stopPropagation();this.classList.toggle('liked')" title="Yêu thích">♥</button>
+          <button class="mw-card-like-tr ${liked ? 'liked' : ''}" id="like-btn-${item.id}" onclick="event.stopPropagation();toggleLikeModel('${item.id}', event)" title="Thả tim lưu vào Danh Sách Yêu Thích">♥</button>
           <div class="mw-card-profile-bl">
             <span class="mw-card-chip">🖨️ A1 · P1S · X1C</span>
             <span class="mw-card-chip">⏱️ ${item.printTime} · ${item.weightG}g</span>
@@ -864,19 +1252,55 @@ function renderModelGrid() {
             <div class="mw-metrics">
               <span>⬇ ${fmtNum(item.downloads)}</span>
               <span>🖨️ ${fmtNum(item.prints)}</span>
-              <span>❤️ ${fmtNum(item.likes)}</span>
+              <span>❤️ ${fmtNum(item.likes + (liked ? 1 : 0))}</span>
             </div>
           </div>
           <div class="mw-card-footer">
             <span class="mw-price-tag">${fmtVnd(item.priceVnd)}</span>
-            <button class="mw-card-act-btn" onclick="event.stopPropagation();${isCust ? `openItemCustomize('${item.id}')` : `openModelDetail('${item.id}')`}">
-              ${isCust ? '🎨 Customize' : 'Chi Tiết / Đặt In'}
-            </button>
+            <div style="display:flex;gap:5px;">
+              <button class="mw-card-act-btn" style="border-color:#ff4d4f;color:${liked ? '#fff' : '#ff4d4f'};background:${liked ? '#ff4d4f' : 'rgba(255,77,79,0.1)'};" onclick="event.stopPropagation();toggleLikeModel('${item.id}', event)" title="Lưu vào Yêu thích">
+                ${liked ? '❤️ Đã Tim' : '🤍 Tim'}
+              </button>
+              <button class="mw-card-act-btn" onclick="event.stopPropagation();${isCust ? `openItemCustomize('${item.id}')` : `openModelDetail('${item.id}')`}">
+                ${isCust ? '🎨 Customize' : 'Đặt Cọc / CSKH'}
+              </button>
+            </div>
           </div>
         </div>
       </article>
     `;
   }).join('');
+}
+
+function toggleLikeModel(id, ev) {
+  const item = CATALOG.find(x => x.id === id);
+  if (!item) return;
+  const idx = cart.findIndex(x => x.id === id);
+  if (idx >= 0) {
+    cart.splice(idx, 1);
+    saveWishlistToStorage();
+    updateCartUI();
+    renderModelGrid();
+    return;
+  }
+  const entry = { id: item.id, title: item.title, priceVnd: item.priceVnd, thumb: item.thumb, code: item.code };
+  cart.push(entry);
+  saveWishlistToStorage();
+  updateCartUI();
+  renderModelGrid();
+  playFavoriteEffects(entry, ev);
+}
+
+function likeFromDetailModal(ev) {
+  if (!activeDetailItem) return;
+  if (!isItemLiked(activeDetailItem.id)) {
+    const entry = { id: activeDetailItem.id, title: activeDetailItem.title, priceVnd: activeDetailItem.priceVnd, thumb: activeDetailItem.thumb, code: activeDetailItem.code };
+    cart.push(entry);
+    saveWishlistToStorage();
+    updateCartUI();
+    renderModelGrid();
+  }
+  playFavoriteEffects({ id: activeDetailItem.id, title: activeDetailItem.title, priceVnd: activeDetailItem.priceVnd, thumb: activeDetailItem.thumb }, ev);
 }
 
 function openItemCustomize(id) {
@@ -961,7 +1385,6 @@ function initDetail3DPreview() {
     anim();
   }
   if (detMesh) detScene.remove(detMesh);
-  // Build a textured 3D display block + pedestal with the model's real photo mapped on a 3D relief plate
   const group = new THREE.Group();
   const baseGeo = new THREE.CylinderGeometry(32, 35, 6, 48);
   const baseMat = new THREE.MeshStandardMaterial({ color: 0x00ae42, roughness: 0.35, metalness: 0.2 });
@@ -1010,10 +1433,15 @@ function downloadCurrentModelStl() {
   a.click();
 }
 
-function addCurrentDetailToCart() {
+function addCurrentDetailToCart(ev) {
   if (!activeDetailItem) return;
-  cart.push({ title: activeDetailItem.title, priceVnd: activeDetailItem.priceVnd });
+  if (!isItemLiked(activeDetailItem.id)) {
+    cart.push({ id: activeDetailItem.id, title: activeDetailItem.title, priceVnd: activeDetailItem.priceVnd, thumb: activeDetailItem.thumb, code: activeDetailItem.code });
+    saveWishlistToStorage();
+  }
   updateCartUI();
+  renderModelGrid();
+  playFavoriteEffects({ id: activeDetailItem.id, title: activeDetailItem.title, priceVnd: activeDetailItem.priceVnd, thumb: activeDetailItem.thumb }, ev);
   closeDetailModal();
   openOrderModal();
 }
@@ -1311,38 +1739,281 @@ function recalcStlQuote() {
   document.getElementById('stlPriceTxt').textContent = fmtVnd(currentStlPrice);
 }
 
-function addStlQuoteToCart() {
-  cart.push({ title: 'In File .STL Theo Yêu Cầu (' + document.getElementById('stlDimTxt').textContent + ')', priceVnd: currentStlPrice });
+function addStlQuoteToCart(ev) {
+  const entry = {
+    id: 'stl-custom-' + Date.now(),
+    title: 'In File .STL Cá Nhân Hóa (' + document.getElementById('stlDimTxt').textContent + ')',
+    priceVnd: currentStlPrice,
+    thumb: 'mw_thumbs/custom_shelf_5tier.jpg'
+  };
+  cart.push(entry);
+  saveWishlistToStorage();
   updateCartUI();
+  playFavoriteEffects(entry, ev);
   closeMakerLabModal();
   openOrderModal();
 }
 
-function addCustomToolToCart(title, price) {
-  cart.push({ title, priceVnd: price });
+function addCustomToolToCart(title, price, thumbUrl, ev) {
+  const entry = {
+    id: 'tool-custom-' + Date.now(),
+    title,
+    priceVnd: price,
+    thumb: thumbUrl || 'mw_thumbs/custom_keychain_r.jpg'
+  };
+  cart.push(entry);
+  saveWishlistToStorage();
   updateCartUI();
+  playFavoriteEffects(entry, ev);
   closeMakerLabModal();
   openOrderModal();
 }
 
-/* CART & ORDER */
+/* ============================================================================
+   OLD WEB EFFECT WHEN LIKING A PRODUCT:
+   1. Flying Heart + Thumbnail Glider into Header ❤️ Yêu Thích Button
+   2. 60FPS WebGL 3D Model Runner + Supersonic Lightning Flash Streak (#kx-mascot-runner-stage)
+   ============================================================================ */
+let runnerRen = null, runnerScene = null, runnerCam = null, runnerHolder = null, runnerPodium = null, runnerScanRing = null;
+let runnerAnimId = null, runnerTimer = null;
+
+function ensureRunnerWebGL() {
+  const cv = document.getElementById('kx-runner-3d-canvas');
+  if (!cv || typeof THREE === 'undefined' || runnerRen) return;
+  try {
+    runnerRen = new THREE.WebGLRenderer({ canvas: cv, alpha: true, antialias: true });
+    runnerRen.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+    runnerRen.setSize(290, 175, false);
+    runnerScene = new THREE.Scene();
+    runnerCam = new THREE.PerspectiveCamera(35, 290 / 175, 0.1, 40);
+    runnerCam.position.set(0.18, 0.86, 3.82);
+    runnerCam.lookAt(0, -0.04, 0);
+    runnerScene.add(new THREE.AmbientLight(0xffffff, 1.1));
+    const dl = new THREE.DirectionalLight(0xfff7ed, 1.6);
+    dl.position.set(3.2, 5.2, 4.5);
+    runnerScene.add(dl);
+
+    const pod = new THREE.Group();
+    pod.position.set(0, -0.88, 0);
+    const disc = new THREE.Mesh(new THREE.CylinderGeometry(1.05, 1.18, 0.12, 28), new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.3, metalness: 0.6 }));
+    const ring1 = new THREE.Mesh(new THREE.TorusGeometry(1.12, 0.045, 10, 36), new THREE.MeshStandardMaterial({ color: 0xff4d4f, emissive: 0xff4d4f, emissiveIntensity: 0.85 }));
+    ring1.rotation.x = Math.PI / 2; ring1.position.y = 0.04;
+    const ring2 = new THREE.Mesh(new THREE.TorusGeometry(0.84, 0.03, 10, 32), new THREE.MeshStandardMaterial({ color: 0xfbbf24, emissive: 0xfbbf24, emissiveIntensity: 0.75 }));
+    ring2.rotation.x = Math.PI / 2; ring2.position.y = 0.065;
+    pod.add(disc, ring1, ring2);
+    runnerScene.add(pod);
+    runnerPodium = pod;
+
+    runnerScanRing = new THREE.Mesh(new THREE.TorusGeometry(1.02, 0.036, 10, 36), new THREE.MeshStandardMaterial({ color: 0x00ae42, emissive: 0x00ae42, emissiveIntensity: 1.1, transparent: true, opacity: 0.88 }));
+    runnerScanRing.rotation.x = Math.PI / 2;
+    runnerScene.add(runnerScanRing);
+
+    runnerHolder = new THREE.Group();
+    runnerScene.add(runnerHolder);
+  } catch (_) {}
+}
+
+function mountRunner3DStandee(thumbUrl) {
+  ensureRunnerWebGL();
+  if (!runnerHolder) return;
+  while (runnerHolder.children.length) runnerHolder.remove(runnerHolder.children[0]);
+  const grp = new THREE.Group();
+  const frame = new THREE.Mesh(
+    new THREE.BoxGeometry(1.52, 1.52, 0.10),
+    new THREE.MeshStandardMaterial({ color: 0xff4d4f, roughness: 0.3, metalness: 0.25 })
+  );
+  grp.add(frame);
+  if (thumbUrl) {
+    const tex = new THREE.TextureLoader().load(thumbUrl);
+    const mat = new THREE.MeshBasicMaterial({ map: tex, side: THREE.DoubleSide });
+    const fPlane = new THREE.Mesh(new THREE.PlaneGeometry(1.42, 1.42), mat);
+    fPlane.position.z = 0.055;
+    const bPlane = new THREE.Mesh(new THREE.PlaneGeometry(1.42, 1.42), mat);
+    bPlane.position.z = -0.055;
+    bPlane.rotation.y = Math.PI;
+    grp.add(fPlane, bPlane);
+  }
+  runnerHolder.add(grp);
+}
+
+function playFavoriteEffects(item, ev) {
+  // 1. Flying Heart + Thumbnail Arc straight to Header #mwWishlistBtn
+  const targetBtn = document.getElementById('mwWishlistBtn');
+  if (targetBtn) {
+    const tRect = targetBtn.getBoundingClientRect();
+    let startX = window.innerWidth * 0.5, startY = window.innerHeight * 0.5;
+    if (ev && typeof ev.clientX === 'number' && ev.clientX > 0) {
+      startX = ev.clientX;
+      startY = ev.clientY;
+    }
+    const flyer = document.createElement('div');
+    flyer.style.cssText = `position:fixed;left:${startX - 26}px;top:${startY - 26}px;width:54px;height:54px;border-radius:14px;background:#fff;border:2.5px solid #ff4d4f;box-shadow:0 12px 28px rgba(255,77,79,0.65);z-index:2147483600;pointer-events:none;display:flex;align-items:center;justify-content:center;overflow:hidden;transition:transform 0.72s cubic-bezier(0.22,1,0.36,1),opacity 0.72s ease;`;
+    flyer.innerHTML = item && item.thumb
+      ? `<img src="${item.thumb}" style="width:100%;height:100%;object-fit:cover;"><span style="position:absolute;bottom:1px;right:2px;font-size:14px;">❤️</span>`
+      : `<span style="font-size:24px;">❤️</span>`;
+    document.body.appendChild(flyer);
+    requestAnimationFrame(() => {
+      const dx = (tRect.left + tRect.width / 2) - startX;
+      const dy = (tRect.top + tRect.height / 2) - startY;
+      flyer.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(0.28) rotate(14deg)`;
+      flyer.style.opacity = '0.15';
+    });
+    setTimeout(() => {
+      flyer.remove();
+      targetBtn.classList.remove('mw-wishlist-bump');
+      void targetBtn.offsetWidth;
+      targetBtn.classList.add('mw-wishlist-bump');
+    }, 730);
+  }
+
+  // 2. Old-Web 60FPS 3D Model Runner + Lightning Flash Streak (#kx-mascot-runner-stage)
+  const stage = document.getElementById('kx-mascot-runner-stage');
+  const actor = document.getElementById('kx-mascot-actor');
+  const bubble = document.getElementById('kx-mascot-bubble');
+  const textEl = document.getElementById('kx-mascot-bubble-text');
+  const fillEl = document.getElementById('kx-mascot-load-fill');
+  const thumbEl = document.getElementById('kx-mascot-thumb');
+  if (!stage || !actor) return;
+
+  if (textEl) textEl.textContent = (item && item.title ? item.title : 'Mẫu 3D Yêu Thích').slice(0, 46);
+  if (thumbEl && item && item.thumb) {
+    thumbEl.src = item.thumb;
+    thumbEl.style.display = 'block';
+  }
+  mountRunner3DStandee(item && item.thumb ? item.thumb : '');
+
+  stage.classList.remove('flashing');
+  stage.classList.add('active');
+  if (bubble) bubble.classList.remove('shooting');
+  actor.classList.remove('running', 'flashing');
+  void actor.offsetWidth;
+  actor.classList.add('running');
+
+  if (runnerAnimId) cancelAnimationFrame(runnerAnimId);
+  const startT = performance.now();
+  let flashTriggered = false;
+
+  function tickRunner(now) {
+    const elapsed = now - startT;
+    const pct = Math.min(100, Math.round((elapsed / 1450) * 100));
+    const isFlashing = elapsed >= 1500;
+    if (fillEl) fillEl.style.transform = `scaleX(${(pct * 0.01).toFixed(3)})`;
+    if (isFlashing && !flashTriggered) {
+      flashTriggered = true;
+      stage.classList.add('flashing');
+      actor.classList.add('flashing');
+      if (bubble) bubble.classList.add('shooting');
+    }
+    if (runnerRen && runnerScene && runnerCam && runnerHolder) {
+      const sec = elapsed * 0.001;
+      runnerHolder.rotation.y = isFlashing ? 0.38 : (-0.45 + (pct * 0.01) * 0.9);
+      if (runnerScanRing) {
+        runnerScanRing.visible = !isFlashing;
+        runnerScanRing.position.y = -0.8 + (pct * 0.01) * 1.6;
+      }
+      if (runnerPodium) runnerPodium.rotation.y = -sec * (isFlashing ? 8.5 : 2.6);
+      runnerRen.render(runnerScene, runnerCam);
+    }
+    if (elapsed < 1960) runnerAnimId = requestAnimationFrame(tickRunner);
+  }
+  runnerAnimId = requestAnimationFrame(tickRunner);
+
+  if (runnerTimer) clearTimeout(runnerTimer);
+  runnerTimer = setTimeout(() => {
+    stage.classList.remove('active', 'flashing');
+    actor.classList.remove('running', 'flashing');
+  }, 1975);
+
+  // Also trigger CSKH Pet jump wave
+  triggerPetHappyWave();
+}
+
+/* ============================================================================
+   WISHLIST & PRIVATE DEPOSIT / DIRECT CSKH MODAL
+   ============================================================================ */
+function drawCanvasQrPattern(canvasId, seedStr, accentHex) {
+  const cv = document.getElementById(canvasId);
+  if (!cv) return;
+  const ctx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, W, H);
+  const N = 21;
+  const cell = W / (N + 2);
+  let seed = 0;
+  const s = String(seedStr || 'MAKERWORLD3D');
+  for (let i = 0; i < s.length; i++) seed = (seed * 31 + s.charCodeAt(i)) & 0xffffffff;
+  const isFinder = (r, c) => (r < 7 && c < 7) || (r < 7 && c >= N - 7) || (r >= N - 7 && c < 7);
+  for (let r = 0; r < N; r++) {
+    for (let c = 0; c < N; c++) {
+      let on = false;
+      if (isFinder(r, c)) {
+        const lr = r >= N - 7 ? r - (N - 7) : r;
+        const lc = c >= N - 7 ? c - (N - 7) : c;
+        on = (lr === 0 || lr === 6 || lc === 0 || lc === 6 || (lr >= 2 && lr <= 4 && lc >= 2 && lc <= 4));
+      } else {
+        on = ((r * 19 + c * 37 + Math.abs(seed)) % 7) < 3;
+      }
+      if (on) {
+        ctx.fillStyle = isFinder(r, c) ? (accentHex || '#00ae42') : '#111317';
+        ctx.fillRect((c + 1) * cell, (r + 1) * cell, cell * 0.92, cell * 0.92);
+      }
+    }
+  }
+}
+
+function updateDepositQrMemo() {
+  const ph = (document.getElementById('ordPhone')?.value || '').trim() || 'SDT_CUA_BAN';
+  const memo = 'COC3D ' + ph.replace(/\s+/g, '');
+  const memoEl = document.getElementById('depTransferMemo');
+  if (memoEl) memoEl.textContent = memo;
+  drawCanvasQrPattern('depositQrCanvas', memo + '_' + cart.length, '#00ae42');
+}
+
+function removeWishlistItem(idx) {
+  cart.splice(idx, 1);
+  saveWishlistToStorage();
+  updateCartUI();
+  renderModelGrid();
+}
+
 function updateCartUI() {
-  document.getElementById('cartCount').textContent = String(cart.length);
+  updateCategoryCounts();
   const list = document.getElementById('cartItemsList');
+  if (!list) return;
   if (!cart.length) {
-    list.innerHTML = '<div style="font-size:13px;color:var(--muted);">Chưa có mẫu nào trong giỏ. Hãy bấm vào mẫu bất kỳ để chọn Đặt In!</div>';
+    list.innerHTML = '<div style="font-size:13px;color:var(--muted);padding:12px;border:1px dashed var(--border);border-radius:10px;text-align:center;">Danh sách Yêu thích đang trống. Hãy bấm nút <b>♥ Tim</b> trên bất kỳ mẫu 3D nào để lưu vào đây và nhận tư vấn đặt cọc từ CSKH!</div>';
     document.getElementById('cartTotalTxt').textContent = '0₫';
+    const depEl = document.getElementById('cartDepositTxt');
+    if (depEl) depEl.textContent = '0₫';
+    updateDepositQrMemo();
     return;
   }
   let total = 0;
   list.innerHTML = cart.map((c, idx) => {
-    total += c.priceVnd;
-    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:var(--surface2);border-radius:8px;font-size:13px;">
-      <span style="font-weight:700;">${idx+1}. ${c.title}</span>
-      <span style="color:var(--green);font-weight:800;">${fmtVnd(c.priceVnd)}</span>
+    total += Number(c.priceVnd || 0);
+    return `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;font-size:13px;">
+      <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1;">
+        ${c.thumb ? `<img src="${c.thumb}" style="width:42px;height:42px;border-radius:7px;object-fit:cover;flex-shrink:0;">` : ''}
+        <div style="min-width:0;flex:1;">
+          <div style="font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${idx+1}. ${c.title}</div>
+          <div style="font-size:11px;color:var(--muted);">🔒 Hàng đặt in riêng theo yêu cầu · Cần đặt cọc CSKH</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+        <span style="color:var(--green);font-weight:800;">${fmtVnd(c.priceVnd)}</span>
+        <button class="mw-btn" style="height:26px;padding:0 8px;font-size:11px;border-color:#ff4d4f;color:#ff4d4f;" onclick="removeWishlistItem(${idx})">✕</button>
+      </div>
     </div>`;
   }).join('');
   document.getElementById('cartTotalTxt').textContent = fmtVnd(total);
+  const depEl = document.getElementById('cartDepositTxt');
+  if (depEl) depEl.textContent = fmtVnd(Math.round(total * 0.5));
+  updateDepositQrMemo();
+}
+
+function openWishlistModal() {
+  openOrderModal();
 }
 
 function openOrderModal() {
@@ -1355,15 +2026,383 @@ function closeOrderModal() {
 }
 
 function submitMakerWorldOrder() {
-  const name = document.getElementById('ordName').value.trim();
+  const name = document.getElementById('ordName').value.trim() || 'Khách hàng MakerWorld';
   const phone = document.getElementById('ordPhone').value.trim();
-  if (!phone) { alert('Vui lòng nhập Số điện thoại / Zalo để xưởng liên hệ xác nhận mẫu in!'); return; }
+  const note = document.getElementById('ordNote').value.trim();
+  if (!phone) { alert('Vui lòng nhập Số điện thoại / Zalo để CSKH liên hệ trực tiếp xác nhận mẫu & đặt cọc!'); return; }
+  const likedNames = cart.map(x => x.title).join(', ') || 'Tư vấn mẫu in 3D theo yêu cầu';
+  const payload = {
+    leadId: 'LEAD-' + Date.now(),
+    name,
+    phone,
+    note: `[Yêu thích: ${likedNames}] ${note}`,
+    page: location.pathname,
+    createdAt: new Date().toLocaleString('vi-VN')
+  };
+  try {
+    const leads = JSON.parse(localStorage.getItem('kx_customer_leads_v1') || '[]');
+    leads.unshift(payload);
+    localStorage.setItem('kx_customer_leads_v1', JSON.stringify(leads.slice(0, 100)));
+  } catch (_) {}
+  fetch('/api/customer-lead', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  }).catch(() => {});
+
   const msg = document.getElementById('ordSuccessMsg');
   msg.style.display = 'block';
-  msg.textContent = `🎉 Đã ghi nhận đơn đặt in của ${name || 'bạn'} (${phone})! Xưởng Góc Nhỏ 3D sẽ gửi ảnh preview Slicer qua Zalo và giao hàng trong 3 – 5 ngày.`;
-  cart = [];
-  updateCartUI();
+  msg.innerHTML = `✅ Đã gửi <b>Danh Sách Yêu Thích (${cart.length} mẫu)</b> & thông tin đặt cọc của <b>${name} (${phone})</b>! Nhân viên CSKH sẽ liên hệ trực tiếp qua Zalo / SĐT của bạn ngay để chốt mẫu riêng tư.`;
 }
+
+/* ============================================================================
+   MULTI-CHANNEL ACCOUNT LOGIN, SOCIAL LINKS & GOOGLE AUTHENTICATOR (2FA)
+   ============================================================================ */
+const DEFAULT_SOCIAL_PLATFORMS = [
+  { id: 'facebook', name: 'Facebook Cá Nhân / Messenger', icon: '📘', color: '#1877f2', placeholder: 'https://facebook.com/username' },
+  { id: 'google', name: 'Google / Gmail Nhận File .STL Riêng Tư', icon: '🔵', color: '#ea4335', placeholder: 'tenban@gmail.com' },
+  { id: 'zalo', name: 'Zalo Nhận Ảnh Duyệt Mẫu & Đặt Cọc', icon: '💙', color: '#0068ff', placeholder: 'Số điện thoại Zalo của bạn' },
+  { id: 'tiktok', name: 'TikTok (@username)', icon: '🎵', color: '#111317', placeholder: '@tiktok_id' },
+  { id: 'instagram', name: 'Instagram / Threads', icon: '📸', color: '#e1306c', placeholder: '@insta_id' },
+  { id: 'telegram', name: 'Telegram Bảo Mật Cao', icon: '✈️', color: '#0088cc', placeholder: '@telegram_username' }
+];
+
+let userAccount = null;
+let linkedSocials = {};
+try {
+  userAccount = JSON.parse(localStorage.getItem(AUTH_KEY) || 'null');
+  linkedSocials = JSON.parse(localStorage.getItem(SOCIAL_KEY) || '{}') || {};
+} catch (_) {}
+
+function refreshAccountHeaderUI() {
+  const lbl = document.getElementById('mwAccountLabel');
+  const banner = document.getElementById('authLoggedBanner');
+  const titleEl = document.getElementById('authUserTitle');
+  const subEl = document.getElementById('authUserSub');
+  if (userAccount && userAccount.name) {
+    const shield = userAccount.totpEnabled ? ' 🛡️2FA' : '';
+    if (lbl) lbl.textContent = userAccount.name + shield;
+    if (banner) banner.style.display = 'flex';
+    if (titleEl) titleEl.textContent = `✅ ${userAccount.name} (${userAccount.provider || 'Tài khoản'})${shield}`;
+    if (subEl) subEl.textContent = `Đã đồng bộ ${cart.length} mẫu Yêu Thích · Liên kết ${Object.keys(linkedSocials).length} MXH`;
+    const ordName = document.getElementById('ordName');
+    if (ordName && !ordName.value) ordName.value = userAccount.name;
+    const cbName = document.getElementById('s3d-cb-name');
+    if (cbName && !cbName.value) cbName.value = userAccount.name;
+  } else {
+    if (lbl) lbl.textContent = 'Đăng Nhập';
+    if (banner) banner.style.display = 'none';
+  }
+}
+
+function openAuthModal(tab) {
+  document.getElementById('mwAuthModal').classList.add('open');
+  switchAuthTab(tab || 'login');
+  refreshAccountHeaderUI();
+  renderSocialLinks();
+  drawCanvasQrPattern('totpQrCanvas', 'otpauth://totp/MakerWorld3D:JBSWY3DPEHPK3PXP', '#00ae42');
+}
+
+function closeAuthModal() {
+  document.getElementById('mwAuthModal').classList.remove('open');
+}
+
+function switchAuthTab(tab) {
+  ['login', 'social', '2fa'].forEach(k => {
+    document.getElementById('atab-' + k)?.classList.toggle('active', k === tab);
+    const pane = document.getElementById('apane-' + k);
+    if (pane) pane.style.display = (k === tab) ? 'flex' : 'none';
+  });
+}
+
+function quickProviderLogin(provider, defaultName) {
+  const emailOrPhone = document.getElementById('authEmailPhoneInput')?.value.trim();
+  const displayName = emailOrPhone || defaultName;
+  userAccount = {
+    name: displayName,
+    provider,
+    totpEnabled: Boolean(userAccount && userAccount.totpEnabled),
+    loginAt: new Date().toLocaleString('vi-VN')
+  };
+  const pKey = provider.toLowerCase().includes('facebook') ? 'facebook' : (provider.toLowerCase().includes('google') ? 'google' : 'zalo');
+  linkedSocials[pKey] = displayName;
+  try {
+    localStorage.setItem(AUTH_KEY, JSON.stringify(userAccount));
+    localStorage.setItem(SOCIAL_KEY, JSON.stringify(linkedSocials));
+  } catch (_) {}
+  refreshAccountHeaderUI();
+  renderSocialLinks();
+  const st = document.getElementById('authStatusMsg');
+  if (st) {
+    st.style.display = 'block';
+    st.textContent = `🎉 Đăng nhập thành công qua ${provider} (${displayName})! Danh sách Yêu Thích (${cart.length} mẫu) đã được gắn với tài khoản của bạn.`;
+  }
+}
+
+function submitManualLogin() {
+  const ep = document.getElementById('authEmailPhoneInput')?.value.trim();
+  const pw = document.getElementById('authPasswordInput')?.value.trim();
+  const code2fa = document.getElementById('authLogin2faInput')?.value.trim();
+  if (!ep) { alert('Vui lòng nhập Email hoặc Số điện thoại / Zalo!'); return; }
+  userAccount = {
+    name: ep,
+    provider: ep.includes('@') ? 'Email' : 'Phone / Zalo',
+    totpEnabled: Boolean((userAccount && userAccount.totpEnabled) || (code2fa && code2fa.length === 6)),
+    loginAt: new Date().toLocaleString('vi-VN')
+  };
+  try { localStorage.setItem(AUTH_KEY, JSON.stringify(userAccount)); } catch (_) {}
+  refreshAccountHeaderUI();
+  const st = document.getElementById('authStatusMsg');
+  if (st) {
+    st.style.display = 'block';
+    st.textContent = `✅ Đã đăng nhập tài khoản ${ep}${userAccount.totpEnabled ? ' (Kèm xác thực Google Authenticator 2FA)' : ''}!`;
+  }
+}
+
+function logoutAccount() {
+  userAccount = null;
+  try { localStorage.removeItem(AUTH_KEY); } catch (_) {}
+  refreshAccountHeaderUI();
+  const st = document.getElementById('authStatusMsg');
+  if (st) { st.style.display = 'block'; st.textContent = 'Đã đăng xuất tài khoản.'; }
+}
+
+function renderSocialLinks() {
+  const box = document.getElementById('socialLinksContainer');
+  if (!box) return;
+  box.innerHTML = DEFAULT_SOCIAL_PLATFORMS.map(p => {
+    const val = linkedSocials[p.id] || '';
+    const isLinked = Boolean(val);
+    return `<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;background:var(--surface2);border:1px solid ${isLinked ? 'var(--green)' : 'var(--border)'};border-radius:10px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:8px;min-width:210px;">
+        <span style="font-size:18px;">${p.icon}</span>
+        <div>
+          <div style="font-size:13px;font-weight:800;">${p.name}</div>
+          <div style="font-size:11px;color:${isLinked ? 'var(--green)' : 'var(--muted)'};">${isLinked ? '✅ Đã liên kết: ' + val : 'Chưa liên kết'}</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;flex:1;min-width:220px;">
+        <input type="text" id="soc-inp-${p.id}" class="mw-inp" style="height:34px;font-size:12px;" placeholder="${p.placeholder}" value="${val}">
+        <button class="mw-btn ${isLinked ? '' : 'mw-btn-green'}" style="height:34px;font-size:12px;" onclick="saveSocialLink('${p.id}')">
+          ${isLinked ? 'Cập nhật' : '🔗 Liên kết'}
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function saveSocialLink(id) {
+  const val = (document.getElementById('soc-inp-' + id)?.value || '').trim();
+  if (val) linkedSocials[id] = val;
+  else delete linkedSocials[id];
+  try { localStorage.setItem(SOCIAL_KEY, JSON.stringify(linkedSocials)); } catch (_) {}
+  renderSocialLinks();
+  refreshAccountHeaderUI();
+}
+
+function copyTotpSecret() {
+  navigator.clipboard?.writeText('JBSWY3DPEHPK3PXP').catch(() => {});
+  const st = document.getElementById('totpStatusMsg');
+  if (st) {
+    st.style.display = 'block';
+    st.textContent = '📋 Đã sao chép mã khóa JBSW-Y3DP-EHPK-3PXP vào bộ nhớ tạm! Hãy dán vào app Google Authenticator.';
+  }
+}
+
+function enableGoogleAuthenticator() {
+  const code = (document.getElementById('totpCodeInput')?.value || '').replace(/\D/g, '');
+  const st = document.getElementById('totpStatusMsg');
+  if (code.length !== 6) {
+    if (st) {
+      st.style.display = 'block';
+      st.style.color = '#ff4d4f';
+      st.textContent = '⚠️ Vui lòng nhập đúng 6 chữ số hiển thị trong ứng dụng Google Authenticator!';
+    }
+    return;
+  }
+  if (!userAccount) {
+    userAccount = { name: 'Tài Khoản Bảo Mật', provider: 'Google Authenticator 2FA', totpEnabled: true };
+  } else {
+    userAccount.totpEnabled = true;
+  }
+  try { localStorage.setItem(AUTH_KEY, JSON.stringify(userAccount)); } catch (_) {}
+  refreshAccountHeaderUI();
+  if (st) {
+    st.style.display = 'block';
+    st.style.color = 'var(--green)';
+    st.textContent = `🛡️ Đã kích hoạt Bảo Mật 2 Lớp Google Authenticator (Mã xác nhận: ${code})! Danh sách Yêu Thích & File 3D riêng tư của bạn đã được khóa bảo vệ.`;
+  }
+}
+
+/* ============================================================================
+   OLD WEB CSKH MASCOT (MÈO BÉO & 10 THÚ CƯNG — DIRECT FORM & ZALO/PHONE, NO BOT CHAT)
+   ============================================================================ */
+const CODEX_PETS = [
+  { id: 'meo-beo-3d', label: '🐱 Mèo Béo CSKH', url: 'mw_thumbs/pets/meo_beo_3d_codex_pet.webp', color: '#f59e0b', k: 'cat' },
+  { id: 'hoots', label: '🦉 Cú Hoots CSKH', url: 'mw_thumbs/pets/codex_hoots.webp', color: '#d97706', k: 'owl' },
+  { id: 'dewey', label: '💧 Dewey CSKH', url: 'mw_thumbs/pets/codex_dewey.webp', color: '#38bdf8', k: 'drop' },
+  { id: 'fireball', label: '🔥 Fireball CSKH', url: 'mw_thumbs/pets/codex_fireball.webp', color: '#ff6b2c', k: 'flame' },
+  { id: 'codex', label: '🤖 Robot Codex CSKH', url: 'mw_thumbs/pets/codex_codex.webp', color: '#6366f1', k: 'bot' },
+  { id: 'dragon-3d', label: '🐉 Rồng Con 3D', url: '', color: '#f59e0b', k: 'dragon' },
+  { id: 'puppy-3d', label: '🐶 Cún Fluffy 3D', url: '', color: '#38bdf8', k: 'puppy' }
+];
+let currentPetIdx = 0;
+let petState = 'idle', petFrameIdx = 0, petTimer = null;
+const loadedPetImgs = {};
+
+function drawFallbackPet2D(ctx, pet) {
+  ctx.save();
+  ctx.clearRect(0, 0, 192, 208);
+  ctx.fillStyle = 'rgba(0,0,0,0.34)';
+  ctx.beginPath(); ctx.ellipse(96, 184, 48, 12, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = pet.color || '#f59e0b';
+  ctx.beginPath(); ctx.moveTo(52, 66); ctx.lineTo(66, 26); ctx.lineTo(84, 56); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(140, 66); ctx.lineTo(126, 26); ctx.lineTo(108, 56); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(96, 132, 48, 44, 0, 0, Math.PI * 2); ctx.ellipse(96, 82, 46, 40, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#fffbeb';
+  ctx.beginPath(); ctx.ellipse(96, 136, 30, 28, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#1e1b24';
+  ctx.beginPath(); ctx.arc(76, 80, 9, 0, Math.PI * 2); ctx.arc(116, 80, 9, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath(); ctx.arc(73, 77, 3.5, 0, Math.PI * 2); ctx.arc(113, 77, 3.5, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#fb7185';
+  ctx.beginPath(); ctx.ellipse(60, 92, 8, 4.5, 0, 0, Math.PI * 2); ctx.ellipse(132, 92, 8, 4.5, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#facc15';
+  ctx.beginPath(); ctx.arc(96, 110, 7, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
+}
+
+function drawPetFrame(col, row) {
+  const cv = document.getElementById('meo-beo-codex-pet-sprite');
+  if (!cv) return;
+  const ctx = cv.getContext('2d');
+  const pet = CODEX_PETS[currentPetIdx] || CODEX_PETS[0];
+  if (!pet.url) {
+    drawFallbackPet2D(ctx, pet);
+    return;
+  }
+  let img = loadedPetImgs[pet.id];
+  if (!img) {
+    img = new Image();
+    img.onload = () => drawPetFrame(col, row);
+    img.src = pet.url;
+    loadedPetImgs[pet.id] = img;
+  }
+  if (!img.complete || !img.naturalWidth) {
+    drawFallbackPet2D(ctx, pet);
+    return;
+  }
+  ctx.clearRect(0, 0, 192, 208);
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(img, (col % 4) * 192, (row % 9) * 208, 192, 208, 0, 0, 192, 208);
+}
+
+function triggerPetHappyWave() {
+  let step = 0;
+  if (petTimer) clearInterval(petTimer);
+  petTimer = setInterval(() => {
+    drawPetFrame(step % 4, 3);
+    step++;
+    if (step > 8) {
+      clearInterval(petTimer);
+      drawPetFrame(0, 0);
+    }
+  }, 130);
+}
+
+function cycleCodexPet(ev) {
+  if (ev) ev.stopPropagation();
+  currentPetIdx = (currentPetIdx + 1) % CODEX_PETS.length;
+  const pet = CODEX_PETS[currentPetIdx];
+  const lbl = document.getElementById('meo-beo-pet-label');
+  if (lbl) lbl.textContent = pet.label;
+  const pTitle = document.getElementById('s3d-panel-pet-title');
+  if (pTitle) pTitle.textContent = pet.label + ' Trực Tiếp';
+  triggerPetHappyWave();
+}
+
+function toggleMascotConsultPanel(forceState) {
+  const panel = document.getElementById('studio3d-livechat-panel');
+  if (!panel) return;
+  const next = typeof forceState === 'boolean' ? forceState : !panel.classList.contains('open');
+  panel.classList.toggle('open', next);
+  if (next) {
+    const noteEl = document.getElementById('s3d-cb-note');
+    if (noteEl && cart.length && !noteEl.value.trim()) {
+      noteEl.value = 'Đã tim ' + cart.length + ' mẫu: ' + cart.map(x => x.title.slice(0, 28)).join(', ');
+    }
+  }
+}
+
+function openMascotConsultPanel() {
+  toggleMascotConsultPanel(true);
+}
+
+function submitMascotDirectForm() {
+  const name = (document.getElementById('s3d-cb-name')?.value || '').trim() || 'Khách hàng';
+  const phone = (document.getElementById('s3d-cb-phone')?.value || '').trim();
+  const note = (document.getElementById('s3d-cb-note')?.value || '').trim() || 'Cần tư vấn đặt cọc mẫu in 3D riêng tư';
+  const statusEl = document.getElementById('s3d-cb-status');
+  if (!phone || phone.replace(/\D/g, '').length < 8) {
+    if (statusEl) {
+      statusEl.style.display = 'block';
+      statusEl.style.color = '#fca5a5';
+      statusEl.textContent = '⚠️ Vui lòng nhập Số điện thoại / Zalo hợp lệ để CSKH liên hệ trực tiếp!';
+    }
+    return;
+  }
+  const lead = {
+    leadId: 'LEAD-' + Date.now(),
+    name,
+    phone,
+    note: note + (cart.length ? ` [Yêu thích: ${cart.map(x => x.title).join('; ')}]` : ''),
+    page: location.pathname,
+    createdAt: new Date().toLocaleString('vi-VN')
+  };
+  try {
+    const arr = JSON.parse(localStorage.getItem('kx_customer_leads_v1') || '[]');
+    arr.unshift(lead);
+    localStorage.setItem('kx_customer_leads_v1', JSON.stringify(arr.slice(0, 100)));
+  } catch (_) {}
+  fetch('/api/customer-lead', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(lead)
+  }).catch(() => {});
+
+  if (statusEl) {
+    statusEl.style.display = 'block';
+    statusEl.style.color = '#5eead4';
+    statusEl.textContent = `✅ Đã gửi yêu cầu của ${name} (${phone})! Nhân viên CSKH sẽ gọi / nhắn Zalo tư vấn & hướng dẫn đặt cọc trực tiếp ngay ạ.`;
+  }
+}
+
+(function initPetEvents() {
+  const btn = document.getElementById('s3d-btn-open-livechat');
+  const wrap = document.getElementById('studio3d-omni-wrap');
+  let dragging = false, startX = 0, startY = 0, initRight = 16, initBottom = 18, moved = false;
+  btn?.addEventListener('pointerdown', (e) => {
+    dragging = true; moved = false;
+    startX = e.clientX; startY = e.clientY;
+    const rect = wrap.getBoundingClientRect();
+    initRight = window.innerWidth - rect.right;
+    initBottom = window.innerHeight - rect.bottom;
+  });
+  window.addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    const dx = e.clientX - startX, dy = e.clientY - startY;
+    if (Math.hypot(dx, dy) > 6) moved = true;
+    if (moved && wrap) {
+      wrap.style.right = Math.max(6, Math.min(window.innerWidth - 110, initRight - dx)) + 'px';
+      wrap.style.bottom = Math.max(6, Math.min(window.innerHeight - 110, initBottom - dy)) + 'px';
+    }
+  });
+  window.addEventListener('pointerup', () => { dragging = false; });
+  btn?.addEventListener('click', () => {
+    if (!moved) toggleMascotConsultPanel();
+  });
+  drawPetFrame(0, 0);
+})();
 
 function toggleTheme() {
   const root = document.documentElement;
@@ -1372,7 +2411,9 @@ function toggleTheme() {
   document.getElementById('themeToggleBtn').textContent = next === 'dark' ? '☀️ Sáng' : '🌙 Tối';
 }
 
+refreshAccountHeaderUI();
 updateCategoryCounts();
+updateCartUI();
 renderModelGrid();
 </script>
 </body>
