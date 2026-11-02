@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <script src="assets/kx_order_integrity.js?v=20261101_cleanname"></script>
+  <meta name="color-scheme" content="dark" />
+  <meta name="darkreader-lock" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5" />
+  <title>Trung Tâm Kiểm Duyệt 5 Mẫu Web 3D Quốc Tế & Upload Source Sản Phẩm Tự Động</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧊</text></svg>" />
+  <style>
+    :root {
+      --bg: #080b12;
+      --card: #111623;
+      --muted-bg: #182032;
+      --border: #27324b;
+      --fg: #f4f7fc;
+      --muted: #98a6c2;
+      --accent: #ff6b2c;
+      --teal: #14b8a6;
+      --amber: #f59e0b;
+      --cyan: #38bdf8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { max-width: 100vw; overflow-x: hidden; scroll-behavior: smooth; background: var(--bg); color: var(--fg); font-family: 'Be Vietnam Pro', system-ui, -apple-system, sans-serif; } code { word-break: break-all; }
+    body { padding-bottom: 80px; }
+    a { color: inherit; }
+
+    .ts-header { position: sticky; top: 0; z-index: 50; background: rgba(8,11,18,0.88); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); padding: 14px 20px; }
+    .ts-header-in { max-width: 1240px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+    .ts-title { font-size: 18px; font-weight: 900; display: flex; align-items: center; gap: 10px; }
+    .pill-live { background: rgba(20,184,166,0.18); border: 1px solid var(--teal); color: #5eead4; font-size: 11.5px; font-weight: 800; padding: 4px 11px; border-radius: 999px; }
+
+    .wrap { max-width: 1240px; margin: 0 auto; padding: 30px 18px; }
+    .hero-banner { background: linear-gradient(135deg, #131b2e, #1b1528); border: 1px solid var(--border); border-radius: 24px; padding: 26px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 18px; margin-bottom: 28px; }
+    .btn { height: 42px; padding: 0 18px; border-radius: 999px; border: 1px solid var(--border); background: var(--muted-bg); color: var(--fg); font-weight: 800; font-size: 13px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 7px; transition: .16s; }
+    .btn:hover { border-color: var(--accent); color: #fff; transform: translateY(-1px); }
+    .btn-primary { background: var(--accent); border-color: var(--accent); color: #160700; }
+    .btn-teal { background: var(--teal); border-color: var(--teal); color: #031c18; }
+
+    /* 6 Website Archetype Cards */
+    .sites-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 16px; }
+    .site-card { background: var(--card); border: 2px solid var(--border); border-radius: 22px; padding: 20px; display: flex; flex-direction: column; gap: 12px; transition: .18s; position: relative; }
+    .site-card.chosen { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(20,184,166,0.22); }
+    .site-tag { display: inline-block; font-size: 11px; font-weight: 900; padding: 4px 10px; border-radius: 999px; width: fit-content; }
+    .site-card h3 { font-size: 19px; font-weight: 900; line-height: 1.25; }
+    .site-card p { font-size: 13.5px; color: var(--muted); line-height: 1.5; }
+    .feat-list { list-style: none; display: flex; flex-direction: column; gap: 5px; font-size: 12.5px; color: #cbd5e1; background: rgba(255,255,255,0.03); padding: 10px 12px; border-radius: 14px; }
+    .site-actions { margin-top: auto; display: flex; flex-wrap: wrap; gap: 8px; padding-top: 8px; }
+
+    /* Live Mobile (390x844) & Desktop Simulator Frame */
+    .sim-modal { position: fixed; inset: 0; background: rgba(4,6,12,0.86); backdrop-filter: blur(8px); z-index: 100; display: none; flex-direction: column; align-items: center; padding: 14px; }
+    .sim-modal.open { display: flex; }
+    .sim-bar { width: min(1220px, 100%); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; background: var(--card); padding: 10px 16px; border-radius: 16px; border: 1px solid var(--border); }
+    .sim-frame-wrap { flex: 1; width: 100%; display: grid; place-items: center; overflow: auto; }
+    #sim-iframe { border: 3px solid #334155; border-radius: 26px; background: #000; transition: width .25s ease, height .25s ease; box-shadow: 0 25px 60px rgba(0,0,0,0.8); }
+
+    /* Upload & Auto-Sync Hub */
+    .upload-panel { margin-top: 40px; background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 26px; }
+    .up-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 24px; margin-top: 18px; }
+    .drop-area { border: 2px dashed var(--amber); border-radius: 20px; background: rgba(245,158,11,0.06); padding: 28px 18px; text-align: center; cursor: pointer; transition: .18s; }
+    .drop-area:hover, .drop-area.drag { background: rgba(245,158,11,0.14); border-color: #fbbf24; }
+    .inp { width: 100%; height: 42px; border-radius: 12px; border: 1px solid var(--border); background: var(--muted-bg); color: var(--fg); padding: 0 12px; font-size: 13.5px; outline: none; }
+    .inp:focus { border-color: var(--amber); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+
+    .live-list { display: flex; flex-direction: column; gap: 10px; max-height: 430px; overflow-y: auto; padding-right: 4px; }
+    .live-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--muted-bg); border: 1px solid var(--border); border-radius: 14px; padding: 10px 12px; font-size: 13px; }
+
+    @media (max-width: 860px) {
+      .sites-grid, .up-grid, .form-row { grid-template-columns: 1fr !important; }
+      .wrap { padding: 16px 12px; }
+      .hero-banner, .upload-panel, .site-card { padding: 16px; border-radius: 18px; }
+      .ts-header { padding: 10px 12px; }
+      .ts-title { font-size: 14.5px; flex-wrap: wrap; }
+      .btn { width: 100%; font-size: 12.5px; height: 38px; }
+    }
+  </style>
+  <link rel="stylesheet" href="assets/khoixinh_mobile_fix.css?v=20261101_v10" />
+</head>
+<body>
+  <header class="ts-header">
+    <div class="ts-header-in">
+      <div class="ts-title">🎛️ BÀN KIỂM DUYỆT 5 MẪU WEB 3D & KHO TỰ ĐỘNG ĐĂNG SẢN PHẨM <span class="pill-live" id="chosen-pill">Đang tải mẫu...</span></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <a href="#upload-box" class="btn btn-primary">📤 Upload Ảnh / Video / Mô Hình 3D Mới</a>
+        <a href="khoixinh_3d_hub.html" class="btn">🔥 Mở Mẫu Khối Xinh 3D</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="hero-banner">
+      <div style="max-width:760px;">
+        <div style="font-size:12px;font-weight:900;color:var(--amber);letter-spacing:0.08em;">SO SÁNH TRỰC QUAN TRÊN CẢ ĐIỆN THOẠI & MÁY TÍNH</div>
+        <h1 style="font-size:clamp(22px,3vw,32px);font-weight:900;margin-top:6px;">Chọn Giao Diện Đẹp & Phù Hợp Nhất Cho Thương Hiệu In 3D Của Bạn</h1>
+        <p style="color:var(--muted);font-size:14px;margin-top:6px;line-height:1.5;">
+          Cả <b>5 mẫu website</b> bên dưới đều đã được kết nối chung vào <b>1 Kho Sản Phẩm Tự Động (`LIVE_PRODUCTS_DB.json`)</b> và <b>1 Giỏ Hàng</b>. Khi bạn tải lên hình ảnh, video Reel hoặc file `.STL/.3MF/.OBJ` ở mục bên dưới (hoặc bỏ file vào thư mục <code>NGUON_SAN_PHAM_MOI_TU_DONG</code>), toàn bộ 6 website đều tự động cập nhật ngay lập tức!
+        </p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button type="button" class="btn btn-teal" id="btn-rescan-top">🔄 Quét Thư Mục Tự Động Ngay</button>
+        <div style="font-size:12px;color:var(--muted);text-align:center;" id="sync-stat-top">Đang đồng bộ kho...</div>
+      </div>
+    </div>
+
+    <!-- 6 INTERNATIONAL & VIETNAMESE 3D WEBSITE ARCHETYPES -->
+    <div class="sites-grid" id="sites-grid"></div>
+
+    <!-- UPLOAD NEW SOURCE IMAGES / VIDEOS / 3D MODELS & AUTO-SYNC WATCHED FOLDER -->
+    <section class="upload-panel" id="upload-box">
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px;">
+        <div>
+          <span class="pill-live" style="background:rgba(245,158,11,0.2);border-color:var(--amber);color:#fcd34d;">TỰ ĐỘNG KẾT NỐI ĐĂNG TẢI SẢN PHẨM MỚI (3 GIÂY / LẦN)</span>
+          <h2 style="font-size:24px;font-weight:900;margin-top:8px;">📤 Upload Hình Ảnh, Video Reel (.MP4) hoặc Mô Hình 3D (.STL / .3MF / .OBJ / .GLB)</h2>
+          <p style="font-size:13.5px;color:var(--muted);margin-top:4px;">
+            Thư mục tự động kết nối trên máy chủ: <code style="color:#fbbf24;">D:\Code\Active_Projects\Studio3D_Omnichannel_Store\NGUON_SAN_PHAM_MOI_TU_DONG\</code>
+          </p>
+        </div>
+      </div>
+
+      <div class="up-grid">
+        <form id="upload-prod-form">
+          <input type="file" id="up-files" name="files" multiple accept=".png,.jpg,.jpeg,.webp,.mp4,.webm,.stl,.3mf,.obj,.glb" hidden />
+          <div class="drop-area" id="up-dropzone">
+            <div style="font-size:34px;">📦🖼️🎬</div>
+            <div style="font-weight:900;font-size:15.5px;margin-top:6px;" id="up-files-label">
+              Kéo thả Ảnh + Video (.mp4) + File 3D (.stl/.3mf/.obj) của sản phẩm mới vào đây
+            </div>
+            <div style="font-size:12.5px;color:var(--muted);margin-top:5px;">
+              Có thể chọn nhiều file cùng lúc! Nếu có file .STL/.3MF và để trống giá, hệ thống tự đo cm³ để tính giá bán VNĐ.
+            </div>
+          </div>
+
+          <div class="form-row">
+            <input type="text" name="name" class="inp" placeholder="Tên sản phẩm mới (VD: Đèn Rồng Khắc Tên 3D)" />
+            <input type="number" name="priceVnd" class="inp" placeholder="Giá VNĐ (Để trống = Tự tính theo cm³)" />
+          </div>
+          <div class="form-row">
+            <select name="category" class="inp">
+              <option value="decor-lamp">💡 Đèn & Decor Nội Thất 3D</option>
+              <option value="fig-chibi">🎭 Tượng Chibi & Nghệ Thuật</option>
+              <option value="auto-qr">🚗 Phụ Kiện Ô Tô & Thẻ QR</option>
+              <option value="stem-student">📐 Đồ Học Tập & STEM Học Sinh</option>
+            </select>
+            <input type="text" name="badge" class="inp" value="Mới Lên Kệ" placeholder="Nhãn nổi bật (VD: Hot, Mới)" />
+          </div>
+          <input type="text" name="summary" class="inp" style="margin-top:10px;" placeholder="Mô tả ngắn hiển thị trên thẻ sản phẩm & bệ xoay 3D..." />
+
+          <button type="submit" class="btn btn-primary" style="width:100%;margin-top:14px;height:46px;font-size:14.5px;" id="btn-submit-upload">
+            🚀 Đăng Lên Toàn Bộ 5 Mẫu Website Ngay
+          </button>
+          <div id="up-msg" style="display:none;margin-top:10px;padding:12px;border-radius:14px;background:rgba(20,184,166,0.16);border:1px solid var(--teal);font-size:13px;"></div>
+        </form>
+
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <strong style="font-size:15px;">📚 Danh Sách Sản Phẩm Đang Live (<span id="live-count">0</span>)</strong>
+            <button type="button" class="btn" id="btn-rescan-list" style="height:32px;padding:0 12px;font-size:12px;">🔄 Làm mới</button>
+          </div>
+          <div class="live-list" id="live-products-list"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- INTERACTIVE MOBILE (390x844) & DESKTOP LIVE SIMULATOR MODAL -->
+  <div class="sim-modal" id="sim-modal">
+    <div class="sim-bar">
+      <div style="font-weight:900;font-size:14.5px;" id="sim-title">Xem trước giao diện</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button type="button" class="btn" id="sim-btn-mobile">📱 Khung Điện Thoại (390×844)</button>
+        <button type="button" class="btn" id="sim-btn-desktop">🖥️ Khung Máy Tính Rộng</button>
+        <a href="#" target="_blank" class="btn btn-primary" id="sim-open-full">↗ Mở Toàn Màn Hình</a>
+        <button type="button" class="btn" id="sim-close">Đóng ×</button>
+      </div>
+    </div>
+    <div class="sim-frame-wrap">
+      <iframe id="sim-iframe" title="Xem thử Mẫu Web 3D"></iframe>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      "use strict";
+      const fmtVnd = (n) => new Intl.NumberFormat("vi-VN").format(Math.round(Number(n) || 0)) + " ₫";
+
+      const TEMPLATES = [
+        {
+          file: "khoixinh_3d_hub.html",
+          tag: "🔥 MẪU 1 · KHUYÊN DÙNG ĐA NĂNG NHẤT",
+          tagBg: "#ff6b2c",
+          title: "Khối Xinh × Studio 3D Pinned-Scroll (Lướt SP Hot Trên ĐT + Báo Giá STL)",
+          desc: "Mở trên điện thoại hay PC đều ghim màn hình bay lướt qua 6 sản phẩm HOT treo lơ lửng trên bệ neon trước rồi mới trôi xuống kho sản phẩm, máy đo cm³ .STL/.3MF & tạo tượng từ ảnh 2D.",
+          feats: [
+            "✅ Y hệt trải nghiệm lướt từng sản phẩm HOT treo lơ lửng trên ĐT của trang chủ Khối Xinh",
+            "✅ Kéo-thả file .STL / .3MF / .OBJ đo thể tích cm³ & gram báo giá VNĐ tức thời",
+            "✅ Đặt tượng Chibi 2D→3D nhiều màu + Giỏ hàng khắc chữ & thanh Freeship 500k",
+          ],
+        },
+        {
+          file: "logistics_3d_journey.html",
+          tag: "🛍️ MẪU 2 · FLAGSHIP BAMBU LAB × MUJI × TIKTOK VIDEO SHOP",
+          tagBg: "#38bdf8",
+          title: "Bambu Lab × MUJI Nhật Bản × TikTok Video Shop & Theo Dõi Xưởng In 5 Bước",
+          desc: "Tổng hợp tinh hoa các nền tảng E-Commerce hàng đầu thế giới (không lạm dụng 3D xe chạy thô sơ): Kéo thanh trượt so sánh ảnh cắt lát ↔ thành phẩm thật, 5 Video 9:16 gắn giỏ hàng trực tiếp, Tự ghép Combo 3 món (-15%) & Bảng theo dõi 3 máy in Bambu Lab live.",
+          feats: [
+            "✅ Kéo thanh trượt đối chiếu Before/After (Khay cắt lát Bambu AMS ↔ Thành phẩm thật) + Đổi nền Sáng MUJI",
+            "✅ 5 Video Reel 9:16 thực tế có nút bật tiếng & chốt đơn 1 chạm + Tự ghép Combo 3 món giảm 15%",
+            "✅ Đổi màu trực tiếp trên từng thẻ sản phẩm (Uniqlo) + Quy trình 5 bước & Telemetry 3 máy in Bambu Lab",
+          ],
+        },
+        {
+          file: "diorama_3d_decor.html",
+          tag: "🏝️ MẪU 3 · SA BÀN ISOMETRIC 60FPS (FB REEL)",
+          tagBg: "#14b8a6",
+          title: "Sa Bàn 3D Isometric 60FPS — Phòng Decor Đèn Phát Sáng & Bãi Biển Lagoon",
+          desc: "Tái hiện chuẩn kỹ thuật Single-file Three.js 60 FPS từ video Facebook Reel bạn gửi, kết hợp Sa bàn Căn Phòng Decor 3D bật/tắt đèn Ngày - Hoàng hôn - Đêm cực cuốn hút.",
+          feats: [
+            "✅ Chuyển đổi 2 sa bàn: Căn Phòng Decor In 3D & Bãi Biển Nhiệt Đới Lagoon Diorama Pro",
+            "✅ Chạm mặt nước tạo sóng Caustic lan tỏa, thêm thuyền bơi, đàn cá & xoay mượt 60 FPS",
+            "✅ Gắn nhãn giá trực tiếp lên từng cây đèn, kệ 5 tầng, tượng Chibi trong phòng",
+          ],
+        },
+        {
+          file: "nordic_3d_decor.html",
+          tag: "💡 MẪU 4 · PHONG CÁCH GANTRI.COM BẮC ÂU",
+          tagBg: "#d97706",
+          title: "Gantri × Nordic 3D Atelier — Đèn Kiến Trúc & Decor Nội Thất Cao Cấp",
+          desc: "Tông màu Đá Vôi Bắc Âu (#F5F2EB) sang trọng chuẩn Gantri California, chuyên bán đèn ngủ in 3D & bình hoa kiến trúc biên lợi nhuận cao với buồng thử độ xuyên sáng trực tiếp.",
+          feats: [
+            "✅ Công tắc thử đèn trực tiếp: Tắt đèn ban ngày / 2200K Ánh nến / 2700K Ấm / 4000K",
+            "✅ Đổi 6 chất liệu nhựa sinh học Plant-PLA nhám gốm & khắc chữ ký dưới đế đèn",
+            "✅ Giao diện Editorial tạp chí nội thất châu Âu cực hợp chạy quảng cáo Decor phòng",
+          ],
+        },
+        {
+          file: "showroom_3d_cartier.html",
+          tag: "✨ MẪU 5 · CARTIER LUXURY 5-ACT",
+          tagBg: "#dfc088",
+          title: "Showroom 3D Cartier Obsidian & Gold — Tách Nổ Khớp Cắm D-Peg",
+          desc: "Trình diễn đẳng cấp xa xỉ nền đen vàng kim 5 chương cuộn trang với hiệu ứng tách rời từng chi tiết màu 3D để khoe độ khít cơ khí 0.14mm.",
+          feats: [
+            "✅ 5 chương điện ảnh tự động bay camera và bung nổ cụm chi tiết 3D",
+            "✅ Tôn vinh độ tinh xảo cho quà tặng VIP doanh nghiệp & phụ kiện Mercedes/VinFast",
+          ],
+        },
+        ];
+
+      let selectedTemplate = "khoixinh_3d_hub.html";
+
+      function renderTemplateCards() {
+        const grid = document.getElementById("sites-grid");
+        document.getElementById("chosen-pill").textContent = `✅ Đang chọn: ${selectedTemplate}`;
+        grid.innerHTML = TEMPLATES.map((t) => {
+          const isChosen = t.file === selectedTemplate;
+          return `
+            <article class="site-card ${isChosen ? "chosen" : ""}">
+              <span class="site-tag" style="background:${t.tagBg};color:#100903;">${t.tag}</span>
+              <h3>${t.title}</h3>
+              <p>${t.desc}</p>
+              <ul class="feat-list">
+                ${t.feats.map((f) => `<li>${f}</li>`).join("")}
+              </ul>
+              <div class="site-actions">
+                <button type="button" class="btn" data-sim="${t.file}" data-mode="mobile" data-title="${t.title}">📱 Xem ĐT</button>
+                <button type="button" class="btn" data-sim="${t.file}" data-mode="desktop" data-title="${t.title}">🖥️ Xem PC</button>
+                <a href="${t.file}" class="btn btn-primary">🚀 Mở Web</a>
+                <button type="button" class="btn ${isChosen ? "btn-teal" : ""}" data-choose="${t.file}">
+                  ${isChosen ? "✅ Đã Chốt Mẫu Này" : "⭐ Chốt Chọn Mẫu Này"}
+                </button>
+              </div>
+            </article>
+          `;
+        }).join("");
+      }
+
+      // Simulator Modal Logic
+      const modal = document.getElementById("sim-modal");
+      const iframe = document.getElementById("sim-iframe");
+      function openSimulator(file, mode, title) {
+        modal.classList.add("open");
+        document.getElementById("sim-title").textContent = `Đang xem thử: ${title}`;
+        document.getElementById("sim-open-full").href = file;
+        iframe.src = file;
+        setSimSize(mode);
+      }
+      function setSimSize(mode) {
+        if (mode === "mobile") {
+          iframe.style.width = "390px";
+          iframe.style.height = "min(820px, calc(100dvh - 96px))";
+        } else {
+          iframe.style.width = "min(1200px, 96vw)";
+          iframe.style.height = "calc(100dvh - 96px)";
+        }
+      }
+      document.getElementById("sim-btn-mobile").onclick = () => setSimSize("mobile");
+      document.getElementById("sim-btn-desktop").onclick = () => setSimSize("desktop");
+      document.getElementById("sim-close").onclick = () => { modal.classList.remove("open"); iframe.src = "about:blank"; };
+
+      document.getElementById("sites-grid").addEventListener("click", async (e) => {
+        const simBtn = e.target.closest("[data-sim]");
+        if (simBtn) {
+          openSimulator(simBtn.dataset.sim, simBtn.dataset.mode, simBtn.dataset.title);
+          return;
+        }
+        const chooseBtn = e.target.closest("[data-choose]");
+        if (chooseBtn) {
+          selectedTemplate = chooseBtn.dataset.choose;
+          await fetch("/api/site-template/select", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ selected_template: selectedTemplate }),
+          });
+          renderTemplateCards();
+        }
+      });
+
+      // Live Products & Upload Source Wiring
+      async function loadProductsAndChoice() {
+        try {
+          const [pRes, cRes] = await Promise.all([fetch("/api/products"), fetch("/api/site-template")]);
+          const pData = await pRes.json();
+          const cData = await cRes.json();
+          if (cData?.choice?.selected_template) selectedTemplate = cData.choice.selected_template;
+          renderTemplateCards();
+
+          const prods = (pData.products || []).filter((p) => {
+            if (!p) return false;
+            const n = String(p.name || p.title || "").trim();
+            const id = String(p.id || p.slug || "").trim();
+            return !(/^(product\s*#\d+|test\s+|mock\s+|demo\s+)/i.test(n) || /^custom-product-\d+$/i.test(id));
+          });
+          document.getElementById("live-count").textContent = String(prods.length);
+          document.getElementById("sync-stat-top").textContent = `Tổng ${prods.length} SP (${pData.auto_count || 0} SP mới tự động)`;
+
+          const listEl = document.getElementById("live-products-list");
+          listEl.innerHTML = prods.map((p) => {
+            const isAuto = p.source === "auto_drop" || p.source === "web_upload";
+            return `
+              <div class="live-item">
+                <div style="min-width:0;flex:1;">
+                  <div style="font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                    ${isAuto ? "🆕 " : "📦 "}${p.name}
+                  </div>
+                  <div style="font-size:11.5px;color:var(--muted);margin-top:2px;">
+                    ${p.categoryLabel} · <b style="color:#fbbf24;">${fmtVnd(p.priceVnd)}</b>
+                    ${p.video ? " · 🎬 Có Video" : ""} ${p.modelUrl ? " · 🧊 Có File 3D" : ""}
+                  </div>
+                </div>
+                <button type="button" class="btn" data-del="${p.id}" style="height:30px;padding:0 10px;font-size:11.5px;border-color:#ef4444;color:#fca5a5;">🗑️ Xóa</button>
+              </div>
+            `;
+          }).join("");
+        } catch (_) {
+          renderTemplateCards();
+        }
+      }
+
+      document.getElementById("live-products-list").addEventListener("click", async (e) => {
+        const del = e.target.closest("[data-del]");
+        if (!del) return;
+        await fetch("/api/products/delete", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: del.dataset.del }),
+        });
+        loadProductsAndChoice();
+      });
+
+      const rescanNow = async () => {
+        await fetch("/api/products/rescan", { method: "POST" });
+        await loadProductsAndChoice();
+      };
+      document.getElementById("btn-rescan-top").onclick = rescanNow;
+      document.getElementById("btn-rescan-list").onclick = rescanNow;
+      const restoreBtn = document.getElementById("btn-restore-deleted-prods");
+      if (restoreBtn) restoreBtn.onclick = async () => { await fetch("/api/products/restore", { method: "POST" }); await loadProductsAndChoice(); };
+
+      // Multi-file Drag & Drop Product Upload
+      const drop = document.getElementById("up-dropzone");
+      const fileInp = document.getElementById("up-files");
+      const lbl = document.getElementById("up-files-label");
+      let pickedFiles = [];
+
+      function setFiles(flist) {
+        pickedFiles = Array.from(flist || []);
+        if (pickedFiles.length) {
+          lbl.textContent = `✅ Đã chọn ${pickedFiles.length} file: ${pickedFiles.map((f) => f.name).join(", ")}`;
+        }
+      }
+      drop.onclick = () => fileInp.click();
+      drop.ondragover = (e) => { e.preventDefault(); drop.classList.add("drag"); };
+      drop.ondragleave = () => drop.classList.remove("drag");
+      drop.ondrop = (e) => { e.preventDefault(); drop.classList.remove("drag"); setFiles(e.dataTransfer.files); };
+      fileInp.onchange = () => setFiles(fileInp.files);
+
+      document.getElementById("upload-prod-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        if (!pickedFiles.length) {
+          alert("Hãy kéo thả hoặc chọn ít nhất 1 file Ảnh, Video (.mp4) hoặc Mô hình 3D (.stl/.3mf/.obj)!");
+          fileInp.click();
+          return;
+        }
+        const fd = new FormData(e.target);
+        fd.delete("files");
+        pickedFiles.forEach((f) => fd.append("files", f, f.name));
+        const btn = document.getElementById("btn-submit-upload");
+        btn.textContent = "⏳ Đang đồng bộ lên cả 6 mẫu Website...";
+        const res = await fetch("/api/products/upload", { method: "POST", body: fd });
+        const data = await res.json();
+        btn.textContent = "🚀 Đăng Lên Toàn Bộ 5 Mẫu Website Ngay";
+        if (!data.ok) {
+          alert(data.error || "Upload thất bại");
+          return;
+        }
+        const msg = document.getElementById("up-msg");
+        msg.style.display = "block";
+        msg.innerHTML = `🎉 Đã đăng tự động sản phẩm <b>"${data.product.name}"</b> (${fmtVnd(data.product.priceVnd)}) lên toàn bộ 5 mẫu web! Bạn có thể bấm mở bất kỳ mẫu web nào ở trên để kiểm tra ngay.`;
+        e.target.reset();
+        pickedFiles = [];
+        lbl.textContent = "Kéo thả Ảnh + Video (.mp4) + File 3D (.stl/.3mf/.obj) của sản phẩm mới vào đây";
+        loadProductsAndChoice();
+      });
+
+      loadProductsAndChoice();
+    })();
+  </script>
+  <script src="assets/multisite_dock_suite.js?v=20261101_v10"></script>
+  <script src="assets/multisite_dock.js?v=20261101_v10"></script>
+</body>
+</html>

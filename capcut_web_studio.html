@@ -1,0 +1,227 @@
+﻿<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="darkreader-lock" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>OPEN CAPCUT WEB STUDIO (:9880) · Timeline 5-Tầng + Nhạc Free Online + VieNeu Ngọc Huyền Offline + SenseVoice</title>
+    <link rel="stylesheet" href="assets/capcut_web_studio.css" />
+    <style>
+      .unified-bar { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; padding:6px 14px; background:#070b12; border-bottom:1px solid #1e293b; font-size:11.5px; }
+      .unified-links { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+      .u-pill { padding:4px 10px; border-radius:999px; background:#111827; border:1px solid #334155; color:#cbd5e1; text-decoration:none; font-weight:700; }
+      .u-pill.active { background:rgba(16,185,129,0.2); border-color:#10b981; color:#6ee7b7; font-weight:800; }
+      .audio-lib-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+      .audio-lib-item { display: flex; align-items: center; justify-content: space-between; gap: 8px; background: rgba(16, 185, 129, 0.10); border: 1px solid rgba(16, 185, 129, 0.32); border-radius: 10px; padding: 7px 10px; font-size: 11.5px; cursor: pointer; transition: .15s; }
+      .audio-lib-item:hover, .audio-lib-item.active { background: rgba(16, 185, 129, 0.24); border-color: #10b981; }
+      .audio-lib-item .a-title { font-weight: 800; color: #ecfdf5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .audio-lib-item .a-sub { font-size: 10px; color: #6ee7b7; }
+      .clip-block.voice { background: linear-gradient(90deg, rgba(245, 158, 11, 0.35), rgba(217, 119, 6, 0.35)); border: 1px solid #f59e0b; color: #fef3c7; }
+      .nle-workspace { height: calc(100vh - 88px - 300px) !important; }
+      .nle-timeline { height: 300px !important; padding-bottom: 18px !important; }
+      .track-row { height: 36px !important; margin-bottom: 4px !important; }
+      .clip-block { height: 28px !important; top: 3px !important; font-size: 11px !important; }
+      .free-music-hub { background: linear-gradient(145deg, rgba(6, 78, 59, 0.38), rgba(15, 23, 42, 0.85)); border: 1px solid rgba(16, 185, 129, 0.45); border-radius: 12px; padding: 10px; margin-bottom: 12px; }
+      .vieneu-ai-hub { background: linear-gradient(145deg, rgba(88, 28, 135, 0.34), rgba(15, 23, 42, 0.9)); border: 1px solid rgba(236, 72, 153, 0.45); border-radius: 12px; padding: 10px; margin-bottom: 12px; }
+      .vieneu-ai-hub select, .vieneu-ai-hub textarea { width:100%; background:rgba(9,13,22,0.92); border:1px solid rgba(148,163,184,0.3); color:#f8fafc; border-radius:8px; padding:6px 8px; font-size:11.5px; margin-bottom:6px; }
+      .fm-badge-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+      .fm-live-dot { display: inline-flex; align-items: center; gap: 5px; font-size: 10.5px; font-weight: 800; color: #34d399; }
+      .fm-live-dot::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #10b981; box-shadow: 0 0 8px #10b981; }
+      .fm-search-row { display: flex; gap: 5px; margin-bottom: 6px; }
+      .fm-search-row input { flex: 1; min-width: 0; background: rgba(9, 13, 22, 0.9); border: 1px solid rgba(148, 163, 184, 0.3); color: #f8fafc; border-radius: 8px; padding: 6px 8px; font-size: 11.5px; }
+      .fm-search-row select { width: 92px; background: rgba(9, 13, 22, 0.9); border: 1px solid rgba(148, 163, 184, 0.3); color: #cbd5e1; border-radius: 8px; padding: 5px; font-size: 10.5px; }
+      .fm-search-row button { background: #10b981; color: #052e16; border: none; border-radius: 8px; padding: 6px 10px; font-size: 11px; font-weight: 800; cursor: pointer; white-space: nowrap; }
+      .fm-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
+      .fm-chip { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.14); color: #e2e8f0; border-radius: 999px; padding: 2px 7px; font-size: 10px; font-weight: 700; cursor: pointer; }
+      .fm-chip:hover, .fm-chip.active { background: #10b981; color: #052e16; border-color: #10b981; }
+      .fm-online-results { display: flex; flex-direction: column; gap: 5px; max-height: 165px; overflow-y: auto; margin-top: 6px; }
+      .fm-online-item { display: flex; align-items: center; justify-content: space-between; gap: 6px; background: rgba(15, 23, 42, 0.92); border: 1px solid rgba(56, 189, 248, 0.32); border-radius: 8px; padding: 6px 8px; font-size: 11px; }
+      .fm-online-item .f-meta { min-width: 0; flex: 1; }
+      .fm-online-item .f-title { font-weight: 800; color: #f0f9ff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .fm-online-item .f-sub { font-size: 9.5px; color: #7dd3fc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .fm-btn-mini { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18); color: #f8fafc; border-radius: 6px; padding: 3px 6px; font-size: 10px; font-weight: 800; cursor: pointer; }
+      .fm-btn-mini.assign { background: #059669; border-color: #10b981; color: #fff; }
+    </style>
+  </head>
+  <body>
+    <div class="unified-bar">
+      <div class="unified-links">
+        <strong style="color:#93c5fd;margin-right:4px;">🎛️ TRUNG TÂM VIDEO HỢP NHẤT (:9880):</strong>
+        <a class="u-pill active" href="/capcut_web_studio.html">✂️ 1. CapCut Web 5-Tầng + Nhạc Free</a>
+        <a class="u-pill" href="/dubbing/">🎙️ 2. Tách Nhạc &amp; Lồng Tiếng Ngọc Huyền</a>
+        <a class="u-pill" href="/?step=4">🎬 3. Pipeline Phim Đa Vai (657 Giọng)</a>
+      </div>
+      <span id="ccw-gpu-badge" style="padding:3px 10px;border-radius:999px;background:rgba(16,185,129,0.16);color:#34d399;border:1px solid #059669;font-weight:700;">⚡ RTX 3060 GPU + SenseVoice + VieNeu Offline</span>
+    </div>
+
+    <header class="nle-topbar">
+      <div class="nle-brand">
+        <span class="brand-badge">CAPCUT WEB PRO</span>
+        <input type="text" id="project-title" class="project-input" value="Studio3D_Viral_Auto_Web" aria-label="Tên dự án" />
+      </div>
+
+      <div class="topbar-center">
+        <button type="button" class="ratio-pill active" data-ratio="9:16">📱 9:16 TikTok / Reels</button>
+        <button type="button" class="ratio-pill" data-ratio="16:9">🖥️ 16:9 YouTube</button>
+        <button type="button" class="ratio-pill" data-ratio="1:1">🟦 1:1 Shopee</button>
+      </div>
+
+      <div class="topbar-right">
+        <button type="button" class="btn-nle" id="btn-insert-3d-hook" style="background:#0f766e;color:#ecfdf5;border-color:#14b8a6;" title="Tạo & Chèn Clip Hook 3D Tách Part + Chốt Âm Dương (3.2s) vào đầu video">🧊 + Hook 3D Tách Part</button>
+        <button type="button" class="btn-nle" id="btn-inject-pro-pack" style="background:#be185d;color:#fdf2f8;border-color:#ec4899;" title="Crawl & Bơm Chuyển Cảnh Pro + Kiểu Chữ Động TextBloom + SFX Chuyển Cảnh từ Cache vào CapCut Thường (Xuất 100% Free)">✨ Bơm Gói Pro CapCut Free</button>
+        <button type="button" class="btn-nle gold" id="btn-export-capcut-pc" title="Đẩy bản sao Scratch vào Vị trí Số #1 và mở phần mềm CapCut Desktop">✂️ Đẩy &amp; Mở CapCut PC (#1)</button>
+        <button type="button" class="btn-nle" id="btn-pull-capcut-scratch" style="background:#7c3aed;color:#f5f3ff;border-color:#8b5cf6;" title="Hút trực tiếp file video đã Tiền xử lý (Compound Clip) hoặc Draft + Hiệu ứng Cache từ CapCut PC mà không cần bấm Export Pro">📥 Hút Bản Scratch CapCut PC</button>
+        <button type="button" class="btn-nle primary" id="btn-export-web">🎬 Xuất Video .MP4</button>
+      </div>
+    </header>
+
+    <main class="nle-workspace">
+      <aside class="panel-left">
+        <div class="panel-body">
+          <!-- NEW UPGRADE: VIENEU NGOC HUYEN OFFLINE 48KHZ & SENSEVOICE 15X -->
+          <div class="vieneu-ai-hub">
+            <div class="fm-badge-row">
+              <span style="font-size:10.5px;font-weight:800;color:#f9a8d4;">🎙️ VIENEU NGỌC HUYỀN OFFLINE 48KHZ + SENSEVOICE 15X</span>
+              <span style="font-size:9.5px;color:#fbcfe8;font-weight:700;">27 Giọng</span>
+            </div>
+            <select id="ccw-vieneu-voice" aria-label="Chọn giọng VieNeu Offline">
+              <option value="vieneu_ngoc_huyen">⭐ Ngọc Huyền (Nữ Miền Bắc • VieNeu 48kHz Offline)</option>
+            </select>
+            <textarea id="ccw-vieneu-text" rows="2" placeholder="Nhập lời thuyết minh tiếng Việt để gắn vào Track T5...">Mẫu chế tác in ba đê tách màu lắp ghép chính xác từng khớp động, thiết kế riêng tại xưởng giao nhanh ba đến năm ngày!</textarea>
+            <div style="display:flex;gap:5px;flex-wrap:wrap;">
+              <button type="button" id="btn-ccw-synth-t5" style="flex:1;background:linear-gradient(135deg,#db2777,#7c3aed);color:#fff;border:none;border-radius:8px;padding:6px 8px;font-size:11px;font-weight:800;cursor:pointer;">🎙️ Tạo Giọng 48kHz → Gắn T5 · VOICE</button>
+              <button type="button" id="btn-ccw-sensevoice-t2" style="background:#0284c7;color:#fff;border:none;border-radius:8px;padding:6px 8px;font-size:11px;font-weight:800;cursor:pointer;" title="Bóc thoại từ clip video trên T3 bằng SenseVoice 15x và đổ xuống Track T2 Phụ Đề">🚀 SenseVoice → T2</button>
+            </div>
+            <div id="ccw-ai-status" style="font-size:10px;color:#fde68a;margin-top:5px;">Sẵn sàng tạo giọng Ngọc Huyền Offline 48kHz hoặc đẩy 5-Track ra CapCut PC.</div>
+          </div>
+
+          <!-- LIVE FREE MUSIC CONNECTOR HUB -->
+          <div class="free-music-hub">
+            <div class="fm-badge-row">
+              <span class="fm-live-dot">🌐 NGUỒN NHẠC FREE ONLINE (DEEZER · ITUNES · CC0)</span>
+              <span style="font-size:9.5px;color:#a7f3d0;font-weight:700;">100% Free</span>
+            </div>
+            <div class="fm-search-row">
+              <input type="text" id="free-music-search-input" placeholder="Tìm nhạc free: lofi, phonk, piano, edm, chill..." value="lofi chill beat" />
+              <select id="free-music-source-select" aria-label="Nguồn nhạc free">
+                <option value="all">Tất cả nguồn</option>
+                <option value="deezer">Deezer MP3</option>
+                <option value="itunes">iTunes Audio</option>
+                <option value="wikimedia">CC0 No-Copy</option>
+              </select>
+              <button type="button" id="btn-free-music-search">🔍 Tìm</button>
+            </div>
+            <div class="fm-chips" id="free-music-quick-chips">
+              <span class="fm-chip" data-q="lofi chill instrumental">☕ Lofi Chill</span>
+              <span class="fm-chip" data-q="phonk drift tiktok">⚡ Phonk TikTok</span>
+              <span class="fm-chip" data-q="luxury solo piano">🎹 Luxury Piano</span>
+              <span class="fm-chip" data-q="happy upbeat ukulele">🛒 Shopee Upbeat</span>
+              <span class="fm-chip" data-q="synthwave cyberpunk">🎧 Synthwave 3D</span>
+              <span class="fm-chip" data-q="cinematic ambient strings">🎻 Cinematic</span>
+            </div>
+            <div id="free-music-status-msg" style="font-size:10px;color:#93c5fd;">Bấm <b>🔍 Tìm</b> hoặc chọn tag để lấy nhạc Free trực tiếp từ kho Online:</div>
+            <div class="fm-online-results" id="free-music-online-results"></div>
+          </div>
+
+          <div style="margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:11px;font-weight:800;color:#34d399;">🎵 15 BẢN NHẠC FREE & VOICE 48KHZ TẢI SẴN:</span>
+            <span id="audio-lib-count-badge" style="font-size:10px;color:#94a3b8;">15 tracks</span>
+          </div>
+          <div class="fm-chips" id="local-audio-cat-chips" style="margin-bottom:8px;">
+            <span class="fm-chip active" data-cat="all">Tất cả (15)</span>
+            <span class="fm-chip" data-cat="tiktok">⚡ TikTok/Phonk</span>
+            <span class="fm-chip" data-cat="lofi">☕ Lofi</span>
+            <span class="fm-chip" data-cat="luxury">🏛️ Luxury</span>
+            <span class="fm-chip" data-cat="ecom">🛒 Shopee</span>
+            <span class="fm-chip" data-cat="voice">🎙️ Voice 48kHz</span>
+          </div>
+          <div class="audio-lib-list" id="audio-library-list"></div>
+
+          <div style="margin-bottom:12px;display:flex;flex-direction:column;gap:6px;">
+            <span style="font-size:11px;font-weight:800;color:#e5c890;letter-spacing:0.06em;">🤖 AI AUTO-CUT 1-CLICK (TỰ DỰNG VIDEO + GÁN NHẠC & VOICE):</span>
+            <button type="button" class="btn-nle" data-ai-preset="viral">🔥 AI Dựng Viral TikTok 9:16 (Nhạc Viral 123 + Voice 3D)</button>
+            <button type="button" class="btn-nle" data-ai-preset="luxury">🏛️ AI Dựng Luxury Cartier (Nhạc Chill + Voice Joker)</button>
+            <button type="button" class="btn-nle" data-ai-preset="fast">⚡ AI Dựng Review Nhanh 1.15x (Voice GLC300 X-Ray)</button>
+          </div>
+
+          <input type="file" id="file-upload-input" multiple accept="video/*,image/*,audio/*,.mov,.mp4,.png,.jpg,.mp3,.wav,.m4a" hidden />
+          <div class="dropzone" id="upload-dropzone">
+            <strong>+ Tải Lên / Kéo Thả Video, Ảnh, Nhạc (.MP3/.WAV)</strong>
+            <span>Hỗ trợ .MP4, .MOV, .PNG, .JPG, .MP3, .WAV (Tự gắn vào Timeline)</span>
+          </div>
+
+          <div style="margin-bottom:8px;font-size:11px;font-weight:700;color:#94a3b8;">📁 KHO VIDEO & RENDER 3D CÓ SẴN:</div>
+          <div class="media-grid" id="media-library-grid"></div>
+        </div>
+      </aside>
+
+      <section class="stage-center">
+        <div class="canvas-viewport">
+          <canvas id="nle-canvas" width="1080" height="1920"></canvas>
+        </div>
+
+        <div class="transport-bar">
+          <span class="timecode" id="timecode-label">0.0s / 18.8s</span>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+            <button type="button" class="btn-nle primary" id="btn-play-toggle">▶ Phát Xem Thử (Có Nhạc)</button>
+            <button type="button" class="btn-nle" id="btn-mute-toggle" title="Bật/Tắt tiếng">🔊 Tiếng: BẬT</button>
+            <button type="button" class="btn-nle" id="btn-split">✂️ Cắt Đôi Clip</button>
+            <button type="button" class="btn-nle" id="btn-add-sub">💬 + Phụ Đề</button>
+            <button type="button" class="btn-nle" id="btn-delete" style="color:#fda4af;">🗑️ Xóa Khối</button>
+          </div>
+        </div>
+      </section>
+
+      <aside class="panel-right">
+        <div class="inspector-header">⚙️ Thuộc Tính Khối / Source Nhạc Đang Chọn</div>
+        <div class="panel-body" id="inspector-body"></div>
+      </aside>
+    </main>
+
+    <section class="nle-timeline">
+      <div class="timeline-toolbar">
+        <span><strong>TIMELINE 5 TẦNG (NHẠC FREE ONLINE + VIENEU NGỌC HUYỀN OFFLINE + XUẤT CAPCUT PC #1)</strong> · Bấm vào khối để chỉnh</span>
+        <span id="active-audio-status" style="color:#34d399;font-weight:800;">🎵 Đang gắn: Nhạc Viral TikTok 123 + Voice 48kHz</span>
+      </div>
+
+      <div class="tracks-scroll">
+        <div class="tracks-inner" id="tracks-inner">
+          <div class="playhead" id="playhead-line" style="left:110px;"></div>
+          <div class="ruler-row" id="ruler-row"></div>
+
+          <div class="track-row">
+            <div class="track-label">🔤 T1 · HOOK</div>
+            <div class="track-lane" id="lane-hook"></div>
+          </div>
+
+          <div class="track-row">
+            <div class="track-label">💬 T2 · PHỤ ĐỀ</div>
+            <div class="track-lane" id="lane-sub"></div>
+          </div>
+
+          <div class="track-row">
+            <div class="track-label">🎞️ T3 · VIDEO</div>
+            <div class="track-lane" id="lane-video"></div>
+          </div>
+
+          <div class="track-row">
+            <div class="track-label">🎵 T4 · NHẠC NỀN</div>
+            <div class="track-lane" id="lane-audio"></div>
+          </div>
+
+          <div class="track-row">
+            <div class="track-label">🎙️ T5 · VOICE/SFX</div>
+            <div class="track-lane" id="lane-voice"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script src="assets/capcut_presets_data.js?v=20261101_cleanname"></script>
+    <script src="assets/capcut_timeline_engine.js?v=20261101_cleanname"></script>
+    <script src="assets/capcut_ui_renderers.js?v=20261101_cleanname"></script>
+    <script src="assets/capcut_web_studio.js?v=20261101_cleanname"></script>
+    <script src="assets/capcut_web_ai_upgrade.js"></script>
+  </body>
+</html>

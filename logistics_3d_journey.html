@@ -1,0 +1,1209 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <script src="assets/kx_order_integrity.js?v=20261101d"></script>
+  <meta name="color-scheme" content="dark" />
+  <meta name="darkreader-lock" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5" />
+  <title>Mẫu 2 Flagship: Studio 3D × MUJI × TikTok Video Shop & Theo Dõi Xưởng In Live</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧊</text></svg>" />
+  <style>
+    :root {
+      --bg: #090c14;
+      --surface: #111623;
+      --surface-2: #171e2f;
+      --surface-glass: rgba(17, 22, 35, 0.86);
+      --border: #25304a;
+      --fg: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #ff6b2c;
+      --accent-hover: #ff854d;
+      --teal: #14b8a6;
+      --gold: #f59e0b;
+      --blue: #38bdf8;
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.7);
+    }
+    [data-mode="muji-light"] {
+      --bg: #f6f4f0;
+      --surface: #ffffff;
+      --surface-2: #eeeae2;
+      --surface-glass: rgba(255, 255, 255, 0.9);
+      --border: #dcd6cb;
+      --fg: #18181b;
+      --muted: #57534e;
+      --accent: #c2410c;
+      --accent-hover: #ea580c;
+      --teal: #0f766e;
+      --gold: #b45309;
+      --blue: #0284c7;
+      --shadow: 0 16px 36px -12px rgba(24, 24, 27, 0.10);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; background: var(--bg); color: var(--fg); font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; overflow-x: hidden; max-width: 100vw; }
+    body { min-height: 100vh; padding-bottom: 84px; overflow-x: hidden; transition: background .2s, color .2s; }
+    a { color: inherit; text-decoration: none; }
+
+    /* Top Trust Ribbon (MUJI / Bambu Store style) */
+    .top-ribbon { background: linear-gradient(90deg, #ff6b2c, #f59e0b, #14b8a6); color: #090c14; font-size: 12px; font-weight: 800; padding: 7px 16px; text-align: center; letter-spacing: 0.02em; }
+
+    /* Sticky Header */
+    .fg-header { position: sticky; top: 0; z-index: 60; background: var(--surface-glass); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); height: 66px; }
+    .fg-header-in { max-width: 1260px; margin: 0 auto; height: 100%; padding: 0 18px; display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+    .fg-brand { display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 19px; letter-spacing: -0.02em; white-space: nowrap; }
+    .fg-brand-badge { background: var(--accent); color: #fff; font-size: 11px; padding: 3px 9px; border-radius: 999px; font-weight: 800; }
+    .fg-nav { display: flex; align-items: center; gap: 16px; font-size: 13px; font-weight: 700; color: var(--muted); white-space: nowrap; }
+    .fg-nav a:hover { color: var(--accent); }
+    .fg-actions { display: flex; align-items: center; gap: 8px; }
+
+    .btn { height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface-2); color: var(--fg); font-weight: 800; font-size: 13px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: all .16s ease; white-space: nowrap; }
+    .btn:hover { border-color: var(--accent); transform: translateY(-1px); }
+    .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-teal { background: var(--teal); border-color: var(--teal); color: #041f1c; }
+
+    .wrap { max-width: 1260px; margin: 0 auto; padding: 32px 18px; }
+    .sec-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 14px; margin-bottom: 22px; }
+    .sec-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.07em; padding: 4px 12px; border-radius: 999px; background: rgba(255, 107, 44, 0.15); color: var(--accent); border: 1px solid rgba(255, 107, 44, 0.35); }
+    .sec-title { font-size: clamp(23px, 3vw, 34px); font-weight: 900; letter-spacing: -0.02em; margin-top: 6px; line-height: 1.18; }
+    .sec-sub { font-size: 14px; color: var(--muted); margin-top: 4px; max-width: 720px; line-height: 1.5; }
+
+    /* 1. APPLE × BAMBU LAB BENTO HERO & BEFORE/AFTER INTERACTIVE SPLIT SLIDER */
+    .bento-hero { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr); gap: 22px; align-items: stretch; }
+    .bento-left { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; display: flex; flex-direction: column; justify-content: space-between; gap: 20px; box-shadow: var(--shadow); }
+    .bento-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .kpi-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 16px; padding: 12px 14px; }
+    .kpi-val { font-size: 20px; font-weight: 900; color: var(--accent); }
+    .kpi-lbl { font-size: 11.5px; color: var(--muted); margin-top: 2px; line-height: 1.35; }
+
+    /* Interactive Before/After Comparison Slider */
+    .bento-right { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; display: flex; flex-direction: column; gap: 12px; box-shadow: var(--shadow); }
+    .ba-stage { position: relative; width: 100%; aspect-ratio: 16/11; border-radius: 18px; overflow: hidden; border: 1px solid var(--border); background: #0c101a; user-select: none; }
+    .ba-stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+    .ba-before-wrap { position: absolute; inset: 0; width: 100%; height: 100%; clip-path: inset(0 52% 0 0); pointer-events: none; }
+    .ba-divider-line { position: absolute; top: 0; bottom: 0; left: 48%; width: 3px; background: var(--accent); transform: translateX(-50%); pointer-events: none; z-index: 4; }
+    .ba-handle { position: absolute; top: 50%; left: 48%; transform: translate(-50%, -50%); width: 42px; height: 42px; border-radius: 999px; background: var(--accent); color: #fff; font-weight: 900; font-size: 15px; display: grid; place-items: center; box-shadow: 0 6px 20px rgba(0,0,0,0.65); border: 2px solid #fff; pointer-events: none; z-index: 5; }
+    .ba-range { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; z-index: 6; }
+    .ba-label-l, .ba-label-r { position: absolute; top: 12px; padding: 5px 11px; border-radius: 999px; font-size: 11px; font-weight: 800; background: rgba(9, 12, 20, 0.84); color: #fff; border: 1px solid rgba(255,255,255,0.16); z-index: 4; pointer-events: none; }
+    .ba-label-l { left: 12px; }
+    .ba-label-r { right: 12px; background: rgba(20, 184, 166, 0.9); color: #041f1c; }
+    .ba-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
+    .ba-tab { flex: 1; min-width: 120px; padding: 8px 10px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface-2); color: var(--fg); font-size: 12px; font-weight: 800; cursor: pointer; text-align: left; transition: .15s; }
+    .ba-tab.active { border-color: var(--accent); background: rgba(255, 107, 44, 0.14); }
+
+    /* 2. TIKTOK SHOP / TOLSTOY SHOPPABLE 9:16 VIDEO REELS STUDIO */
+    .reels-row { display: grid; grid-template-columns: repeat(5, minmax(215px, 1fr)); gap: 16px; overflow-x: auto; padding-bottom: 8px; }
+    .reel-card { position: relative; aspect-ratio: 9/16; border-radius: 22px; overflow: hidden; border: 1px solid var(--border); background: #05070b; box-shadow: var(--shadow); display: flex; flex-direction: column; justify-content: space-between; }
+    .reel-card video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+    .reel-top { position: relative; z-index: 3; padding: 12px; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(to bottom, rgba(0,0,0,0.72), transparent); }
+    .reel-badge { background: rgba(255, 107, 44, 0.92); color: #fff; font-size: 10.5px; font-weight: 900; padding: 3px 9px; border-radius: 999px; }
+    .reel-mute-btn { width: 32px; height: 32px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.25); background: rgba(9, 12, 20, 0.75); color: #fff; cursor: pointer; font-size: 13px; display: grid; place-items: center; }
+    .reel-bottom { position: relative; z-index: 3; padding: 14px 12px 12px; background: linear-gradient(to top, rgba(5,7,11,0.95) 35%, rgba(5,7,11,0.55) 78%, transparent); color: #fff; display: flex; flex-direction: column; gap: 8px; }
+    .reel-title { font-size: 13.5px; font-weight: 800; line-height: 1.3; }
+    .reel-spec { font-size: 11px; color: #cbd5e1; }
+    .reel-shop-pill { background: rgba(255,255,255,0.12); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); border-radius: 14px; padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .reel-price { font-size: 14px; font-weight: 900; color: #fcd34d; }
+
+    /* 3. POP MART × HACOA MIX-AND-MATCH COMBO BUNDLE BUILDER (-15% + GIFT BOX) */
+    .bundle-panel { background: linear-gradient(135deg, rgba(255,107,44,0.10), rgba(20,184,166,0.10)), var(--surface); border: 2px solid var(--border); border-radius: var(--radius-lg); padding: 26px; box-shadow: var(--shadow); }
+    .bundle-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(260px, 0.95fr); gap: 16px; margin-top: 18px; align-items: stretch; }
+    .bundle-slot { background: var(--surface-2); border: 1px solid var(--border); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+    .bundle-slot-head { font-size: 11.5px; font-weight: 900; color: var(--teal); text-transform: uppercase; letter-spacing: 0.06em; }
+    .bundle-thumb { width: 100%; aspect-ratio: 16/10; border-radius: 12px; object-fit: cover; background: #0d121d; border: 1px solid var(--border); }
+    .bundle-select { width: 100%; height: 40px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--fg); padding: 0 10px; font-size: 13px; font-weight: 700; }
+    .bundle-summary { background: var(--surface); border: 2px solid var(--accent); border-radius: 18px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; gap: 10px; }
+
+    /* 4. UNIQLO × MUJI HIGH-TRANSPARENCY PRODUCT CATALOG GRID (WITH INLINE COLOR SWATCHES) */
+    .cat-toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 20px; }
+    .chip-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+    .chip-btn { height: 38px; padding: 0 15px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--fg); font-size: 13px; font-weight: 800; cursor: pointer; white-space: nowrap; transition: .15s; }
+    .chip-btn.active, .chip-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .search-inp { height: 40px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--fg); padding: 0 16px; font-size: 13px; min-width: 240px; outline: none; }
+
+    .muji-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(275px, 1fr)); gap: 18px; }
+    .muji-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; transition: transform .18s, border-color .18s; box-shadow: var(--shadow); }
+    .muji-card:hover { transform: translateY(-4px); border-color: var(--accent); }
+    .muji-media { position: relative; aspect-ratio: 4/3; background: var(--surface-2); overflow: hidden; }
+    .muji-media img, .muji-media video { width: 100%; height: 100%; object-fit: cover; transition: transform .3s; }
+    .muji-card:hover .muji-media img { transform: scale(1.04); }
+    .muji-badge-top { position: absolute; top: 10px; left: 10px; background: var(--accent); color: #fff; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 999px; }
+    .muji-eta-pill { position: absolute; bottom: 10px; right: 10px; background: rgba(9, 12, 20, 0.86); color: #5eead4; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(20,184,166,0.4); }
+    .muji-body { padding: 16px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+    .muji-meta { display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; font-weight: 800; color: var(--muted); }
+    .muji-title { font-size: 16px; font-weight: 800; line-height: 1.3; }
+    .muji-desc { font-size: 12.5px; color: var(--muted); line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .muji-specs-table { background: var(--surface-2); border-radius: 10px; padding: 7px 10px; font-size: 11.5px; color: var(--fg); display: flex; justify-content: space-between; gap: 6px; }
+    .inline-swatches { display: flex; align-items: center; gap: 6px; margin-top: 2px; }
+    .sw-dot { width: 20px; height: 20px; border-radius: 999px; border: 2px solid var(--border); cursor: pointer; transition: transform .14s; }
+    .sw-dot.active { transform: scale(1.22); border-color: var(--fg); box-shadow: 0 0 0 2px var(--accent); }
+    .muji-foot { margin-top: auto; padding-top: 10px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .muji-price { font-size: 18px; font-weight: 900; color: var(--fg); }
+
+    /* 5. PARCELLAB × YAMATO KURONEKO × BAMBU HANDY 5-STEP LIVE PRODUCTION & ORDER TRACKER */
+    .ops-hub { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: 22px; align-items: start; }
+    .ops-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow); }
+    .pipeline-steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 18px; }
+    .pipe-step { background: var(--surface-2); border: 1px solid var(--border); border-radius: 16px; padding: 14px 12px; position: relative; display: flex; flex-direction: column; gap: 6px; }
+    .pipe-step.done { border-color: var(--teal); background: rgba(20, 184, 166, 0.10); }
+    .pipe-step.active { border-color: var(--accent); background: rgba(255, 107, 44, 0.12); box-shadow: 0 0 0 2px rgba(255, 107, 44, 0.25); }
+    .pipe-num { width: 26px; height: 26px; border-radius: 999px; background: var(--surface); border: 1px solid var(--border); font-size: 12px; font-weight: 900; display: grid; place-items: center; }
+    .pipe-step.done .pipe-num { background: var(--teal); color: #041f1c; border-color: var(--teal); }
+    .pipe-step.active .pipe-num { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .pipe-title { font-size: 13px; font-weight: 800; line-height: 1.25; }
+    .pipe-desc { font-size: 11.5px; color: var(--muted); line-height: 1.4; }
+
+    .farm-grid { display: flex; flex-direction: column; gap: 12px; margin-top: 14px; }
+    .printer-row { background: var(--surface-2); border: 1px solid var(--border); border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+    .p-bar-bg { height: 8px; border-radius: 999px; background: var(--border); overflow: hidden; }
+    .p-bar-fill { height: 100%; background: linear-gradient(90deg, var(--teal), var(--blue)); transition: width .3s; }
+
+    /* Slide-over Cart & Instant Checkout Drawer */
+    .cart-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.68); backdrop-filter: blur(5px); z-index: 95; display: none; justify-content: flex-end; }
+    .cart-modal.open { display: flex; }
+    .cart-sheet { width: min(460px, 100vw); height: 100%; background: var(--surface); border-left: 1px solid var(--border); padding: 22px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; }
+
+    @media (max-width: 1024px) {
+      .bento-hero, .bundle-grid, .ops-hub { grid-template-columns: minmax(0, 1fr); } .bento-hero > *, .bundle-grid > *, .ops-hub > * { min-width: 0; max-width: 100%; }
+      .pipeline-steps { grid-template-columns: 1fr 1fr; }
+      .fg-nav { display: none; }
+    }
+        @media (max-width: 640px) {
+      .bento-kpis, .pipeline-steps { grid-template-columns: 1fr; }
+      .fg-header { height: auto; padding: 8px 0; }
+      .fg-header-in { flex-wrap: wrap; padding: 0 12px; gap: 8px; }
+      .fg-brand { font-size: 16px; }
+      .fg-actions { width: 100%; overflow-x: auto; padding-bottom: 4px; gap: 6px; scrollbar-width: none; }
+      .fg-actions::-webkit-scrollbar { display: none; }
+      .fg-actions .btn { height: 34px; padding: 0 11px; font-size: 11.5px; flex: 0 0 auto; }
+      .wrap { padding: 16px 12px; }
+      .bento-left, .bento-right, .bundle-panel { padding: 16px; border-radius: 18px; }
+      .sec-title { font-size: 21px; }
+      .top-ribbon { font-size: 10.5px; padding: 6px 10px; }
+    }
+    }
+  </style>
+  <meta name="description" content="Khám phá quy trình in 3D đa sắc Bambu Lab AMS 4 bước tại xưởng Khối Xinh 3D: Xem video thực tế, báo giá file .STL/.3MF tức thì và đặt hàng giao tận nơi 3–5 ngày." />
+<!-- CLAUDE_SEO_GEO_START -->
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <link rel="canonical" href="http://127.0.0.1:8088/logistics_3d_journey.html" />
+  <link rel="alternate" hreflang="vi-VN" href="http://127.0.0.1:8088/logistics_3d_journey.html" />
+  <link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8088/logistics_3d_journey.html" />
+  <link rel="alternate" type="text/markdown" href="http://127.0.0.1:8088/logistics_3d_journey.html.md" title="Markdown version for AI Search & LLMs" />
+  <link rel="ai-catalog" href="http://127.0.0.1:8088/.well-known/ai-catalog.json" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="vi_VN" />
+  <meta property="og:site_name" content="Khối Xinh 3D Studio" />
+  <meta property="og:title" content="Mẫu 2: Hành Trình Xưởng In 3D Bambu Lab × MUJI Video Shop | Khối Xinh 3D" />
+  <meta property="og:description" content="Khám phá quy trình in 3D đa sắc Bambu Lab AMS 4 bước tại xưởng Khối Xinh 3D: Xem video thực tế, báo giá file .STL/.3MF tức thì và đặt hàng giao tận nơi 3–5 ngày." />
+  <meta property="og:url" content="http://127.0.0.1:8088/logistics_3d_journey.html" />
+  <meta property="og:image" content="http://127.0.0.1:8088/assets/images/bedrooms/bedroom_2_nordic_scandi.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Mẫu 2: Hành Trình Xưởng In 3D Bambu Lab × MUJI Video Shop | Khối Xinh 3D" />
+  <meta name="twitter:description" content="Khám phá quy trình in 3D đa sắc Bambu Lab AMS 4 bước tại xưởng Khối Xinh 3D: Xem video thực tế, báo giá file .STL/.3MF tức thì và đặt hàng giao tận nơi 3–5 ngày." />
+  <meta name="twitter:image" content="http://127.0.0.1:8088/assets/images/bedrooms/bedroom_2_nordic_scandi.jpg" />
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": ["OnlineStore", "LocalBusiness"], "@id": "http://127.0.0.1:8088/#organization", "name": "Khối Xinh 3D Studio", "url": "http://127.0.0.1:8088/logistics_3d_journey.html", "logo": "http://127.0.0.1:8088/assets/images/bedrooms/bedroom_2_nordic_scandi.jpg", "image": "http://127.0.0.1:8088/assets/images/bedrooms/bedroom_2_nordic_scandi.jpg", "description": "Khám phá quy trình in 3D đa sắc Bambu Lab AMS 4 bước tại xưởng Khối Xinh 3D: Xem video thực tế, báo giá file .STL/.3MF tức thì và đặt hàng giao tận nơi 3–5 ngày.", "priceRange": "59.000₫ - 590.000₫", "address": {"@type": "PostalAddress", "addressLocality": "TP. Hồ Chí Minh", "addressCountry": "VN"}}, {"@type": "WebSite", "@id": "http://127.0.0.1:8088/#website", "url": "http://127.0.0.1:8088", "name": "Khối Xinh 3D Studio", "inLanguage": "vi-VN", "publisher": {"@id": "http://127.0.0.1:8088/#organization"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Trang chủ Khối Xinh 3D", "item": "http://127.0.0.1:8088/khoixinh_3d_hub.html"}, {"@type": "ListItem", "position": 2, "name": "Mẫu 2: Hành Trình Xưởng In 3D Bambu Lab × MUJI Video Shop | Khối Xinh 3D", "item": "http://127.0.0.1:8088/logistics_3d_journey.html"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "In 3D theo yêu cầu (.STL / .3MF) tại Khối Xinh mất bao lâu?", "acceptedAnswer": {"@type": "Answer", "text": "Toàn bộ sản phẩm in 3D handmade và đặt in theo file .STL/.3MF tại xưởng Khối Xinh được hoàn thiện và giao tận tay toàn quốc trong 3 – 5 ngày."}}, {"@type": "Question", "name": "Làm sao để biết giá in 3D file .STL của tôi trước khi đặt?", "acceptedAnswer": {"@type": "Answer", "text": "Bạn chỉ cần tải file .STL, .3MF hoặc .OBJ lên khung Báo Giá 3 Bước trên web, hệ thống tự động dựng mô hình trên bàn in 256×256×256mm, đo kích thước (mm), thể tích thực (cm³) và báo giá tức thì."}}]}]}</script>
+  <script src="assets/studio3d_seo_webmcp.js?v=20261101d" defer></script>
+  <!-- CLAUDE_SEO_GEO_END -->
+  <link rel="stylesheet" href="assets/khoixinh_mobile_fix.css?v=20261101_v10" />
+</head>
+<body>
+  <div class="top-ribbon">
+    ✨ TIÊU CHUẨN THƯƠNG MẠI QUỐC TẾ: BAMBU LAB STORE × MUJI JAPAN × TIKTOK VIDEO SHOP · IN 3D HANDMADE GIAO NHANH 3 – 5 NGÀY · ĐẶT XƯỞNG 1688: 12 – 15 NGÀY · FREESHIP ĐƠN TỪ 500K
+  </div>
+
+  <header class="fg-header">
+    <div class="fg-header-in">
+      <a href="#" class="fg-brand">
+        <span>🛍️ Khối Xinh × Studio 3D</span>
+        <span class="fg-brand-badge">FLAGSHIP STORE</span>
+      </a>
+      <nav class="fg-nav">
+        <a href="#bento-showcase">🔍 So sánh 2D↔3D</a>
+        <a href="#video-reels-shop">🎬 Video Mua Nhanh</a>
+        <a href="#combo-builder">🎁 Combo Giảm 15%</a>
+        <a href="#muji-catalog">📚 Kho 13 Mẫu 3D Thực Tế</a>
+        <a href="#live-order-ops">🖨️ Xưởng In & Tra Đơn</a>
+        <a href="khoixinh_3d_hub.html">🔥 Sang Mẫu 1 (Sân Khấu 3D)</a>
+      </nav>
+      <div class="fg-actions">
+        <button type="button" class="btn btn-teal" onclick="window.openStudio3DQuickConsult && window.openStudio3DQuickConsult('Mình cần tư vấn nhanh mẫu in 3D')">💬 Tư Vấn Nhanh</button>
+        <button type="button" class="btn" style="background:#0068ff;border-color:#3b82f6;color:#fff;" onclick="window.openStudio3DQuickConsult && window.openStudio3DQuickConsult('Mình cần tư vấn qua Zalo về mẫu in 3D')">💙 Tư Vấn Zalo</button>
+        <button type="button" class="btn" style="background:#059669;border-color:#10b981;color:#fff;" onclick="window.openStudio3DQuickConsult && window.openStudio3DQuickConsult('Mình cần CSKH hỗ trợ tư vấn đơn hàng in 3D')">💬 CSKH Hỗ Trợ</button>
+        <button type="button" class="btn" id="btn-toggle-mode" title="Đổi giao diện Sáng MUJI / Tối Studio">☀️ Nền Sáng MUJI</button>
+        <button type="button" class="btn btn-primary" id="btn-open-cart-drawer">
+          🛒 Giỏ Hàng (<span id="fg-cart-count">0</span>)
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- 1. APPLE × BAMBU LAB BENTO HERO & INTERACTIVE BEFORE/AFTER SPLIT SLIDER -->
+    <section id="bento-showcase" class="bento-hero">
+      <div class="bento-left">
+        <div>
+          <span class="sec-tag">🌟 CHUẨN E-COMMERCE BAMBU LAB STORE × MUJI NHẬT BẢN</span>
+          <h1 class="sec-title" style="margin-top:10px;">
+            Không Dùng Xe Tải Giả Lập Thô Sơ — Trải Nghiệm Mua Sắm <span style="color:var(--accent);">Hình Ảnh Thật, Video Thật & Xưởng In Thật</span>
+          </h1>
+          <p class="sec-sub" style="margin-top:10px;">
+            Kết hợp tinh hoa của các nền tảng thương mại điện tử hàng đầu thế giới: <b>Thanh trượt đối chiếu thành phẩm thật</b> (Studio 3D), <b>Video 9:16 gắn giỏ hàng trực tiếp</b> (TikTok Shop / Tolstoy), <b>Tự ghép Combo giảm 15%</b> (Pop Mart / Hacoa), <b>Đổi màu trực tiếp trên thẻ</b> (Uniqlo) và <b>Bảng trạng thái máy in (khi đã kết nối) + Tra mã đơn `KX-...`</b> (parcelLab / Yamato).
+          </p>
+
+          <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:18px;">
+            <a href="#video-reels-shop" class="btn btn-primary" style="height:44px;padding:0 20px;">🎬 Xem 5 Video Thực Tế & Mua Ngay</a>
+            <a href="#combo-builder" class="btn btn-teal" style="height:44px;padding:0 20px;">🎁 Tự Ghép Combo 3 Món (-15%)</a>
+            <button type="button" onclick="window.Studio3DSuite && window.Studio3DSuite.openModal('slicer')" class="btn" style="height:44px;padding:0 18px;">📐 Báo Giá File .STL/.3MF</button>
+            <button type="button" onclick="window.Studio3DSuite && window.Studio3DSuite.openModal('chibi')" class="btn" style="height:44px;padding:0 18px;">🎭 Đặt Tượng Chibi 2D→3D</button>
+          </div>
+        </div>
+
+        <div class="bento-kpis">
+          <div class="kpi-card">
+            <div class="kpi-val">0.14 mm</div>
+            <div class="kpi-lbl">Chuẩn dung sai khớp nối D-Peg & Snap-Fit không cần sơn, lắp khít 100%</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-val">3 – 5 Ngày</div>
+            <div class="kpi-lbl">Cam kết giao nhanh sản phẩm in 3D Handmade (Sản phẩm xưởng tự in 3D hoàn thiện sắc nét)</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-val">PLA Ngô</div>
+            <div class="kpi-lbl">Nhựa sinh học không mùi hắc, bo tròn góc cạnh an toàn cho học sinh</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Interactive Before/After Split-Comparison Slider -->
+      <div class="bento-right">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+          <div>
+            <div style="font-size:12px;font-weight:900;color:var(--teal);">↔ KÉO THANH TRƯỢT ĐỂ ĐỐI CHIẾU ĐỘ SẮC NÉT</div>
+            <h2 style="font-size:17px;font-weight:900;" id="ba-current-title">Kỳ Nhông Gai Cầu Vồng Khớp Động (Chuẩn Đa Sắc .3MF)</h2>
+          </div>
+          <button type="button" class="btn btn-primary" id="ba-buy-btn" style="height:36px;padding:0 14px;font-size:12.5px;">+ Thêm Vào Giỏ</button>
+        </div>
+
+        <div class="ba-stage" id="ba-stage">
+          <!-- After Image (Full width underneath) -->
+          <img id="ba-img-after" src="assets/showcases/iguana_rainbow.jpg" alt="Thành phẩm in 3D Studio" />
+          <!-- Before Image (Clipped cleanly via clip-path without squishing) -->
+          <div class="ba-before-wrap" id="ba-before-wrap">
+            <img id="ba-img-before" src="assets/showcases/iguana_rainbow.jpg" style="filter:hue-rotate(150deg) saturate(1.4);" alt="Khay cắt lát Đa Sắc .3MF" />
+          </div>
+          <div class="ba-divider-line" id="ba-divider-line"></div>
+          <span class="ba-label-l" id="ba-lbl-before">Khay Cắt Lát 7 Màu Đa Sắc Cao Cấp</span>
+          <span class="ba-label-r" id="ba-lbl-after">Thành Phẩm In 3D Thực Tế</span>
+          <div class="ba-handle" id="ba-handle" style="left:48%;">⇄</div>
+          <input type="range" min="5" max="95" value="48" class="ba-range" id="ba-slider" aria-label="Kéo so sánh trước và sau khi in 3D" />
+        </div>
+
+                <div class="ba-tabs" id="ba-tabs">
+          <button type="button" class="ba-tab active" data-ba-idx="0">🦎 Kỳ Nhông Gai Cầu Vồng (.3MF)</button>
+          <button type="button" class="ba-tab" data-ba-idx="1">🐉 Rồng Thần Printables (91K Tải)</button>
+          <button type="button" class="ba-tab" data-ba-idx="2">🐶 Thú Cưng 4 Màu Fluffy (.3MF)</button>
+          <button type="button" class="ba-tab" data-ba-idx="3">⚙️ Hộp Số Hành Tinh (31K Tải)</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. TIKTOK SHOP / TOLSTOY SHOPPABLE 9:16 VIDEO REELS STUDIO -->
+    <section id="video-reels-shop" style="margin-top:46px;">
+      <div class="sec-head">
+        <div>
+          <span class="sec-tag">🎬 TIKTOK SHOP × TOLSTOY SHOPPABLE VIDEO REELS</span>
+          <h2 class="sec-title">Xem Video Quay Cận Cảnh 9:16 — Chạm Mua Trực Tiếp Trên Video</h2>
+          <p class="sec-sub">Toàn bộ 5 video dưới đây là thành phẩm render & cắt lát thực tế từ kho <code>catalog_hub</code> của xưởng, tích hợp nút bật tiếng và chốt đơn 1 chạm ngay dưới chân video.</p>
+        </div>
+        <button type="button" class="btn btn-teal" onclick="window.openStudio3DQuickConsult && window.openStudio3DQuickConsult('Mình muốn xem thêm video thực tế & tư vấn đặt in 3D')">💬 Nhắn CSKH Xem Video Mẫu</button>
+      </div>
+
+      <div class="reels-row" id="shoppable-reels-row"></div>
+    </section>
+
+    <!-- 3. POP MART × HACOA INTERACTIVE MIX-AND-MATCH COMBO BUNDLE BUILDER -->
+    <section id="combo-builder" style="margin-top:46px;">
+      <div class="bundle-panel">
+        <div class="sec-head" style="margin-bottom:6px;">
+          <div>
+            <span class="sec-tag" style="background:rgba(20,184,166,0.18);color:var(--teal);border-color:var(--teal);">🎁 POP MART × HACOA JAPAN BUNDLE CONFIGURATOR</span>
+            <h2 class="sec-title">Tự Ghép Combo 3 Món Bàn Học / Quà Tặng — Giảm Ngay 15% + Freeship</h2>
+            <p class="sec-sub">Chọn 1 Tượng/Figure + 1 Đèn Ngủ Decor + 1 Phụ Kiện Khắc Tên/STEM để nhận ưu đãi giảm trực tiếp <b>15%</b> kèm hộp quà chống sốc cao cấp.</p>
+          </div>
+        </div>
+
+        <div class="bundle-grid">
+          <div class="bundle-slot">
+            <div class="bundle-slot-head">MÓN 1 · TƯỢNG CHIBI & FIGURE</div>
+            <img id="b-slot1-img" class="bundle-thumb" src="assets/showcases/iguana_rainbow.jpg" alt="Món 1" />
+            <select id="b-slot1-sel" class="bundle-select" aria-label="Chọn món 1"></select>
+            <div style="font-size:12px;color:var(--muted);" id="b-slot1-meta">Nhựa PLA 7 màu AMS · Khắc tên đế</div>
+          </div>
+
+          <div class="bundle-slot">
+            <div class="bundle-slot-head">MÓN 2 · ĐÈN DECOR & GÓC HỌC TẬP</div>
+            <img id="b-slot2-img" class="bundle-thumb" src="assets/showcases/trend_mini_dragon.jpg" alt="Món 2" />
+            <select id="b-slot2-sel" class="bundle-select" aria-label="Chọn món 2"></select>
+            <div style="font-size:12px;color:var(--muted);" id="b-slot2-meta">Ánh sáng ấm 2700K · An toàn mắt</div>
+          </div>
+
+          <div class="bundle-slot">
+            <div class="bundle-slot-head">MÓN 3 · MÓC KHÓA TÊN / Ô TÔ / STEM</div>
+            <img id="b-slot3-img" class="bundle-thumb" src="assets/showcases/glc300_showcase.png" alt="Món 3" />
+            <select id="b-slot3-sel" class="bundle-select" aria-label="Chọn món 3"></select>
+            <div style="font-size:12px;color:var(--muted);" id="b-slot3-meta">Z-Stacking siêu sạch · Khắc tên riêng</div>
+          </div>
+
+          <div class="bundle-summary">
+            <div>
+              <div style="font-size:12px;font-weight:900;color:var(--accent);">💎 TỔNG HỢP COMBO 3 MÓN CỦA BẠN</div>
+              <div style="margin-top:10px;display:flex;flex-direction:column;gap:6px;font-size:13px;">
+                <div style="display:flex;justify-content:space-between;"><span style="color:var(--muted);">Giá lẻ 3 món:</span><s id="bundle-orig-price">0 ₫</s></div>
+                <div style="display:flex;justify-content:space-between;"><span style="color:var(--teal);font-weight:700;">Ưu đãi Combo (-15%):</span><strong style="color:var(--teal);" id="bundle-save-price">-0 ₫</strong></div>
+                <div style="display:flex;justify-content:space-between;"><span style="color:var(--muted);">Hộp quà & Chống sốc:</span><strong style="color:var(--gold);">Miễn phí</strong></div>
+              </div>
+              <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:baseline;">
+                <span style="font-size:13.5px;font-weight:800;">Giá Combo:</span>
+                <strong style="font-size:24px;font-weight:900;color:var(--accent);" id="bundle-final-price">0 ₫</strong>
+              </div>
+            </div>
+            <button type="button" class="btn btn-primary" id="btn-add-bundle" style="width:100%;height:44px;font-size:13.5px;">
+              🛒 Thêm Trọn Bộ Combo (-15%) Vào Giỏ
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. UNIQLO × MUJI HIGH-TRANSPARENCY 34-PRODUCT CATALOG GRID -->
+    <section id="muji-catalog" style="margin-top:46px;">
+      <div class="sec-head">
+        <div>
+          <span class="sec-tag">📚 UNIQLO INLINE SWATCHES × MUJI SPEC TRANSPARENCY</span>
+          <h2 class="sec-title">Kho 13 Tuyệt Tác 3D Thực Tế (.STL Đa Cụm & .GLB 4K) — Đổi Màu & Đặt In Ngay</h2>
+          <p class="sec-sub">Mỗi thẻ sản phẩm đều hiển thị rõ chất liệu nhựa, khối lượng gram, bảng chấm màu trực tiếp và ngày dự kiến giao tới tay bạn.</p>
+        </div>
+      </div>
+
+      <div class="cat-toolbar">
+        <div class="chip-bar" id="fg-cat-chips">
+          <button type="button" class="chip-btn active" data-cat="all">Tất cả (13 Mẫu 3D Thật)</button>
+          <button type="button" class="chip-btn" data-cat="figure-nhan-vat">🎭 Tượng Chibi & Figure (.STL)</button>
+          <button type="button" class="chip-btn" data-cat="van-hoa-viet">🏛️ Kiến Trúc & Văn Hóa Việt (.GLB)</button>
+          <button type="button" class="chip-btn" data-cat="moc-khoa-the-ten">🚗 Phụ Kiện Ô Tô & Biển Số</button>
+          <button type="button" class="chip-btn" data-cat="hoc-cu-khoa-hoc">📚 Quầy Kệ 5 Tầng & Học Cụ</button>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <input type="search" id="fg-search" class="search-inp" placeholder="🔍 Tìm tên sản phẩm, chất liệu PLA, quà 20/11..." />
+          <select id="fg-sort" class="search-inp" style="min-width:170px;">
+            <option value="featured">✨ Nổi bật nhất</option>
+            <option value="price-asc">💰 Giá thấp → cao</option>
+            <option value="price-desc">💎 Giá cao → thấp</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="muji-grid" id="fg-product-grid"></div>
+    </section>
+
+    <!-- 5. PARCELLAB × YAMATO KURONEKO × BAMBU HANDY 5-STEP LIVE PRODUCTION & ORDER TRACKER -->
+    <section id="live-order-ops" style="margin-top:52px;">
+      <div class="sec-head">
+        <div>
+          <span class="sec-tag">📦 PARCELLAB × YAMATO TRANSPORT × BAMBU HANDY TELEMETRY</span>
+          <h2 class="sec-title">Trung Tâm Minh Bạch Hóa Sản Xuất & Theo Dõi Đơn Hàng 5 Bước</h2>
+          <p class="sec-sub">Thay vì mô hình xe tải giả lập, khách hàng xem trạng thái máy in Studio 3D (<b>hiện chưa kết nối máy in</b>) và tra cứu mã vận đơn <code>KX-...</code> theo thời gian thực.</p>
+        </div>
+      </div>
+
+      <!-- 5-Step Production & Delivery Visual Pipeline -->
+      <div class="ops-card" style="margin-bottom:22px;">
+        <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;">
+          <div style="font-size:15px;font-weight:900;">⚙️ QUY TRÌNH 5 BƯỚC HOÀN THIỆN & GIAO HÀNG CHUẨN NHẬT BẢN</div>
+          <div style="font-size:12.5px;color:var(--teal);font-weight:800;" id="eta-live-banner">📅 Đặt hôm nay → Dự kiến nhận hàng: 3 – 5 ngày tới</div>
+        </div>
+
+        <div class="pipeline-steps">
+          <div class="pipe-step done">
+            <div class="pipe-num">✓</div>
+            <div class="pipe-title">1. Duyệt File & Cá Nhân Hóa</div>
+            <div class="pipe-desc">Kiểm tra chữ khắc riêng, dung sai chốt cắm D-Peg 0.14mm & tách cụm màu.</div>
+          </div>
+          <div class="pipe-step done">
+            <div class="pipe-num">✓</div>
+            <div class="pipe-title">2. Cắt Lát OrcaSlicer Z-Stack</div>
+            <div class="pipe-desc">Xếp tầng Z đổi màu tối ưu, loại bỏ bẫy support gây xước bề mặt.</div>
+          </div>
+          <div class="pipe-step active">
+            <div class="pipe-num">3</div>
+            <div class="pipe-title">3. In 3D Đa Sắc Tự Động</div>
+            <div class="pipe-desc">3 máy X1C / P1S / A1 chạy nhựa PLA ngô sinh học & PETG ở 220°C.</div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-num">4</div>
+            <div class="pipe-title">4. QC & Hộp Chống Sốc 3 Lớp</div>
+            <div class="pipe-desc">Làm sạch bavia, kiểm tra khớp nối & đóng hộp xốp định hình (+60g).</div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-num">5</div>
+            <div class="pipe-title">5. Giao Nhanh 3–5 Ngày</div>
+            <div class="pipe-desc">Đồng kiểm khi nhận hàng, bảo hành đổi mới 1-1 trong 7 ngày nếu nứt vỡ.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ops-hub">
+        <!-- Left: Live 3-Printer Studio 3D Farm Telemetry -->
+        <div class="ops-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div>
+              <span style="font-size:11.5px;font-weight:900;color:var(--teal);">🖨️ TRỰC TIẾP TỪ XƯỞNG IN (`/api/printer-farm`)</span>
+              <h3 style="font-size:19px;font-weight:900;margin-top:2px;">Trạng Thái Máy In Studio 3D</h3>
+            </div>
+            <button type="button" class="btn" id="btn-refresh-farm" style="height:34px;padding:0 12px;font-size:12px;">🔄 Làm mới</button>
+          </div>
+          <div class="farm-grid" id="fg-farm-list"></div>
+        </div>
+
+        <!-- Right: Live Order Tracking (`KX-...`) + Instant AI Shop Owner CSKH -->
+        <div style="display:flex;flex-direction:column;gap:18px;">
+          <div class="ops-card" style="display:none !important;">
+            <span style="font-size:11.5px;font-weight:900;color:var(--accent);">🔍 TRA CỨU ĐƠN HÀNG (`/api/orders/track`)</span>
+            <h3 style="font-size:18px;font-weight:900;margin-top:2px;">Kiểm Tra Mã Đơn `KX-...` Hoặc Số Điện Thoại</h3>
+            <form id="fg-track-form" style="display:flex;gap:8px;margin-top:12px;">
+              <input type="search" id="fg-track-inp" class="search-inp" style="flex:1;min-width:0;" placeholder="Mã đơn KX-... + 4 số cuối SĐT" />
+              <button type="submit" class="btn btn-primary">Tra cứu</button>
+            </form>
+            <div id="fg-track-out" style="margin-top:12px;font-size:13px;display:flex;flex-direction:column;gap:8px;"></div>
+          </div>
+
+          <div class="ops-card">
+            <span style="font-size:11.5px;font-weight:900;color:var(--blue);">💬 HỎI TRỰC TIẾP CHỦ SHOP AI (`/api/cskh/chat`)</span>
+            <h3 style="font-size:18px;font-weight:900;margin-top:2px;">Tư Vấn Nhanh Về Chất Liệu, Khắc Tên & Thời Gian Ship</h3>
+            <div id="fg-chat-box" style="margin-top:10px;height:175px;overflow-y:auto;background:var(--surface-2);border:1px solid var(--border);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px;font-size:13px;">
+              <div style="background:var(--surface);padding:9px 12px;border-radius:12px;border:1px solid var(--border);">
+                👋 Chào bạn! Mình là Chủ shop Khối Xinh × Studio 3D. Hàng in 3D handmade bên mình giao nhanh <b>3 – 5 ngày</b> (xưởng in 3D theo đơn). Bạn cần phối màu hay khắc chữ lên sản phẩm nào cứ nhắn mình nhé!
+              </div>
+            </div>
+            <form id="fg-chat-form" style="display:flex;gap:8px;margin-top:10px;">
+              <input type="text" id="fg-chat-inp" class="search-inp" style="flex:1;min-width:0;" placeholder="Hỏi: Giao mấy ngày? Đèn mặt trăng giá sao?..." />
+              <button type="submit" class="btn btn-teal">Gửi</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- SLIDE-OVER CART & QUICK CHECKOUT DRAWER -->
+  <div class="cart-modal" id="fg-cart-modal">
+    <div class="cart-sheet">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-size:20px;font-weight:900;">🛒 Giỏ Hàng Đồng Bộ 6 Website</h3>
+        <button type="button" class="btn" id="btn-close-cart-drawer" style="height:34px;padding:0 12px;">Đóng ×</button>
+      </div>
+
+      <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:14px;padding:12px;font-size:12.5px;">
+        <div id="fg-freeship-msg" style="font-weight:800;">Mua từ 500.000 ₫ để được Miễn phí vận chuyển toàn quốc!</div>
+        <div style="height:7px;border-radius:999px;background:var(--border);overflow:hidden;margin-top:6px;">
+          <div id="fg-freeship-bar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--teal),var(--accent));transition:width .25s;"></div>
+        </div>
+      </div>
+
+      <div id="fg-cart-items" style="display:flex;flex-direction:column;gap:10px;flex:1;"></div>
+
+      <div style="border-top:1px solid var(--border);padding-top:12px;display:flex;flex-direction:column;gap:8px;font-size:13.5px;">
+        <div style="display:flex;justify-content:space-between;"><span style="color:var(--muted);">Tạm tính:</span><strong id="fg-cart-sub">0 ₫</strong></div>
+        <div style="display:flex;justify-content:space-between;"><span style="color:var(--muted);">Vận chuyển (theo gram):</span><strong id="fg-cart-ship">30.000 ₫</strong></div>
+        <div style="display:flex;justify-content:space-between;font-size:18px;font-weight:900;"><span>Tổng cộng:</span><strong style="color:var(--accent);" id="fg-cart-total">0 ₫</strong></div>
+        <form id="fg-inline-checkout-form" style="display:flex;flex-direction:column;gap:8px;margin-top:6px;padding-top:10px;border-top:1px dashed var(--border);">
+          <div style="font-size:12px;font-weight:900;color:var(--teal);">⚡ ĐẶT HÀNG & NHẬN MÃ VIETQR NGAY TẠI ĐÂY</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+            <input type="text" id="fg-co-name" class="search-inp" style="min-width:0;height:36px;" placeholder="Họ tên người nhận *" required />
+            <input type="tel" id="fg-co-phone" class="search-inp" style="min-width:0;height:36px;" placeholder="Số điện thoại Zalo *" required />
+          </div>
+          <input type="text" id="fg-co-addr" class="search-inp" style="min-width:0;height:36px;" placeholder="Địa chỉ nhận hàng chi tiết *" required />
+          <div style="display:flex;gap:6px;">
+            <input type="text" id="fg-co-coupon" class="search-inp" style="min-width:0;flex:1;height:36px;text-transform:uppercase;" placeholder="Mã giảm giá (LOP10 / FREESHIP)" />
+            <select id="fg-co-method" class="search-inp" style="min-width:0;width:140px;height:36px;">
+              <option value="VIETQR">📱 VietQR</option>
+              <option value="COD">📦 Ship COD</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;height:42px;">💳 Xác Nhận Đặt Hàng & Hiện Mã VietQR</button>
+        </form>
+        <div id="fg-co-result" style="display:none;padding:12px;border-radius:12px;background:rgba(20,184,166,0.14);border:1px solid var(--teal);text-align:center;font-size:12.5px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      "use strict";
+      const CART_KEY = "studio3d_hybrid_cart_v1";
+      const fmtVnd = (n) => new Intl.NumberFormat("vi-VN").format(Math.round(Number(n) || 0)) + " ₫";
+
+      // 1. Light MUJI vs Dark Studio Mode Toggle
+      const modeBtn = document.getElementById("btn-toggle-mode");
+      modeBtn?.addEventListener("click", () => {
+        const isLight = document.documentElement.getAttribute("data-mode") === "muji-light";
+        if (isLight) {
+          document.documentElement.removeAttribute("data-mode");
+          modeBtn.textContent = "☀️ Nền Sáng MUJI";
+        } else {
+          document.documentElement.setAttribute("data-mode", "muji-light");
+          modeBtn.textContent = "🌙 Nền Tối Studio";
+        }
+      });
+
+      // Calculate exact delivery date range (3 - 5 days from today)
+      function getExactDeliveryWindow(daysMin = 3, daysMax = 5) {
+        const now = new Date();
+        const d1 = new Date(now.getTime() + daysMin * 86400000);
+        const d2 = new Date(now.getTime() + daysMax * 86400000);
+        const fmt = (d) => `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}`;
+        return `${fmt(d1)} – ${fmt(d2)}`;
+      }
+      const etaBanner = document.getElementById("eta-live-banner");
+      if (etaBanner) {
+        etaBanner.textContent = `📅 Đặt hôm nay → Giao tận tay dự kiến: ${getExactDeliveryWindow(3, 5)} (3 – 5 ngày)`;
+      }
+
+      // 2. Shared Cart Helpers
+      function loadCart() {
+        try {
+          const raw = JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+          return Array.isArray(raw) ? raw : [];
+        } catch (_) {
+          return [];
+        }
+      }
+      function saveCart(items) {
+        localStorage.setItem(CART_KEY, JSON.stringify(items));
+        renderCartDrawer();
+        window.dispatchEvent(new CustomEvent("kx:cart-updated"));
+      }
+
+      document.getElementById("fg-inline-checkout-form")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const cart = loadCart();
+        if (!cart.length) {
+          alert("Giỏ hàng đang trống!");
+          return;
+        }
+        const name = document.getElementById("fg-co-name")?.value.trim();
+        const phone = document.getElementById("fg-co-phone")?.value.trim();
+        const address = document.getElementById("fg-co-addr")?.value.trim();
+        const couponCode = (document.getElementById("fg-co-coupon")?.value || "").trim().toUpperCase();
+        const paymentMethod = document.getElementById("fg-co-method")?.value || "VIETQR";
+        try {
+          const r = await fetch("/api/orders/create", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              customer: { name, phone, address, province: "TP. Hồ Chí Minh", ward: "Phường Bến Nghé" },
+              lines: cart.map((c) => ({ ...c, unitVnd: c.priceVnd || c.unitVnd || 199000 })),
+              couponCode,
+              paymentMethod,
+            }),
+          });
+          const data = await r.json();
+          const out = document.getElementById("fg-co-result");
+          if (out && data && data.ok && data.orderCode) {
+            const qrUrl = String(data.vietQrUrl || "").trim();
+            const acctNo = String(data.bankInfo?.accountNo || "").trim();
+            const bankId = String(data.bankInfo?.bank || "").trim();
+            const blankQrSvg = "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140" viewBox="0 0 140 140"><rect width="140" height="140" rx="12" fill="#0f172a" stroke="#334155" stroke-width="2" stroke-dasharray="6 4"/><text x="70" y="64" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="#94a3b8">KHUNG MÃ QR</text><text x="70" y="82" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#64748b">(Tạm để trống)</text></svg>`);
+            out.style.display = "block";
+            out.innerHTML = `
+              <div style="font-weight:900;color:var(--teal);font-size:14px;">✅ ĐÃ TẠO ĐƠN HÀNG: ${data.orderCode}</div>
+              <div style="margin-top:3px;">Tổng: <b style="color:var(--accent);">${fmtVnd(data.totalVnd)}</b> · Giao nhanh <b>3 – 5 ngày</b></div>
+              ${paymentMethod === "VIETQR" ? `<div style="margin-top:8px;padding:10px;border:1px dashed var(--border);border-radius:12px;display:flex;align-items:center;gap:12px;text-align:left;"><img src="${qrUrl || blankQrSvg}" alt="QR" style="width:110px;height:110px;border-radius:10px;background:#0f172a;padding:4px;flex-shrink:0;" /><div style="font-size:12px;line-height:1.5;"><div>Ngân hàng / STK: <b>${acctNo ? `${bankId} · ${acctNo}` : "Tạm để trống (Chờ cập nhật)"}</b></div><div>Nội dung CK: <b style="color:var(--gold);">${data.orderCode}</b></div><div style="color:var(--muted);">Hotline / Zalo / FB: <i>Tạm để trống</i></div></div></div>` : ""}
+              <div style="margin-top:8px;"><button type="button" id="fg-btn-del-order" data-code="${data.orderCode}" style="background:rgba(239,68,68,0.14);border:1px solid #ef4444;color:#fca5a5;border-radius:8px;padding:4px 10px;font-size:11.5px;font-weight:700;cursor:pointer;">🗑️ Xóa / Hủy đơn vừa tạo</button></div>
+            `;
+            document.getElementById("fg-btn-del-order")?.addEventListener("click", async (ev) => {
+              const code = ev.currentTarget.getAttribute("data-code");
+              await fetch("/api/orders/delete", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ orderCode: code }) });
+              out.style.display = "none";
+              out.innerHTML = "";
+            });
+            saveCart([]);
+          }
+        } catch (_) {}
+      });
+      function addToCart(item) {
+        const cart = loadCart();
+        const existing = cart.find((x) => x.id === item.id && (x.customText || "") === (item.customText || ""));
+        if (existing) {
+          existing.quantity = (existing.quantity || 1) + (item.quantity || 1);
+        } else {
+          cart.push({
+            id: item.id,
+            variantId: item.variantId || item.id,
+            name: item.name,
+            image: item.image || "",
+            priceVnd: Number(item.priceVnd) || 0,
+            weightGram: Number(item.weightGram) || 120,
+            quantity: Number(item.quantity) || 1,
+            customText: item.customText || "",
+          });
+        }
+        window.__kxLastAddedItem = item;
+        saveCart(cart);
+        if (window.KXGamifiedStaff?.playMascotCartRunner) window.KXGamifiedStaff.playMascotCartRunner(item);
+        else if (typeof window.playAddToCartFlight === 'function') window.playAddToCartFlight(item);
+      }
+
+      function renderCartDrawer() {
+        const cart = loadCart();
+        const count = cart.reduce((s, x) => s + (Number(x.quantity) || 1), 0);
+        const badge = document.getElementById("fg-cart-count");
+        if (badge) badge.textContent = String(count);
+
+        const sub = cart.reduce((s, x) => s + (Number(x.priceVnd) || 0) * (Number(x.quantity) || 1), 0);
+        const ship = sub === 0 || sub >= 500000 ? 0 : 30000;
+        const tot = sub + ship;
+
+        const subEl = document.getElementById("fg-cart-sub");
+        const shipEl = document.getElementById("fg-cart-ship");
+        const totEl = document.getElementById("fg-cart-total");
+        if (subEl) subEl.textContent = fmtVnd(sub);
+        if (shipEl) shipEl.textContent = ship === 0 ? "Miễn phí" : fmtVnd(ship);
+        if (totEl) totEl.textContent = fmtVnd(tot);
+
+        const pct = Math.min(100, Math.round((sub / 500000) * 100));
+        const bar = document.getElementById("fg-freeship-bar");
+        const msg = document.getElementById("fg-freeship-msg");
+        if (bar) bar.style.width = `${pct}%`;
+        if (msg) {
+          msg.textContent = sub >= 500000
+            ? "🎉 Đơn hàng đã đủ điều kiện Miễn phí vận chuyển toàn quốc!"
+            : `Mua thêm ${fmtVnd(500000 - sub)} để được Miễn phí vận chuyển!`;
+        }
+
+        const host = document.getElementById("fg-cart-items");
+        if (!host) return;
+        if (!cart.length) {
+          host.innerHTML = `<div style="padding:28px;text-align:center;color:var(--muted);border:1px dashed var(--border);border-radius:14px;">Giỏ hàng đang trống. Hãy chọn sản phẩm hoặc Combo bên ngoài nhé!</div>`;
+          return;
+        }
+        host.innerHTML = cart.map((it, idx) => `
+          <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:14px;padding:11px 12px;display:flex;justify-content:space-between;align-items:center;gap:10px;">
+            <div>
+              <div style="font-weight:800;font-size:13.5px;">${it.name}</div>
+              <div style="font-size:11.5px;color:var(--teal);">${it.customText ? "Khắc/Màu: " + it.customText : "Tiêu chuẩn"} · SL: ${it.quantity || 1}</div>
+              <div style="font-weight:900;font-size:13.5px;color:var(--accent);margin-top:2px;">${fmtVnd((it.priceVnd || 0) * (it.quantity || 1))}</div>
+            </div>
+            <button type="button" data-del-idx="${idx}" class="btn" style="height:30px;padding:0 10px;font-size:11.5px;border-color:#ef4444;color:#fca5a5;">🗑️ Xóa</button>
+          </div>
+        `).join("") + `<div style="display:flex;justify-content:flex-end;margin-top:6px;"><button type="button" data-fg-clear-all="1" class="btn" style="height:28px;padding:0 10px;font-size:11.5px;border-color:#ef4444;color:#fca5a5;">🗑️ Xóa sạch giỏ hàng</button></div>`;
+      }
+
+      window.renderCart = renderCartDrawer;
+      window.addEventListener("kx:cart-updated", renderCartDrawer);
+
+      document.getElementById("fg-cart-items")?.addEventListener("click", (e) => {
+        if (e.target.closest("[data-fg-clear-all]")) { saveCart([]); return; }
+        const btn = e.target.closest("[data-del-idx]");
+        if (!btn) return;
+        const cart = loadCart();
+        cart.splice(Number(btn.dataset.delIdx), 1);
+        saveCart(cart);
+      });
+      document.getElementById("btn-open-cart-drawer")?.addEventListener("click", () => {
+        renderCartDrawer();
+        document.getElementById("fg-cart-modal")?.classList.add("open");
+      });
+      document.getElementById("btn-close-cart-drawer")?.addEventListener("click", () => {
+        document.getElementById("fg-cart-modal")?.classList.remove("open");
+      });
+
+      // 3. Interactive Before/After Split-Comparison Slider
+      const BA_ITEMS = [
+        {
+          id: "iguana-rainbow-3mf",
+          title: "Kỳ Nhông Gai Cầu Vồng Khớp Động (Chuẩn Đa Sắc .3MF)",
+          priceVnd: 390000,
+          beforeImg: "assets/showcases/iguana_rainbow.jpg",
+          afterImg: "assets/showcases/iguana_rainbow.jpg",
+          beforeLbl: "File Gốc Đa Sắc .3MF (2 Cụm)",
+          afterLbl: "Thành Phẩm In PLA Silk Cầu Vồng",
+        },
+        {
+          id: "mini-dragon-keychain-3mf",
+          title: "Rồng Thần Khớp Động Đa Sắc (Bản Đặc Biệt Đa Sắc · .3MF)",
+          priceVnd: 350000,
+          beforeImg: "assets/showcases/trend_mini_dragon.jpg",
+          afterImg: "assets/showcases/trend_mini_dragon.jpg",
+          beforeLbl: "Khay .3MF Print-in-Place Không Support",
+          afterLbl: "Rồng Khớp Động Uốn Lượn Thực Tế",
+        },
+        {
+          id: "fluffy-flexi-puppy-3mf",
+          title: "Móc Khóa Thú Cưng Đuôi Dài Khớp Động 4 Màu (Fluffy Tails .3MF)",
+          priceVnd: 189000,
+          beforeImg: "assets/showcases/fluffy_flexi_puppy.jpg",
+          afterImg: "assets/showcases/fluffy_flexi_puppy.jpg",
+          beforeLbl: "Khay Tách 4 Màu Đa Sắc Tự Động (.3MF)",
+          afterLbl: "Thú Cưng 4 Màu Hoàn Thiện",
+        },
+        {
+          id: "planetary-gear-fidget-3mf",
+          title: "Cơ Cấu Bánh Răng Hành Tinh Xoay Đồng Tâm (Cơ Khí Chính Xác · .3MF)",
+          priceVnd: 220000,
+          beforeImg: "assets/showcases/trend_planetary_gear.jpg",
+          afterImg: "assets/showcases/trend_planetary_gear.jpg",
+          beforeLbl: "Bản Vẽ Dung Sai 0.15mm Print-in-Place",
+          afterLbl: "Cơ Cấu Bánh Răng Quay Trơn Tru",
+        },
+      ];
+      let activeBaIdx = 0;
+      const baSlider = document.getElementById("ba-slider");
+      const baBeforeWrap = document.getElementById("ba-before-wrap");
+      const baDivider = document.getElementById("ba-divider-line");
+      const baHandle = document.getElementById("ba-handle");
+
+      function updateBaPosition(val) {
+        const pct = Math.max(5, Math.min(95, Number(val) || 48));
+        if (baBeforeWrap) baBeforeWrap.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+        if (baDivider) baDivider.style.left = `${pct}%`;
+        if (baHandle) baHandle.style.left = `${pct}%`;
+      }
+      baSlider?.addEventListener("input", (e) => updateBaPosition(e.target.value));
+
+      document.getElementById("ba-tabs")?.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-ba-idx]");
+        if (!btn) return;
+        activeBaIdx = Number(btn.dataset.baIdx) || 0;
+        const item = BA_ITEMS[activeBaIdx];
+        document.querySelectorAll("#ba-tabs .ba-tab").forEach((b) => b.classList.toggle("active", b === btn));
+        document.getElementById("ba-current-title").textContent = item.title;
+        document.getElementById("ba-img-before").src = item.beforeImg;
+        document.getElementById("ba-img-after").src = item.afterImg;
+        document.getElementById("ba-lbl-before").textContent = item.beforeLbl;
+        document.getElementById("ba-lbl-after").textContent = item.afterLbl;
+      });
+
+      document.getElementById("ba-buy-btn")?.addEventListener("click", () => {
+        const item = BA_ITEMS[activeBaIdx];
+        addToCart({ id: item.id, name: item.title, priceVnd: item.priceVnd, quantity: 1, customText: "Bản Studio 7 Màu" });
+      });
+
+      // 4. TikTok Shop / Tolstoy Shoppable 9:16 Video Reels Studio
+      const REELS = [
+        {
+          id: "iguana-rainbow-3mf",
+          badge: "🦎 Chuẩn Đa Sắc .3MF",
+          title: "Cận Cảnh Kỳ Nhông Gai Cầu Vồng Khớp Động .3MF",
+          spec: "Nhựa PLA Silk Cầu Vồng · Uốn khớp toàn thân",
+          priceVnd: 390000,
+          video: "assets/videos/iguana_rainbow.mp4",
+        },
+        {
+          id: "fluffy-flexi-puppy-3mf",
+          badge: "🐶 Đa Sắc 4 Màu .3MF",
+          title: "Móc Khóa Thú Cưng Đuôi Dài 4 Màu Fluffy Tails",
+          spec: "File gốc .3MF 4 Extruder · Không cần sơn",
+          priceVnd: 189000,
+          video: "assets/videos/fluffy_flexi_puppy.mp4",
+        },
+        {
+          id: "bonsai-spirit-zen-3mf",
+          badge: "🌳 Điêu Khắc Xoắn .3MF",
+          title: "Cây Bonsai Nghệ Thuật Xoắn Khí Động Học Điêu Khắc .3MF",
+          spec: "10 Bánh xe số xoay · Chịu nắng 80°C",
+          priceVnd: 290000,
+          video: "catalog_hub/branch_08_blender_bambu_orca_cad_mcp/METHOD_B_3D_BANG_SO_BANH_XE.mp4",
+        },
+        {
+          id: "mini-dragon-keychain-3mf",
+          badge: "🐉 91.2K Tải Printables",
+          title: "Rồng Thần Khớp Động Đa Sắc Print-in-Place .3MF",
+          spec: "Top 1 Printables #994795 · Khớp siêu mượt",
+          priceVnd: 350000,
+          video: "assets/videos/iguana_rainbow.mp4",
+        },
+        {
+          id: "planetary-gear-fidget-3mf",
+          badge: "🔩 31.8K Tải Printables",
+          title: "Hộp Số Bánh Răng Hành Tinh Xoay Đồng Tâm .3MF",
+          spec: "Dung sai 0.15mm · In nguyên khối xoay ngay",
+          priceVnd: 220000,
+          video: "catalog_hub/branch_08_blender_bambu_orca_cad_mcp/METHOD_B_3D_BANG_SO_BANH_XE.mp4",
+        },
+      ];
+
+      const reelsHost = document.getElementById("shoppable-reels-row");
+      if (reelsHost) {
+        reelsHost.innerHTML = REELS.map((r, i) => `
+          <article class="reel-card">
+            <video src="${r.video}" autoplay loop muted playsinline preload="metadata" id="reel-vid-${i}"></video>
+            <div class="reel-top">
+              <span class="reel-badge">${r.badge}</span>
+              <button type="button" class="reel-mute-btn" data-mute-idx="${i}" title="Bật / Tắt âm thanh">🔇</button>
+            </div>
+            <div class="reel-bottom">
+              <div class="reel-title">${r.title}</div>
+              <div class="reel-spec">${r.spec} · Giao 3–5 ngày</div>
+              <div class="reel-shop-pill">
+                <span class="reel-price">${fmtVnd(r.priceVnd)}</span>
+                <button type="button" class="btn btn-primary" data-buy-reel="${i}" style="height:32px;padding:0 12px;font-size:11.5px;">
+                  + Mua Ngay
+                </button>
+              </div>
+            </div>
+          </article>
+        `).join("");
+
+        reelsHost.addEventListener("click", (e) => {
+          const muteBtn = e.target.closest("[data-mute-idx]");
+          if (muteBtn) {
+            const idx = Number(muteBtn.dataset.muteIdx);
+            const vid = document.getElementById(`reel-vid-${idx}`);
+            if (vid) {
+              vid.muted = !vid.muted;
+              muteBtn.textContent = vid.muted ? "🔇" : "🔊";
+            }
+            return;
+          }
+          const buyBtn = e.target.closest("[data-buy-reel]");
+          if (buyBtn) {
+            const r = REELS[Number(buyBtn.dataset.buyReel)];
+            if (r) {
+              addToCart({ id: r.id, name: r.title, priceVnd: r.priceVnd, quantity: 1, customText: "Mua từ Video Reel" });
+            }
+          }
+        });
+      }
+
+      // 5. Catalog Loading, Mix-and-Match Bundle Builder & Uniqlo/MUJI Product Grid
+      let allProducts = [];
+      let activeCategory = "all";
+      const selectedColors = {};
+
+      const SWATCH_PALETTE = [
+        { name: "Cam Đất Sét", hex: "#ff6b2c" },
+        { name: "Xanh Ngọc Mint", hex: "#14b8a6" },
+        { name: "Vàng Ánh Kim", hex: "#f59e0b" },
+        { name: "Trắng Ngà MUJI", hex: "#f1efe7" },
+        { name: "Hồng Đào", hex: "#f472b6" },
+      ];
+
+      function makeFallbackThumb(p, customHex) {
+        if (p.image) return p.image;
+        if (p.plateImg) return p.plateImg;
+        const c = customHex || p.color || "#ff6b2c";
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+          <rect width="400" height="300" fill="#131926"/>
+          <circle cx="320" cy="60" r="110" fill="${c}" opacity="0.14"/>
+          <ellipse cx="200" cy="228" rx="95" ry="20" fill="#1e293b" stroke="${c}" stroke-width="3"/>
+          <rect x="130" y="96" width="140" height="106" rx="26" fill="${c}"/>
+          <text x="200" y="156" text-anchor="middle" fill="#090c14" font-family="sans-serif" font-weight="900" font-size="22">3D STUDIO</text>
+        </svg>`;
+        return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
+      }
+
+      function initBundleBuilder() {
+        const s1 = document.getElementById("b-slot1-sel");
+        const s2 = document.getElementById("b-slot2-sel");
+        const s3 = document.getElementById("b-slot3-sel");
+        if (!s1 || !s2 || !s3 || !allProducts.length) return;
+
+        const figs = allProducts.filter((p) => p.category === "figure-nhan-vat");
+        const lamps = allProducts.filter((p) => p.category === "van-hoa-viet" || p.category === "decor-den-hoc");
+        const extras = allProducts.filter((p) => p.category === "moc-khoa-the-ten" || p.category === "hoc-cu-khoa-hoc");
+
+        const fillSelect = (sel, list) => {
+          sel.innerHTML = list.map((p) => `<option value="${p.id}">${p.name} (${fmtVnd(p.priceVnd)})</option>`).join("");
+        };
+        fillSelect(s1, figs.length ? figs : allProducts.slice(0, 5));
+        fillSelect(s2, lamps.length ? lamps : allProducts.slice(5, 10));
+        fillSelect(s3, extras.length ? extras : allProducts.slice(10, 18));
+
+        function recalcBundle() {
+          const p1 = allProducts.find((x) => x.id === s1.value) || allProducts[0];
+          const p2 = allProducts.find((x) => x.id === s2.value) || allProducts[1];
+          const p3 = allProducts.find((x) => x.id === s3.value) || allProducts[2];
+          if (!p1 || !p2 || !p3) return;
+
+          document.getElementById("b-slot1-img").src = makeFallbackThumb(p1);
+          document.getElementById("b-slot2-img").src = makeFallbackThumb(p2);
+          document.getElementById("b-slot3-img").src = makeFallbackThumb(p3);
+
+          const orig = (Number(p1.priceVnd) || 0) + (Number(p2.priceVnd) || 0) + (Number(p3.priceVnd) || 0);
+          const save = Math.round(orig * 0.15);
+          const finalPrice = orig - save;
+
+          document.getElementById("bundle-orig-price").textContent = fmtVnd(orig);
+          document.getElementById("bundle-save-price").textContent = "-" + fmtVnd(save);
+          document.getElementById("bundle-final-price").textContent = fmtVnd(finalPrice);
+        }
+
+        [s1, s2, s3].forEach((sel) => sel.addEventListener("change", recalcBundle));
+        recalcBundle();
+
+        document.getElementById("btn-add-bundle")?.addEventListener("click", () => {
+          const p1 = allProducts.find((x) => x.id === s1.value) || allProducts[0];
+          const p2 = allProducts.find((x) => x.id === s2.value) || allProducts[1];
+          const p3 = allProducts.find((x) => x.id === s3.value) || allProducts[2];
+          if (!p1 || !p2 || !p3) return;
+          const orig = (Number(p1.priceVnd) || 0) + (Number(p2.priceVnd) || 0) + (Number(p3.priceVnd) || 0);
+          const finalPrice = Math.round(orig * 0.85);
+          addToCart({
+            id: `combo-${p1.id}-${p2.id}-${p3.id}`,
+            name: `🎁 Combo 3 Món (-15%): ${p1.name} + ${p2.name} + ${p3.name}`,
+            priceVnd: finalPrice,
+            weightGram: 380,
+            quantity: 1,
+            customText: "Tặng Hộp Quà Chống Sốc",
+          });
+        });
+      }
+
+      function renderCatalogGrid() {
+        const grid = document.getElementById("fg-product-grid");
+        if (!grid) return;
+        const q = (document.getElementById("fg-search")?.value || "").trim().toLowerCase();
+        const sort = document.getElementById("fg-sort")?.value || "featured";
+        const etaStr = getExactDeliveryWindow(3, 5);
+
+        let list = allProducts.filter((p) => {
+          if (activeCategory !== "all" && p.category !== activeCategory) return false;
+          if (q) {
+            const hay = `${p.name} ${p.summary} ${p.specs} ${p.categoryLabel}`.toLowerCase();
+            if (!hay.includes(q)) return false;
+          }
+          return true;
+        });
+
+        if (sort === "price-asc") list.sort((a, b) => a.priceVnd - b.priceVnd);
+        else if (sort === "price-desc") list.sort((a, b) => b.priceVnd - a.priceVnd);
+
+        grid.innerHTML = list.map((p) => {
+          const chosenColor = selectedColors[p.id] || SWATCH_PALETTE[0];
+          const thumbSrc = makeFallbackThumb(p, chosenColor.hex);
+          const swatchesHtml = SWATCH_PALETTE.map((sw) => `
+            <button type="button" class="sw-dot ${sw.name === chosenColor.name ? "active" : ""}"
+              style="background:${sw.hex};"
+              title="Màu: ${sw.name}"
+              data-prod-swatch="${p.id}"
+              data-sw-name="${sw.name}"
+              data-sw-hex="${sw.hex}"></button>
+          `).join("");
+
+          return `
+            <article class="muji-card" data-card-id="${p.id}">
+              <div class="muji-media">
+                ${p.video
+                  ? `<video src="${p.video}" autoplay loop muted playsinline preload="metadata"></video>`
+                  : `<img src="${thumbSrc}" alt="${p.name}" loading="lazy" id="card-img-${p.id}" />`
+                }
+                <span class="muji-badge-top">${p.badge || "Chuẩn 3D"}</span>
+                <span class="muji-eta-pill">🚚 Nhận: ${etaStr}</span>
+              </div>
+              <div class="muji-body">
+                <div class="muji-meta">
+                  <span>${p.categoryLabel || "STUDIO 3D"}</span>
+                  ${(p.rating != null || p.soldCount != null) ? `<span style="color:var(--gold);">${p.rating != null ? "★ " + Number(p.rating).toFixed(1) : ""}${p.rating != null && p.soldCount != null ? " · " : ""}${p.soldCount != null ? "Đã bán " + p.soldCount : ""}</span>` : ""}
+                </div>
+                <h3 class="muji-title">${p.name}</h3>
+                <p class="muji-desc">${p.summary || ""}</p>
+                <div class="muji-specs-table">
+                  <span>⚙️ ${p.specs || "PLA Sinh Học · Mịn 0.16mm"}</span>
+                  <span>⚖️ ${p.weightGram || 120}g</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:2px;">
+                  <span style="font-size:11.5px;color:var(--muted);">Màu: <b id="card-col-lbl-${p.id}" style="color:var(--fg);">${chosenColor.name}</b></span>
+                  <div class="inline-swatches">${swatchesHtml}</div>
+                </div>
+                <div class="muji-foot" style="flex-wrap:wrap;gap:8px;">
+                  <div class="muji-price">${fmtVnd(p.priceVnd)}</div>
+                  <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                    <button type="button" class="btn" data-fg-inspect="${p.id}" style="height:34px;padding:0 10px;font-size:11.5px;border-color:var(--accent);color:var(--accent);">🧊 Xem 3D · 2D</button>
+                    <button type="button" class="btn" onclick="event.stopPropagation(); window.Studio3DSuite && window.Studio3DSuite.openModal('slicer')" style="height:34px;padding:0 10px;font-size:11.5px;">📐 Báo Giá</button>
+                    <button type="button" class="btn btn-primary" data-add-card="${p.id}" style="height:34px;padding:0 12px;font-size:12px;">+ Giỏ</button>
+                  </div>
+                </div>
+              </div>
+            </article>
+          `;
+        }).join("");
+        window.KXDirectViewer?.decorateProductCards?.();
+      }
+
+      document.getElementById("fg-product-grid")?.addEventListener("click", (e) => {
+        const swBtn = e.target.closest("[data-prod-swatch]");
+        if (swBtn) {
+          e.stopPropagation();
+          const pid = swBtn.dataset.prodSwatch;
+          const swName = swBtn.dataset.swName;
+          const swHex = swBtn.dataset.swHex;
+          selectedColors[pid] = { name: swName, hex: swHex };
+          const lbl = document.getElementById(`card-col-lbl-${pid}`);
+          if (lbl) lbl.textContent = swName;
+          const p = allProducts.find((x) => x.id === pid);
+          const img = document.getElementById(`card-img-${pid}`);
+          if (p && img && !p.image && !p.plateImg) {
+            img.src = makeFallbackThumb(p, swHex);
+          }
+          swBtn.parentElement.querySelectorAll(".sw-dot").forEach((b) => b.classList.toggle("active", b === swBtn));
+          return;
+        }
+
+        const addBtn = e.target.closest("[data-add-card]");
+        if (addBtn) {
+          e.stopPropagation();
+          const pid = addBtn.dataset.addCard;
+          const p = allProducts.find((x) => x.id === pid);
+          if (!p) return;
+          const col = selectedColors[pid] || SWATCH_PALETTE[0];
+          addToCart({
+            id: p.id,
+            name: p.name,
+            priceVnd: p.priceVnd,
+            weightGram: p.weightGram || 120,
+            quantity: 1,
+            customText: `Màu ${col.name}`,
+          });
+          return;
+        }
+
+        const inspectBtn = e.target.closest("[data-fg-inspect]");
+        const cardEl = e.target.closest(".muji-card");
+        const pid = inspectBtn?.dataset?.fgInspect || cardEl?.getAttribute("data-card-id");
+        if (pid) {
+          const p = allProducts.find((x) => x.id === pid || x.slug === pid);
+          if (window.KXDirectViewer?.openQuickView) {
+            window.KXDirectViewer.openQuickView(p || pid, "3d", cardEl);
+          }
+        }
+      });
+
+      document.getElementById("fg-cat-chips")?.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-cat]");
+        if (!btn) return;
+        activeCategory = btn.dataset.cat;
+        document.querySelectorAll("#fg-cat-chips .chip-btn").forEach((b) => b.classList.toggle("active", b === btn));
+        renderCatalogGrid();
+      });
+      document.getElementById("fg-search")?.addEventListener("input", renderCatalogGrid);
+      document.getElementById("fg-sort")?.addEventListener("change", renderCatalogGrid);
+
+      function isMockProduct(p) {
+        return (
+          /^(product\s*#\d+|test\s+|mock\s+|demo\s+)/i.test(String(p?.name || "").trim()) ||
+          /^custom-product-\d+$/i.test(String(p?.id || p?.slug || "").trim())
+        );
+      }
+
+      async function loadProducts() {
+        try {
+          const r = await fetch("/api/products");
+          const data = await r.json();
+          const raw = Array.isArray(data.products) ? data.products : [];
+          allProducts = raw.filter((p) => !isMockProduct(p));
+        } catch (_) {
+          allProducts = [];
+        }
+        renderCatalogGrid();
+        initBundleBuilder();
+      }
+
+      // 6. Live 3-Printer Studio 3D Farm Telemetry (/api/printer-farm)
+      async function loadPrinterFarm() {
+        const host = document.getElementById("fg-farm-list");
+        if (!host) return;
+        try {
+          const r = await fetch("/api/printer-farm");
+          const data = await r.json();
+          const machines = data.printers || data.machines || [];
+          if (!machines.length) { host.innerHTML = `<div style="color:var(--muted);font-size:13px;">🖨️ ${data.message || "Chưa kết nối máy in"}</div>`; return; }
+          host.innerHTML = machines.map((m) => {
+            const amsDots = Array.isArray(m.amsColors)
+              ? m.amsColors.map((hx) => `<span style="display:inline-block;width:12px;height:12px;border-radius:999px;background:${hx};border:1px solid rgba(255,255,255,0.4);"></span>`).join(" ")
+              : (m.amsColors || "");
+            return `
+              <div class="printer-row">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <strong style="font-size:13.5px;">🖨️ ${m.name}</strong>
+                  <span style="font-size:11px;font-weight:800;color:var(--teal);background:rgba(20,184,166,0.14);padding:3px 9px;border-radius:999px;">● ĐANG IN (${m.progressPct}%) · Còn ~${m.etaMin || 25}p</span>
+                </div>
+                <div style="font-size:12.5px;color:var(--muted);">Lệnh in: <b style="color:var(--fg);">${m.job || m.currentJob}</b> · Layer: <b>${m.layer}</b></div>
+                <div class="p-bar-bg"><div class="p-bar-fill" style="width:${m.progressPct}%"></div></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--muted);">
+                  <span>🌡️ Đầu phun: <b>${m.nozzleTempC}°C</b> · Bàn nhiệt: <b>${m.bedTempC}°C</b></span>
+                  <span style="display:inline-flex;align-items:center;gap:4px;">Cuộn AMS: ${amsDots}</span>
+                </div>
+              </div>
+            `;
+          }).join("");
+        } catch (_) {
+          host.innerHTML = `<div style="color:var(--muted);font-size:13px;">Không tải được trạng thái máy in</div>`;
+        }
+      }
+      document.getElementById("btn-refresh-farm")?.addEventListener("click", loadPrinterFarm);
+
+      // 7. Live Order Tracking (/api/orders/track) & OmniBot AI CSKH (/api/cskh/chat)
+      document.getElementById("fg-track-form")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const q = (document.getElementById("fg-track-inp")?.value || "").trim();
+        const out = document.getElementById("fg-track-out");
+        if (!out) return;
+        if (!q) {
+          out.innerHTML = `<div style="color:var(--gold);">Vui lòng nhập mã đơn KX-... kèm SĐT hoặc 4 số cuối SĐT.</div>`;
+          return;
+        }
+        try {
+          const r = await fetch(`/api/orders/track?q=${encodeURIComponent(q)}`);
+          const data = await r.json();
+          const orders = data.orders || [];
+          if (!orders.length) {
+            out.innerHTML = `<div style="padding:10px;border-radius:12px;background:var(--surface-2);border:1px solid var(--border);">Không tìm thấy đơn. Vui lòng nhập đúng mã đơn kèm SĐT hoặc 4 số cuối SĐT.</div>`;
+            return;
+          }
+          out.innerHTML = orders.map((o) => `
+            <div style="padding:12px;border-radius:12px;background:rgba(20,184,166,0.12);border:1px solid var(--teal);">
+              <div style="font-weight:900;color:var(--teal);">Mã đơn: ${o.orderCode} · ${fmtVnd(o.totalVnd)}</div>
+              <div style="font-size:12px;margin-top:4px;">Khách hàng: <b>${o.customerName || "Khách"}</b> · Trạng thái: <b>${o.statusLabel || o.status || ""}</b></div>
+            </div>
+          `).join("");
+        } catch (_) {}
+      });
+
+      document.getElementById("fg-chat-form")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const inp = document.getElementById("fg-chat-inp");
+        const box = document.getElementById("fg-chat-box");
+        const msg = (inp?.value || "").trim();
+        if (!msg || !box) return;
+        inp.value = "";
+        box.innerHTML += `<div style="align-self:flex-end;background:var(--accent);color:#fff;padding:8px 12px;border-radius:12px;max-width:85%;">${msg}</div>`;
+        box.scrollTop = box.scrollHeight;
+        try {
+          const r = await fetch("/api/cskh/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: msg }),
+          });
+          const data = await r.json();
+          box.innerHTML += `<div style="background:var(--surface);padding:9px 12px;border-radius:12px;border:1px solid var(--border);">${data.reply || "Shop đã nhận tin nhắn của bạn!"}</div>`;
+          box.scrollTop = box.scrollHeight;
+        } catch (_) {}
+      });
+
+      renderCartDrawer();
+      loadProducts();
+      loadPrinterFarm();
+    })();
+  </script>
+  <script src="assets/khoixinh_3d_models_proc.js?v=20261101f"></script>
+  <script src="assets/khoixinh_3d_models_extra.js?v=20261101f"></script>
+  <script src="assets/khoixinh_showcase_stage.js?v=20261101_v10"></script>
+  <script src="assets/kx_direct_3d_2d_viewer.js?v=20261101_v10"></script>
+  <script src="assets/gamified_3d_staff_runner.js?v=20261101_v10"></script>
+  <script src="assets/multisite_dock_suite.js?v=20261101_v10"></script>
+  <script src="assets/multisite_dock.js?v=20261101_v10"></script>
+</body>
+</html>

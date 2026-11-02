@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="darkreader-lock" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cơ Cấu Kệ 5 Tầng Gập/Mở (Bản Lề Hình Bình Hành) — 3D CAD & Xuất STL</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/STLExporter.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    body { display: flex; width: 100vw; height: 100vh; overflow: hidden; background: #0b1120; color: #f8fafc; }
+
+    /* === ĐOẠN CSS NGUYÊN BẢN SẾP GỬI === */
+    #sidebar { width: 420px; background: #1e293b; border-right: 2px solid #334155; display: flex; flex-direction: column; padding: 18px; overflow-y: auto; z-index: 10; }
+    h1 { font-size: 17px; color: #facc15; margin-bottom: 4px; text-transform: uppercase; }
+    .subtitle { font-size: 12px; color: #94a3b8; margin-bottom: 14px; }
+
+    /* Thanh trượt mô phỏng gập/mở */
+    .slider-box { background: #0f172a; border: 1px solid #facc15; border-radius: 8px; padding: 12px; margin-bottom: 14px; }
+    .slider-label { font-size: 13px; font-weight: bold; color: #fde047; display: flex; justify-content: space-between; margin-bottom: 8px; }
+    input[type=range] { width: 100%; cursor: pointer; accent-color: #facc15; }
+
+    .part-btn { width: 100%; text-align: left; padding: 10px 12px; margin-bottom: 7px; background: #0f172a; border: 1px solid #334155; color: #e2e8f0; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; transition: 0.2s; display: flex; justify-content: space-between; }
+    .part-btn:hover { border-color: #38bdf8; }
+    .part-btn.active { background: #0284c7; border-color: #38bdf8; color: #fff; }
+    .badge { font-size: 11px; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.15); }
+
+    #spec-box { margin-top: 8px; background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 12px; flex: 1; }
+    #spec-title { font-size: 14.5px; font-weight: bold; color: #38bdf8; margin-bottom: 8px; border-bottom: 1px solid #334155; padding-bottom: 5px; }
+    .spec-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 10px; }
+    .spec-table td { padding: 5px 4px; border-bottom: 1px dashed #1e293b; }
+    .spec-table td:first-child { color: #94a3b8; }
+    .spec-table td:last-child { color: #f8fafc; font-weight: 600; text-align: right; }
+    #spec-note { font-size: 12px; color: #cbd5e1; line-height: 1.45; background: #1e293b; padding: 9px; border-radius: 6px; border-left: 3px solid #facc15; }
+
+    #export-btn { margin-top: 12px; width: 100%; padding: 12px; background: #10b981; color: #fff; border: none; border-radius: 8px; font-weight: bold; font-size: 13.5px; cursor: pointer; }
+    #export-btn:hover { background: #059669; }
+
+    #viewport { flex: 1; position: relative; }
+    #hud { position: absolute; top: 16px; left: 16px; background: rgba(15, 23, 42, 0.88); border: 1px solid #334155; padding: 10px 14px; border-radius: 8px; pointer-events: none; }
+    #hud-title { font-size: 15px; font-weight: bold; color: #facc15; }
+    #hud-sub { font-size: 12px; color: #cbd5e1; margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <div id="sidebar">
+    <h1>KỆ 5 TẦNG GẬP/MỞ (CƠ CẤU BẢN LỀ)</h1>
+    <div class="subtitle">Cơ cấu 4 khâu hình bình hành giúp 5 khay luôn cân bằng ngang khi gập gọn</div>
+
+    <div class="slider-box">
+      <div class="slider-label">
+        <span>🔄 Kéo để Gập / Mở Kệ:</span>
+        <span id="angle-val">Đang mở khóa (50°)</span>
+      </div>
+      <input type="range" id="fold-slider" min="12" max="65" value="50" oninput="updateFoldAngle(this.value)">
+    </div>
+
+    <button class="part-btn active" id="btn-part-0" onclick="showPart(0)">
+      <span>★ Xem Cơ Cấu Gập/Mở 5 Tầng (Full)</span>
+      <span class="badge">Chuyển động</span>
+    </button>
+    <button class="part-btn" id="btn-part-1" onclick="showPart(1)">
+      <span>1. Khay Trắng (Đục 2 lỗ chốt hông)</span>
+      <span class="badge">x5 / quầy</span>
+    </button>
+    <button class="part-btn" id="btn-part-2" onclick="showPart(2)">
+      <span>2. Thanh Giằng Bản Lề Vàng (Link Bar)</span>
+      <span class="badge">x4 / quầy</span>
+    </button>
+    <button class="part-btn" id="btn-part-3" onclick="showPart(3)">
+      <span>3. Chốt Trụ Xoay & Chốt Khóa (Pins)</span>
+      <span class="badge">x22 / quầy</span>
+    </button>
+
+    <div id="spec-box">
+      <div id="spec-title">Thông số kỹ thuật</div>
+      <table class="spec-table" id="spec-table"></table>
+      <div id="spec-note"></div>
+    </div>
+
+    <button id="export-btn" onclick="exportCurrentSTL()">⬇️ Tải File .STL của bộ phận đang chọn</button>
+  </div>
+
+  <div id="viewport">
+    <div id="hud">
+      <div id="hud-title">★ CƠ CẤU KỆ 5 TẦNG GẬP/MỞ THÔNG MINH (PARALLELOGRAM LINKAGE)</div>
+      <div id="hud-sub">🖱️ Kéo thanh trượt màu vàng bên trái (12° ↔ 65°) để xem kệ gập phẳng & mở bung thực tế!</div>
+      <div style="margin-top:8px;display:flex;gap:8px;align-items:center;pointer-events:auto;">
+        <select id="cad-cam-shot" style="background:#0f172a;color:#38bdf8;border:1px solid #38bdf8;padding:5px 10px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;">
+          <option value="Manual">🖱️ Tự Xoay Bằng Chuột (Manual Orbit)</option>
+          <option value="AerialOrbit">🎥 1. /AerialOrbit (Xoay 360° Từ Cao)</option>
+          <option value="ArcShot">🎥 2. /ArcShot (Vòng Cung Ngang Mắt)</option>
+          <option value="Drone">🎥 3. /Drone (Bay Lùi & Nâng Cao)</option>
+          <option value="TruckLeft">🎥 4. /TruckLeft (Trượt Ngang Song Song)</option>
+          <option value="CameraRoll">🎥 5. /CameraRoll (Xoay Trục Ống Kính)</option>
+          <option value="Pan">🎥 6. /Pan (Lia Máy Cố Định)</option>
+          <option value="Crane">🎥 7. /Crane (Hạ Cần Cẩu Mượt)</option>
+          <option value="DollyZoom">🎥 8. /DollyZoom (Hiệu Ứng Vertigo)</option>
+          <option value="Tilt">🎥 9. /Tilt (Ngẩng Máy Từ Dưới Lên)</option>
+          <option value="DollyIn">🎥 10. /DollyIn (Đẩy Máy Cận Cảnh)</option>
+          <option value="OverheadRotation">🎥 11. /OverheadRotation (90° Top-Down)</option>
+          <option value="DollyOut">🎥 12. /DollyOut (Kéo Lùi Toàn Cảnh)</option>
+          <option value="Pedestal">🎥 13. /Pedestal (Thang Nâng Thẳng Đứng)</option>
+          <option value="LowAngleArc">🎥 14. /LowAngleArc (Vòng Cung Sát Đất)</option>
+          <option value="LateralReveal">🎥 15. /LateralReveal (Trượt Mở Góc Rộng)</option>
+        </select>
+        <button type="button" id="btn-auto-fold-demo" style="background:#facc15;color:#0f172a;border:none;padding:5px 10px;border-radius:7px;font-size:12px;font-weight:800;cursor:pointer;">🔄 Tự Động Gập/Mở Demo</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SPECS = {
+      0: {
+        title: "★ Cơ Cấu Gập/Mở 5 Tầng (Full Lắp Ráp)",
+        hud: "★ CƠ CẤU KỆ 5 TẦNG GẬP/MỞ THÔNG MINH (PARALLELOGRAM LINKAGE)",
+        file: "00_Full_Ke_5_Tang_Gap_Mo_Ban_Le.stl",
+        rows: [
+          ["Nguyên lý cơ khí", "Cơ cấu 4 khâu hình bình hành (Parallelogram)"],
+          ["Góc mở làm việc chuẩn", "50° (Có lỗ cắm chốt khóa cố định)"],
+          ["Góc khi gập phẳng mang đi", "12° (Gập dẹt gọn vào balo/hộp)"],
+          ["Khoảng cách tâm các bậc", "55.0 mm dọc theo thanh giằng"],
+          ["Khoảng cách 2 lỗ chốt hông", "28.0 mm (Giữ khay luôn nằm ngang)"],
+          ["Tổng số chi tiết in 3D", "5 Khay + 4 Thanh Giằng + 22 Chốt = 31 món"]
+        ],
+        note: "💡 <b>Điểm ăn tiền của thiết kế:</b> Mỗi bên hông dùng <b>2 thanh giằng song song</b> (Trước & Sau) bắt vào 2 lỗ chốt trên từng khay. Nhờ hình bình hành nên khi bạn kéo gập kệ xuống 12° hay dựng lên 65°, <b>cả 5 khay luôn giữ phương nằm ngang</b>, hàng hóa bên trong không bao giờ bị đổ!"
+      },
+      1: {
+        title: "1. Khay Trắng 6 Ngăn (Đục 2 lỗ chốt hông)",
+        hud: "BỘ PHẬN 1: KHAY TRẮNG 6 NGĂN ĐỤC 2 LỖ CHỐT HÔNG (X5 CHIẾC)",
+        file: "01_Khay_Trang_6_Ngan_Duc_2_Lo_Chot_Hong.stl",
+        rows: [
+          ["Kích thước khay (Dài × Sâu × Cao)", "210 × 48 × 28 mm"],
+          ["Lỗ bản lề ở 2 vách hông", "2 lỗ Ø6.20 mm / mỗi bên (Tâm cách nhau 28 mm)"],
+          ["Lỗ phụ khóa góc mở (Khay 1 & 2)", "Lỗ khóa Stopper Ø6.20 mm"],
+          ["Số ngăn chia bên trong", "6 ngăn (5 vách ngăn uốn cong chữ S)"],
+          ["Số lượng cần in / 1 quầy", "5 khay giống hệt nhau"],
+          ["Tư thế đặt in", "Đặt đáy phẳng xuống bàn in (0 Support)"]
+        ],
+        note: "💡 <b>Hướng dẫn in Part 1:</b> 2 lỗ Ø6.20mm ở vách hông được thiết kế nhỏ vừa đủ để in ngang không bị xệ trần lỗ (Overhang Bridge tự nhiên), không cần bật Support."
+      },
+      2: {
+        title: "2. Thanh Giằng Bản Lề Vàng (Link Bar)",
+        hud: "BỘ PHẬN 2: THANH GIẰNG BẢN LỀ MÀU VÀNG (X4 THANH / QUẦY)",
+        file: "02_Thanh_Giang_Ban_Le_Vang_Link_Bar.stl",
+        rows: [
+          ["Tổng chiều dài thanh giằng", "244 × 16 × 6.0 mm (Đầu bo tròn R8)"],
+          ["Số lỗ bản lề chính", "5 lỗ Ø6.20 mm (Bước tâm đều 55.0 mm)"],
+          ["Lỗ chốt khóa góc 50°", "1 lỗ khóa Stopper phụ ở tầng dưới"],
+          ["Số lượng cần in / 1 quầy", "4 thanh (2 thanh Trái + 2 thanh Phải)"],
+          ["Độ dày thanh giằng", "6.0 mm (In 100% hoặc 40% Gyroid siêu cứng)"],
+          ["Tư thế đặt in", "Đặt nằm phẳng trên bàn in (0 Support)"]
+        ],
+        note: "💡 <b>Hướng dẫn in Part 2:</b> 4 thanh giằng có kích thước giống hệt nhau (dài 244mm, nằm gọn trên bàn in Bambu Lab A1 / P1S 256×256mm). Đặt nằm phẳng in trong 25 phút là xong cả 4 thanh."
+      },
+      3: {
+        title: "3. Chốt Trụ Xoay & Chốt Khóa (Pins)",
+        hud: "BỘ PHẬN 3: BỘ 22 CHỐT TRỤ XOAY SNAP-FIT & CHỐT KHÓA GÓC",
+        file: "03_Bo_22_Chot_Tru_Xoay_Va_Chot_Khoa.stl",
+        rows: [
+          ["Đường kính thân chốt", "Ø5.80 mm (Dung sai xoay mượt 0.20 mm với lỗ Ø6.2mm)"],
+          ["Chốt xoay bản lề (Pivot Pin)", "20 chiếc (Có rãnh chẻ Snap-fit chống tuột)"],
+          ["Chốt khóa cố định (Lock Pin)", "2 chiếc dài có tay nắm rút nhanh"],
+          ["Mặt vát đáy (Flat Bottom)", "Vát phẳng D-Cut để in ngang không lăn"],
+          ["Số lượng cần in / 1 quầy", "22 chốt (Xếp chung 1 bàn in)"],
+          ["Số vòng tường (Wall Loops)", "4 Walls (Đảm bảo chốt chịu lực cắt cao)"]
+        ],
+        note: "💡 <b>Hướng dẫn sử dụng Part 3:</b> 20 chốt ngắn dùng để bấm cố định vào 5 khay × 4 thanh giằng (vẫn xoay trơn tru). Khi dựng kệ lên góc 50°, bạn cắm <b>2 chốt khóa màu đỏ/vàng có tay nắm</b> vào lỗ khóa ở 2 bên hông là kệ cứng cáp tuyệt đối; rút 2 chốt đó ra là kệ gập phẳng lại ngay!"
+      }
+    };
+
+    const viewport = document.getElementById("viewport");
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0b1120);
+
+    const camera = new THREE.PerspectiveCamera(42, (window.innerWidth - 420) / window.innerHeight, 1, 3000);
+    camera.position.set(275, 195, 310);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+    renderer.setSize(window.innerWidth - 420, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    if (THREE.PCFSoftShadowMap) renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    if (THREE.ACESFilmicToneMapping) {
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.1;
+    }
+    if (THREE.sRGBEncoding) {
+      renderer.outputEncoding = THREE.sRGBEncoding;
+    }
+    viewport.appendChild(renderer.domElement);
+
+    // Procedural Studio Softbox IBL Environment via PMREMGenerator
+    if (THREE.PMREMGenerator) {
+      try {
+        const pmrem = new THREE.PMREMGenerator(renderer);
+        const envScene = new THREE.Scene();
+        envScene.background = new THREE.Color(0x0f172a);
+        const sb1 = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.MeshBasicMaterial({ color: 0xfff7ed, side: THREE.DoubleSide }));
+        sb1.position.set(220, 320, 240);
+        sb1.lookAt(0, 0, 0);
+        envScene.add(sb1);
+        const sb2 = new THREE.Mesh(new THREE.PlaneGeometry(220, 140), new THREE.MeshBasicMaterial({ color: 0x38bdf8, side: THREE.DoubleSide }));
+        sb2.position.set(-240, 180, -200);
+        sb2.lookAt(0, 0, 0);
+        envScene.add(sb2);
+        scene.environment = pmrem.fromScene(envScene, 0.04).texture;
+        pmrem.dispose();
+      } catch (_) {}
+    }
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.07;
+    controls.target.set(0, 85, -35);
+
+    scene.add(new THREE.HemisphereLight(0xfffbeb, 0x1e293b, 0.65));
+    const dir1 = new THREE.DirectionalLight(0xfff8ee, 1.15);
+    dir1.position.set(220, 340, 260);
+    dir1.castShadow = true;
+    dir1.shadow.mapSize.width = 1024;
+    dir1.shadow.mapSize.height = 1024;
+    dir1.shadow.camera.near = 50;
+    dir1.shadow.camera.far = 900;
+    const sBound = 240;
+    dir1.shadow.camera.left = -sBound;
+    dir1.shadow.camera.right = sBound;
+    dir1.shadow.camera.top = sBound;
+    dir1.shadow.camera.bottom = -sBound;
+    dir1.shadow.bias = -0.0008;
+    scene.add(dir1);
+
+    const dir2 = new THREE.DirectionalLight(0x38bdf8, 0.48);
+    dir2.position.set(-220, 160, -200);
+    scene.add(dir2);
+
+    const shadowFloor = new THREE.Mesh(
+      new THREE.PlaneGeometry(500, 500),
+      new THREE.ShadowMaterial({ opacity: 0.38 })
+    );
+    shadowFloor.rotation.x = -Math.PI / 2;
+    shadowFloor.position.y = -0.2;
+    shadowFloor.receiveShadow = true;
+    scene.add(shadowFloor);
+
+    const grid = new THREE.GridHelper(420, 21, 0x38bdf8, 0x1e293b);
+    scene.add(grid);
+
+    const MatPBR = THREE.MeshPhysicalMaterial || THREE.MeshStandardMaterial;
+    const matWhite = new MatPBR({ color: 0xf8fafc, roughness: 0.26, metalness: 0.06, clearcoat: 0.55, clearcoatRoughness: 0.18 });
+    const matYellow = new MatPBR({ color: 0xfacc15, roughness: 0.24, metalness: 0.12, clearcoat: 0.65, clearcoatRoughness: 0.15 });
+    const matPinBlue = new MatPBR({ color: 0x38bdf8, roughness: 0.22, metalness: 0.25, clearcoat: 0.7 });
+    const matLockRed = new MatPBR({ color: 0xef4444, roughness: 0.22, metalness: 0.25, clearcoat: 0.7 });
+    const matHoleDark = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.75 });
+
+    // Geometry constants (in mm)
+    const TRAY_W = 210, TRAY_D = 48, TRAY_H = 28, WALL_T = 2.4;
+    const HOLE_OFFSET_Z = 14; // Front pivot at +14mm, Rear pivot at -14mm (28mm apart)
+    const HOLE_Y = 14;       // Pivot height at mid-tray (14mm)
+    const STEP_PITCH = 55;   // Distance between trays along the link bar (55mm)
+    const BAR_THICK = 6;
+    const BAR_WIDTH = 16;
+
+    // Build a White 6-Compartment Tray with 2 Side Pivot Holes on Left & Right walls
+    function createFoldingTrayMesh(includeVisualHoles = true) {
+      const grp = new THREE.Group();
+      // Bottom
+      const bottom = new THREE.Mesh(new THREE.BoxGeometry(TRAY_W, WALL_T, TRAY_D), matWhite);
+      bottom.position.set(0, WALL_T / 2, 0);
+      grp.add(bottom);
+      // Back wall
+      const back = new THREE.Mesh(new THREE.BoxGeometry(TRAY_W, TRAY_H, WALL_T), matWhite);
+      back.position.set(0, TRAY_H / 2, -TRAY_D / 2 + WALL_T / 2);
+      grp.add(back);
+      // Front low wall
+      const frontH = 14;
+      const front = new THREE.Mesh(new THREE.BoxGeometry(TRAY_W, frontH, WALL_T), matWhite);
+      front.position.set(0, frontH / 2, TRAY_D / 2 - WALL_T / 2);
+      grp.add(front);
+
+      // Side walls + 5 S-curve dividers
+      for (let i = 0; i <= 6; i++) {
+        const xPos = -TRAY_W / 2 + WALL_T / 2 + i * ((TRAY_W - WALL_T) / 6);
+        if (i === 0 || i === 6) {
+          const side = new THREE.Mesh(new THREE.BoxGeometry(WALL_T + 1.2, TRAY_H, TRAY_D), matWhite);
+          side.position.set(xPos, TRAY_H / 2, 0);
+          grp.add(side);
+        } else {
+          const segs = 14;
+          const segD = (TRAY_D - WALL_T * 2) / segs;
+          for (let s = 0; s < segs; s++) {
+            const tNorm = s / (segs - 1);
+            const sCurveH = frontH + (TRAY_H - frontH) * (0.5 + 0.5 * Math.cos(Math.PI * tNorm));
+            const sWaveX = Math.sin(tNorm * Math.PI * 2) * 2.0;
+            const seg = new THREE.Mesh(new THREE.BoxGeometry(WALL_T, sCurveH, segD + 0.4), matWhite);
+            const zPos = -TRAY_D / 2 + WALL_T + (s + 0.5) * segD;
+            seg.position.set(xPos + sWaveX, sCurveH / 2, zPos);
+            grp.add(seg);
+          }
+        }
+      }
+
+      // 2 Pivot Bosses / Holes on Left & Right outer walls (at z = +14 and z = -14, y = 14)
+      if (includeVisualHoles) {
+        [-TRAY_W / 2 - 1, TRAY_W / 2 + 1].forEach(xSide => {
+          [-HOLE_OFFSET_Z, HOLE_OFFSET_Z].forEach(zHole => {
+            const boss = new THREE.Mesh(new THREE.CylinderGeometry(5.5, 5.5, 2.5, 20), matWhite);
+            boss.rotation.z = Math.PI / 2;
+            boss.position.set(xSide, HOLE_Y, zHole);
+            grp.add(boss);
+
+            const hole = new THREE.Mesh(new THREE.CylinderGeometry(3.1, 3.1, 3.2, 20), matHoleDark);
+            hole.rotation.z = Math.PI / 2;
+            hole.position.set(xSide, HOLE_Y, zHole);
+            grp.add(hole);
+          });
+        });
+      }
+      return grp;
+    }
+
+    // Build a Yellow Link Bar (length = 4 * 55 = 220mm center-to-center, total length 236mm)
+    // Origin (0,0,0) is at the bottom-most hole (Tier 0 pivot)
+    function createLinkBarMesh() {
+      const grp = new THREE.Group();
+      const totalSpan = 4 * STEP_PITCH; // 220mm
+      // Main bar body centered at totalSpan/2 along local Y
+      const body = new THREE.Mesh(new THREE.BoxGeometry(BAR_THICK, totalSpan, BAR_WIDTH), matYellow);
+      body.position.set(0, totalSpan / 2, 0);
+      grp.add(body);
+
+      // Rounded ends + 5 pivot hole rings
+      for (let i = 0; i < 5; i++) {
+        const yPos = i * STEP_PITCH;
+        const cap = new THREE.Mesh(new THREE.CylinderGeometry(BAR_WIDTH / 2, BAR_WIDTH / 2, BAR_THICK, 24), matYellow);
+        cap.rotation.z = Math.PI / 2;
+        cap.position.set(0, yPos, 0);
+        grp.add(cap);
+
+        const hole = new THREE.Mesh(new THREE.CylinderGeometry(3.1, 3.1, BAR_THICK + 0.6, 20), matHoleDark);
+        hole.rotation.z = Math.PI / 2;
+        hole.position.set(0, yPos, 0);
+        grp.add(hole);
+      }
+      return grp;
+    }
+
+    // Build a Pivot Pin or Locking Pin
+    function createPinMesh(isLockPin = false) {
+      const grp = new THREE.Group();
+      const mat = isLockPin ? matLockRed : matPinBlue;
+      const shaftLen = isLockPin ? 18 : 13;
+      const shaft = new THREE.Mesh(new THREE.CylinderGeometry(2.9, 2.9, shaftLen, 20), mat);
+      shaft.rotation.z = Math.PI / 2;
+      grp.add(shaft);
+
+      const head = new THREE.Mesh(new THREE.CylinderGeometry(5.2, 5.2, 2.4, 20), mat);
+      head.rotation.z = Math.PI / 2;
+      head.position.set(shaftLen / 2, 0, 0);
+      grp.add(head);
+
+      if (isLockPin) {
+        // Pull ring handle on locking pin
+        const ring = new THREE.Mesh(new THREE.TorusGeometry(4.5, 1.2, 12, 24), matLockRed);
+        ring.position.set(shaftLen / 2 + 4.5, 0, 0);
+        grp.add(ring);
+      } else {
+        // Snap-fit retention lip on the inner end
+        const lip = new THREE.Mesh(new THREE.CylinderGeometry(3.4, 2.9, 1.8, 20), mat);
+        lip.rotation.z = Math.PI / 2;
+        lip.position.set(-shaftLen / 2, 0, 0);
+        grp.add(lip);
+      }
+      return grp;
+    }
+
+    // Create groups for each view mode (0: Full Animated Assembly, 1: Tray, 2: Link Bars, 3: Pins)
+    const partGroups = {
+      0: new THREE.Group(),
+      1: new THREE.Group(),
+      2: new THREE.Group(),
+      3: new THREE.Group()
+    };
+
+    // --- Populate Part 0: Dynamic 5-Tier Folding Assembly ---
+    const dynamicTrays = [];
+    const dynamicBars = []; // [leftFront, leftRear, rightFront, rightRear]
+    const dynamicPins = []; // 20 pivot pins + 2 lock pins
+
+    for (let i = 0; i < 5; i++) {
+      const tMesh = createFoldingTrayMesh(false);
+      partGroups[0].add(tMesh);
+      dynamicTrays.push(tMesh);
+    }
+
+    const barXOffsets = [
+      { x: -TRAY_W / 2 - BAR_THICK / 2 - 1.2, zPivot: HOLE_OFFSET_Z, sideSign: -1 },  // Left Front Bar
+      { x: -TRAY_W / 2 - BAR_THICK / 2 - 7.8, zPivot: -HOLE_OFFSET_Z, sideSign: -1 }, // Left Rear Bar
+      { x: TRAY_W / 2 + BAR_THICK / 2 + 1.2, zPivot: HOLE_OFFSET_Z, sideSign: 1 },    // Right Front Bar
+      { x: TRAY_W / 2 + BAR_THICK / 2 + 7.8, zPivot: -HOLE_OFFSET_Z, sideSign: 1 }    // Right Rear Bar
+    ];
+
+    barXOffsets.forEach(cfg => {
+      const bMesh = createLinkBarMesh();
+      partGroups[0].add(bMesh);
+      dynamicBars.push({ mesh: bMesh, cfg });
+    });
+
+    // 20 Pivot Pins (5 tiers x 4 bars) + 2 Red Locking Stopper Pins
+    for (let i = 0; i < 5; i++) {
+      barXOffsets.forEach(cfg => {
+        const pMesh = createPinMesh(false);
+        if (cfg.sideSign < 0) pMesh.rotation.y = Math.PI;
+        partGroups[0].add(pMesh);
+        dynamicPins.push({ mesh: pMesh, tier: i, cfg, isLock: false });
+      });
+    }
+    // 2 Red Locking Pins on Tier 1 Left & Right
+    [-1, 1].forEach(sideSign => {
+      const lockMesh = createPinMesh(true);
+      if (sideSign < 0) lockMesh.rotation.y = Math.PI;
+      partGroups[0].add(lockMesh);
+      dynamicPins.push({ mesh: lockMesh, tier: 1, cfg: { x: sideSign * (TRAY_W / 2 + 6), zPivot: 0, sideSign }, isLock: true });
+    });
+
+    // --- Populate Part 1: Single Tray with 2 Side Pivot Holes ---
+    const singleTray = createFoldingTrayMesh(true);
+    singleTray.position.set(0, 15, 0);
+    partGroups[1].add(singleTray);
+
+    // --- Populate Part 2: 4 Yellow Link Bars Laid Flat ---
+    for (let b = 0; b < 4; b++) {
+      const flatBar = createLinkBarMesh();
+      flatBar.rotation.z = Math.PI / 2;
+      flatBar.rotation.y = Math.PI / 2;
+      flatBar.position.set((b - 1.5) * 28, 4, -110);
+      partGroups[2].add(flatBar);
+    }
+
+    // --- Populate Part 3: Set of 22 Pins (20 Blue Pivot Pins + 2 Red Lock Pins) ---
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 5; c++) {
+        const p = createPinMesh(false);
+        p.rotation.z = Math.PI / 2;
+        p.position.set((c - 2) * 24, 8, (r - 1.5) * 24);
+        partGroups[3].add(p);
+      }
+    }
+    [-1, 1].forEach(s => {
+      const lp = createPinMesh(true);
+      lp.rotation.z = Math.PI / 2;
+      lp.position.set(s * 24, 10, 65);
+      partGroups[3].add(lp);
+    });
+
+    Object.values(partGroups).forEach(g => {
+      g.traverse(obj => {
+        if (obj.isMesh) {
+          obj.castShadow = true;
+          obj.receiveShadow = true;
+        }
+      });
+      scene.add(g);
+    });
+
+    // Update 4-bar parallelogram folding angle (12 deg = folded flat, 50 deg = locked open, 65 deg = max steep)
+    function updateFoldAngle(degVal) {
+      const deg = Number(degVal);
+      const rad = (deg * Math.PI) / 180;
+      let statusText = `Đang mở (${deg}°)`;
+      if (deg <= 16) statusText = `Đã gập phẳng (${deg}°)`;
+      else if (deg >= 48 && deg <= 52) statusText = `Đang mở khóa chuẩn (${deg}°)`;
+      document.getElementById("angle-val").innerText = statusText;
+
+      // In a parallelogram linkage, each tier i (0..4) translates up by i*STEP_PITCH*sin(rad)
+      // and translates backward (-Z) by i*STEP_PITCH*cos(rad), while keeping tray rotation = 0 (strictly horizontal!)
+      for (let i = 0; i < 5; i++) {
+        const yStep = i * STEP_PITCH * Math.sin(rad);
+        const zStep = 70 - i * STEP_PITCH * Math.cos(rad);
+        dynamicTrays[i].position.set(0, yStep, zStep);
+      }
+
+      // Link bars pivot at Tier 0's front/rear hole and tilt backward by angle (90° - deg) from vertical
+      const tiltFromVertical = Math.PI / 2 - rad;
+      dynamicBars.forEach(({ mesh, cfg }) => {
+        const baseZ = 70 + cfg.zPivot;
+        const baseY = HOLE_Y;
+        mesh.position.set(cfg.x, baseY, baseZ);
+        mesh.rotation.x = -tiltFromVertical;
+      });
+
+      // Update pins positions to match holes
+      dynamicPins.forEach(p => {
+        const yStep = p.tier * STEP_PITCH * Math.sin(rad) + HOLE_Y;
+        const zStep = 70 - p.tier * STEP_PITCH * Math.cos(rad) + p.cfg.zPivot;
+        p.mesh.position.set(p.cfg.x, yStep, zStep);
+      });
+    }
+
+    let activePart = 0;
+
+    function showPart(partId) {
+      activePart = partId;
+      document.querySelectorAll(".part-btn").forEach(b => b.classList.remove("active"));
+      const btn = document.getElementById("btn-part-" + partId);
+      if (btn) btn.classList.add("active");
+
+      Object.entries(partGroups).forEach(([id, grp]) => {
+        grp.visible = (Number(id) === partId);
+      });
+
+      const sp = SPECS[partId];
+      if (sp) {
+        document.getElementById("spec-title").innerText = sp.title;
+        document.getElementById("hud-title").innerText = sp.hud;
+        document.getElementById("spec-table").innerHTML = sp.rows
+          .map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`)
+          .join("");
+        document.getElementById("spec-note").innerHTML = sp.note;
+      }
+
+      if (partId === 0) {
+        controls.target.set(0, 85, -35);
+        camera.position.set(275, 195, 310);
+      } else {
+        controls.target.set(0, 20, 0);
+        camera.position.set(200, 150, 210);
+      }
+    }
+
+    function exportCurrentSTL() {
+      const exporter = new THREE.STLExporter();
+      const targetGroup = partGroups[activePart];
+      const result = exporter.parse(targetGroup, { binary: true });
+      const blob = new Blob([result], { type: "application/octet-stream" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = (SPECS[activePart] && SPECS[activePart].file) || "Ke_Gap_Mo_5_Tang.stl";
+      link.click();
+    }
+
+    window.addEventListener("resize", () => {
+      camera.aspect = (window.innerWidth - 420) / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth - 420, window.innerHeight);
+    });
+
+    let cadCamMode = "Manual";
+    let autoFoldDemo = false;
+    let cadClockStart = performance.now();
+
+    document.getElementById("cad-cam-shot")?.addEventListener("change", (e) => {
+      cadCamMode = e.target.value || "Manual";
+      cadClockStart = performance.now();
+    });
+
+    document.getElementById("btn-auto-fold-demo")?.addEventListener("click", (e) => {
+      autoFoldDemo = !autoFoldDemo;
+      e.currentTarget.textContent = autoFoldDemo ? "⏸ Dừng Gập/Mở Demo" : "🔄 Tự Động Gập/Mở Demo";
+    });
+
+    renderer.domElement.addEventListener("pointerdown", () => {
+      if (cadCamMode !== "Manual") {
+        cadCamMode = "Manual";
+        const sel = document.getElementById("cad-cam-shot");
+        if (sel) sel.value = "Manual";
+      }
+    });
+
+    function applyCad15Camera(tSec) {
+      const R = 415;
+      const tx = 0, ty = activePart === 0 ? 85 : 20, tz = activePart === 0 ? -35 : 0;
+      const phase = (tSec * 0.55) % (Math.PI * 2);
+      const wave = Math.sin(phase);
+      const u = 0.5 - 0.5 * Math.cos(phase);
+      camera.up.set(0, 1, 0);
+      camera.fov = 42;
+
+      switch (cadCamMode) {
+        case "AerialOrbit": {
+          const az = tSec * 0.65;
+          camera.position.set(tx + R * 0.92 * Math.sin(az), ty + 195, tz + R * 0.92 * Math.cos(az));
+          controls.target.set(tx, ty, tz);
+          break;
+        }
+        case "ArcShot": {
+          const az = wave * 0.95;
+          camera.position.set(tx + R * 0.9 * Math.sin(az), ty + 45, tz + R * 0.9 * Math.cos(az));
+          controls.target.set(tx, ty, tz);
+          break;
+        }
+        case "Drone": {
+          const dist = R * (0.75 + 0.85 * u);
+          camera.position.set(tx + wave * 60, ty + 40 + 260 * u, tz + dist);
+          controls.target.set(tx, ty, tz);
+          break;
+        }
+        case "TruckLeft": {
+          const sx = wave * 180;
+          camera.position.set(tx + sx, ty + 35, tz + R * 0.85);
+          controls.target.set(tx + sx * 0.8, ty, tz);
+          break;
+        }
+        case "CameraRoll": {
+          const roll = wave * 0.48;
+          camera.position.set(tx + 120, ty + 55, tz + R * 0.85);
+          camera.up.set(Math.sin(roll), Math.cos(roll), 0);
+          controls.target.set(tx, ty, tz);
+          break;
+        }
+        case "Pan": {
+          camera.position.set(tx + 160, ty + 65, tz + R * 0.82);
+          controls.target.set(tx + wave * 130, ty, tz);
+          break;
+        }
+        case "Crane": {
+          camera.position.set(tx + 140, ty + (1 - u) * 240 - 20, tz + R * 0.82);
+          controls.target.set(tx, ty, tz);
+          break;
+        }
+        case "DollyZoom": {
+          const fov = 18 + 38 * (1 - u);
+          const dist = (R * 0.85 * Math.tan((42 * Math.PI) / 360)) / Math.tan((fov * Math.PI) / 360);
+          camera.fov = fov;
+          camera.position.set(tx + dist * 0.45, ty + 40, tz + dist * 0.88);
+          controls.target.set(tx, ty, tz);
+          break;
+        }
+        case "Tilt": {
+          camera.position.set(tx + 140, ty - 20, tz + R * 0.78);
+          controls.target.set(tx, ty - 60 + u * 150, tz);
+          break;
+        }
+        case "DollyIn": {
+          const dist = R * (1.15 - 0.52 * u);
+          camera.position.set(tx + dist * 0.55, ty + 35, tz + dist * 0.82);
+          controls.target.set(tx, ty, tz);
+          break;
+        }
+        case "OverheadRotation": {
+          const spin = tSec * 0.7;
+          camera.position.set(tx, ty + R * 1.15, tz);
+          camera.up.set(Math.sin(spin), 0, Math.cos(spin));
+          controls.target.set(tx, ty, tz);
+          break;
+        }
+        case "DollyOut": {
+          const dist = R * (0.62 + 0.78 * u);
+          camera.position.set(tx + dist * 0.55, ty + 55 + 80 * u, tz + dist * 0.82);
+          controls.target.set(tx, ty, tz);
+          break;
+        }
+        case "Pedestal": {
+          const yShift = (u - 0.4) * 120;
+          camera.position.set(tx + 180, ty + yShift, tz + R * 0.78);
+          controls.target.set(tx, ty + yShift, tz);
+          break;
+        }
+        case "LowAngleArc": {
+          const az = wave * 0.85;
+          camera.position.set(tx + R * 0.82 * Math.sin(az), 12, tz + R * 0.82 * Math.cos(az));
+          controls.target.set(tx, ty + 25, tz);
+          break;
+        }
+        case "LateralReveal": {
+          camera.fov = 56;
+          const az = -0.65 + u * 1.3;
+          camera.position.set(tx + R * 0.76 * Math.sin(az), ty + 28, tz + R * 0.76 * Math.cos(az));
+          controls.target.set(tx, ty, tz);
+          break;
+        }
+      }
+      camera.updateProjectionMatrix();
+    }
+
+    updateFoldAngle(50);
+    showPart(0);
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const tSec = (performance.now() - cadClockStart) / 1000;
+      if (autoFoldDemo && activePart === 0) {
+        const u = 0.5 - 0.5 * Math.cos(tSec * 1.1);
+        const deg = Math.round(12 + u * (62 - 12));
+        const slider = document.getElementById("fold-slider");
+        if (slider) slider.value = deg;
+        updateFoldAngle(deg);
+      }
+      if (cadCamMode !== "Manual") {
+        applyCad15Camera(tSec);
+      }
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</body>
+</html>

@@ -1,22 +1,45 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <link rel="icon" href="data:,">
-  <title>MakerWorld 3D Studio — Chợ Mô Hình 3D & Tùy Biến Cá Nhân Hóa Trực Tuyến (Bambu AMS / CAD)</title>
+  <title>MakerWorld 3D Studio — Cộng Đồng In 3D, MakerLab 4 Vũ Khí & Chợ Mô Hình Bambu AMS</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/STLExporter.js"></script>
   <style>
-    :root {
+    /* BẢNG MÀU CHUẨN BAMBU LAB MAKERWORLD (MẶC ĐỊNH SÁNG + CHẾ ĐỘ TỐI) */
+    :root, [data-theme="light"] {
+      --mw-green: #00ae42;
+      --mw-green-hover: #00993a;
+      --mw-green-soft: rgba(0, 174, 66, 0.10);
+      --mw-bg: #f5f6f8;
+      --mw-surface: #ffffff;
+      --mw-surface-2: #f0f2f5;
+      --mw-border: #e4e7ed;
+      --mw-text: #18191c;
+      --mw-text-sub: #61666d;
+      --mw-muted: #9499a0;
+      --mw-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+      --mw-shadow-hover: 0 10px 28px rgba(0, 0, 0, 0.12);
+      --mw-thumb-bg: linear-gradient(180deg, #eef2f6 0%, #e2e8f0 100%);
+    }
+
+    [data-theme="dark"] {
       --mw-green: #00ae42;
       --mw-green-hover: #00c84d;
+      --mw-green-soft: rgba(0, 174, 66, 0.16);
       --mw-bg: #0f1115;
-      --mw-card: #181b22;
-      --mw-card-hover: #1f242d;
+      --mw-surface: #181b22;
+      --mw-surface-2: #222630;
       --mw-border: #2a303c;
       --mw-text: #f3f4f6;
+      --mw-text-sub: #cbd5e1;
       --mw-muted: #9ca3af;
-      --mw-accent: #38bdf8;
-      --mw-gold: #facc15;
+      --mw-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+      --mw-shadow-hover: 0 12px 30px rgba(0, 0, 0, 0.55);
+      --mw-thumb-bg: radial-gradient(circle at 50% 45%, #1e293b 0%, #090d16 100%);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -25,18 +48,23 @@
       min-height: 100vh;
       background: var(--mw-bg);
       color: var(--mw-text);
-      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
       overflow-x: hidden;
+      transition: background 0.2s, color 0.2s;
     }
 
-    /* TOP NAVBAR CHUẨN MAKERWORLD */
-    .mw-nav {
+    /* HEADER CHUẨN MAKERWORLD.COM */
+    .mw-header {
       position: sticky;
       top: 0;
-      z-index: 100;
-      background: rgba(15, 17, 21, 0.94);
-      backdrop-filter: blur(12px);
+      z-index: 120;
+      background: var(--mw-surface);
       border-bottom: 1px solid var(--mw-border);
+      box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+    }
+    .mw-header-top {
+      max-width: 1440px;
+      margin: 0 auto;
       padding: 10px 20px;
       display: flex;
       align-items: center;
@@ -44,103 +72,432 @@
       gap: 14px;
       flex-wrap: wrap;
     }
-    .mw-brand {
+    .mw-logo {
       display: flex;
       align-items: center;
       gap: 10px;
       text-decoration: none;
-      color: #fff;
+      color: var(--mw-text);
       cursor: pointer;
     }
-    .mw-logo-box {
+    .mw-logo-mark {
       width: 36px;
       height: 36px;
       border-radius: 8px;
-      background: linear-gradient(135deg, #00ae42, #059669);
+      background: var(--mw-green);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 900;
-      font-size: 18px;
       color: #fff;
-      box-shadow: 0 4px 12px rgba(0, 174, 66, 0.35);
-    }
-    .mw-brand-title {
-      font-size: 18px;
       font-weight: 900;
-      letter-spacing: -0.3px;
+      font-size: 20px;
+    }
+    .mw-logo-text {
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
       display: flex;
       align-items: center;
       gap: 6px;
     }
-    .mw-brand-badge {
+    .mw-logo-sub {
       font-size: 10px;
-      background: rgba(0, 174, 66, 0.18);
-      color: #4ade80;
-      border: 1px solid rgba(0, 174, 66, 0.4);
+      font-weight: 800;
       padding: 2px 6px;
       border-radius: 4px;
-      font-weight: 700;
+      background: var(--mw-green-soft);
+      color: var(--mw-green);
     }
 
-    .mw-search-wrap {
+    .mw-search-bar {
       flex: 1;
-      max-width: 420px;
+      max-width: 480px;
       min-width: 200px;
       position: relative;
     }
-    .mw-search-input {
+    .mw-search-bar input {
       width: 100%;
-      background: #181b22;
-      border: 1px solid var(--mw-border);
-      color: #fff;
-      padding: 8px 14px 8px 34px;
-      border-radius: 20px;
-      font-size: 13px;
+      background: var(--mw-surface-2);
+      border: 1.5px solid transparent;
+      color: var(--mw-text);
+      padding: 9px 16px 9px 38px;
+      border-radius: 999px;
+      font-size: 13.5px;
       outline: none;
-      transition: border-color 0.2s;
+      transition: all 0.2s;
     }
-    .mw-search-input:focus {
+    .mw-search-bar input:focus {
+      background: var(--mw-surface);
       border-color: var(--mw-green);
+      box-shadow: 0 0 0 3px rgba(0, 174, 66, 0.12);
     }
-    .mw-search-icon {
+    .mw-search-bar .icon {
       position: absolute;
-      left: 12px;
+      left: 14px;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 13px;
       color: var(--mw-muted);
+      font-size: 14px;
     }
 
-    .mw-nav-links {
+    .mw-header-actions {
       display: flex;
       align-items: center;
       gap: 8px;
       flex-wrap: wrap;
     }
-    .mw-nav-btn {
-      background: transparent;
-      border: 1px solid transparent;
-      color: #d1d5db;
+    .mw-theme-btn {
+      background: var(--mw-surface-2);
+      border: 1px solid var(--mw-border);
+      color: var(--mw-text);
       padding: 7px 12px;
-      border-radius: 8px;
+      border-radius: 999px;
       font-size: 12.5px;
       font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 6px;
-      transition: all 0.15s;
+      gap: 5px;
     }
-    .mw-nav-btn:hover, .mw-nav-btn.active {
-      background: rgba(0, 174, 66, 0.14);
-      color: #4ade80;
-      border-color: rgba(0, 174, 66, 0.35);
-    }
-    .mw-cta-btn {
+    .mw-btn-green {
       background: var(--mw-green);
       color: #fff;
       border: none;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s;
+    }
+    .mw-btn-green:hover {
+      background: var(--mw-green-hover);
+    }
+    .mw-btn-outline {
+      background: var(--mw-surface);
+      color: var(--mw-text);
+      border: 1px solid var(--mw-border);
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .mw-btn-outline:hover {
+      border-color: var(--mw-green);
+      color: var(--mw-green);
+    }
+
+    /* SUB-NAV TABS CHUẨN MAKERWORLD */
+    .mw-subnav {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      overflow-x: auto;
+      border-top: 1px solid var(--mw-border);
+    }
+    .mw-subnav-item {
+      padding: 11px 4px;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--mw-text-sub);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .mw-subnav-item:hover, .mw-subnav-item.active {
+      color: var(--mw-green);
+      border-bottom-color: var(--mw-green);
+    }
+    .mw-hot-tag {
+      background: #ff4d4f;
+      color: #fff;
+      font-size: 9.5px;
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+
+    /* MAIN WRAPPER */
+    .mw-main {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 18px 20px 64px;
+    }
+
+    /* KHU VỰC TOP SPOTLIGHT: MAKERLAB 4 VŨ KHÍ HẠNG NẶNG (GIỐNG MAKERWORLD MAKERLAB BANNER) */
+    .mw-makerlab-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+    .ml-tool-card {
+      background: var(--mw-surface);
+      border: 1.5px solid var(--mw-border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: var(--mw-shadow);
+      transition: all 0.18s;
+    }
+    .ml-tool-card:hover, .ml-tool-card.active {
+      border-color: var(--mw-green);
+      transform: translateY(-2px);
+      box-shadow: var(--mw-shadow-hover);
+      background: var(--mw-green-soft);
+    }
+    .ml-tool-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+      color: #fff;
+    }
+    .ml-tool-info h3 {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--mw-text);
+      margin-bottom: 3px;
+    }
+    .ml-tool-info p {
+      font-size: 11.5px;
+      color: var(--mw-text-sub);
+      line-height: 1.35;
+    }
+
+    /* FILTER PILLS & SORT BAR */
+    .mw-filter-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .mw-cat-pills {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      max-width: 100%;
+    }
+    .mw-cat-pill {
+      background: var(--mw-surface);
+      border: 1px solid var(--mw-border);
+      color: var(--mw-text-sub);
+      padding: 7px 15px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .mw-cat-pill:hover, .mw-cat-pill.active {
+      background: var(--mw-green);
+      border-color: var(--mw-green);
+      color: #fff;
+    }
+
+    /* MODEL CARDS GRID (CHUẨN MAKERWORLD 4 CỘT) */
+    .mw-models-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(285px, 1fr));
+      gap: 18px;
+    }
+    .mw-model-card {
+      background: var(--mw-surface);
+      border: 1px solid var(--mw-border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--mw-shadow);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+    }
+    .mw-model-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--mw-shadow-hover);
+      border-color: var(--mw-green);
+    }
+    .mw-thumb {
+      position: relative;
+      height: 192px;
+      background: var(--mw-thumb-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .mw-thumb svg {
+      width: 86%;
+      height: 82%;
+      transition: transform 0.25s;
+    }
+    .mw-model-card:hover .mw-thumb svg {
+      transform: scale(1.05);
+    }
+    .mw-tag-customizable {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: var(--mw-green);
+      color: #fff;
+      font-size: 10.5px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 2px 8px rgba(0, 174, 66, 0.35);
+    }
+    .mw-tag-ams {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(24, 25, 28, 0.82);
+      color: #fff;
+      padding: 3px 8px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10.5px;
+      font-weight: 700;
+    }
+    .mw-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.5);
+    }
+    .mw-tag-time {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(24, 25, 28, 0.82);
+      color: #fff;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 10.5px;
+      font-weight: 700;
+    }
+
+    .mw-card-content {
+      padding: 13px 14px 14px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .mw-card-name {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: var(--mw-text);
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .mw-card-sub {
+      font-size: 12px;
+      color: var(--mw-text-sub);
+      line-height: 1.4;
+      margin-top: 4px;
+    }
+    .mw-author-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11.5px;
+      color: var(--mw-muted);
+      padding-top: 6px;
+      border-top: 1px solid var(--mw-border);
+    }
+    .mw-author-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 700;
+      color: var(--mw-text-sub);
+    }
+    .mw-avatar {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--mw-green);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 900;
+    }
+    .mw-metrics {
+      display: flex;
+      gap: 8px;
+      font-weight: 700;
+    }
+    .mw-card-btn-row {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 7px;
+      margin-top: 4px;
+    }
+
+    /* TRẠM MAKERLAB ĐA NĂNG (4 TAB VŨ KHÍ HẠNG NẶNG) */
+    #makerlab-workspace {
+      margin-top: 30px;
+      background: var(--mw-surface);
+      border: 2px solid var(--mw-green);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--mw-shadow-hover);
+    }
+    .ml-bar {
+      background: var(--mw-surface-2);
+      border-bottom: 1px solid var(--mw-border);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .ml-tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .ml-tab-btn {
+      background: var(--mw-surface);
+      border: 1px solid var(--mw-border);
+      color: var(--mw-text);
       padding: 8px 14px;
       border-radius: 8px;
       font-size: 12.5px;
@@ -149,433 +506,80 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      transition: background 0.15s;
-    }
-    .mw-cta-btn:hover {
-      background: var(--mw-green-hover);
-    }
-    .mw-cart-btn {
-      background: #1e293b;
-      border: 1px solid #334155;
-      color: #facc15;
-      padding: 7px 12px;
-      border-radius: 8px;
-      font-size: 12.5px;
-      font-weight: 800;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    /* CONTAINER CHÍNH */
-    .mw-container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 18px 20px 60px;
-    }
-
-    /* HERO BANNER MAKERLAB PARAMETRIC */
-    .mw-hero {
-      background: linear-gradient(125deg, #111827 0%, #064e3b 52%, #0f172a 100%);
-      border: 1px solid rgba(0, 174, 66, 0.4);
-      border-radius: 16px;
-      padding: 24px 28px;
-      display: grid;
-      grid-template-columns: 1.35fr 1fr;
-      gap: 24px;
-      align-items: center;
-      margin-bottom: 22px;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
-    }
-    .mw-hero-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(0, 174, 66, 0.22);
-      border: 1px solid #00ae42;
-      color: #4ade80;
-      font-size: 11px;
-      font-weight: 800;
-      padding: 4px 10px;
-      border-radius: 999px;
-      margin-bottom: 10px;
-    }
-    .mw-hero h1 {
-      font-size: 26px;
-      font-weight: 900;
-      line-height: 1.25;
-      color: #fff;
-      margin-bottom: 10px;
-    }
-    .mw-hero p {
-      font-size: 13.5px;
-      color: #cbd5e1;
-      line-height: 1.55;
-      margin-bottom: 16px;
-    }
-    .mw-hero-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .mw-hero-stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      background: rgba(15, 23, 42, 0.72);
-      border: 1px solid rgba(148, 163, 184, 0.2);
-      border-radius: 12px;
-      padding: 14px;
-    }
-    .mw-stat-item {
-      text-align: center;
-      padding: 8px 6px;
-      background: rgba(30, 41, 59, 0.55);
-      border-radius: 8px;
-    }
-    .mw-stat-val {
-      font-size: 18px;
-      font-weight: 900;
-      color: #4ade80;
-    }
-    .mw-stat-lbl {
-      font-size: 11px;
-      color: #94a3b8;
-      margin-top: 3px;
-    }
-
-    /* THANH LỌC DANH MỤC (CATEGORY PILLS) */
-    .mw-filter-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 18px;
-      flex-wrap: wrap;
-    }
-    .mw-pills {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 4px;
-      max-width: 100%;
-    }
-    .mw-pill {
-      background: var(--mw-card);
-      border: 1px solid var(--mw-border);
-      color: #d1d5db;
-      padding: 7px 14px;
-      border-radius: 999px;
-      font-size: 12.5px;
-      font-weight: 700;
-      cursor: pointer;
-      white-space: nowrap;
       transition: all 0.15s;
     }
-    .mw-pill:hover, .mw-pill.active {
+    .ml-tab-btn.active {
       background: var(--mw-green);
       border-color: var(--mw-green);
       color: #fff;
     }
 
-    /* LƯỚI THẺ SẢN PHẨM 3D CHUẨN MAKERWORLD */
-    .mw-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(295px, 1fr));
-      gap: 18px;
+    .ml-pane {
+      display: none;
     }
-    .mw-card {
-      background: var(--mw-card);
-      border: 1px solid var(--mw-border);
-      border-radius: 14px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.18s, border-color 0.18s, box-shadow 0.18s;
-    }
-    .mw-card:hover {
-      transform: translateY(-3px);
-      border-color: var(--mw-green);
-      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
-    }
-    .mw-card-thumb {
-      position: relative;
-      height: 190px;
-      background: radial-gradient(circle at 50% 45%, #1e293b 0%, #090d16 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      border-bottom: 1px solid var(--mw-border);
-    }
-    .mw-card-thumb svg {
-      width: 88%;
-      height: 84%;
-      transition: transform 0.25s;
-    }
-    .mw-card:hover .mw-card-thumb svg {
-      transform: scale(1.05);
-    }
-    .mw-badge-top-left {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: rgba(0, 174, 66, 0.92);
-      color: #fff;
-      font-size: 10.5px;
-      font-weight: 800;
-      padding: 3px 8px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .mw-badge-top-right {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(15, 23, 42, 0.88);
-      border: 1px solid #334155;
-      color: #facc15;
-      font-size: 10.5px;
-      font-weight: 800;
-      padding: 3px 8px;
-      border-radius: 6px;
-    }
-    .mw-ams-dots {
-      position: absolute;
-      bottom: 10px;
-      left: 10px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      background: rgba(15, 23, 42, 0.82);
-      padding: 3px 8px;
-      border-radius: 999px;
-      border: 1px solid #334155;
-    }
-    .mw-ams-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.4);
-    }
-    .mw-print-meta {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
-      background: rgba(15, 23, 42, 0.85);
-      color: #cbd5e1;
-      font-size: 10.5px;
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 6px;
-      border: 1px solid #334155;
-    }
-
-    .mw-card-body {
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      justify-content: space-between;
-      gap: 10px;
-    }
-    .mw-card-title {
-      font-size: 14.5px;
-      font-weight: 800;
-      color: #fff;
-      line-height: 1.35;
-    }
-    .mw-card-desc {
-      font-size: 12px;
-      color: var(--mw-muted);
-      line-height: 1.45;
-      margin-top: 4px;
-    }
-    .mw-card-price-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-top: 8px;
-      border-top: 1px dashed #2a303c;
-    }
-    .mw-price-tag {
-      font-size: 15px;
-      font-weight: 900;
-      color: #4ade80;
-    }
-    .mw-price-sub {
-      font-size: 10.5px;
-      color: #9ca3af;
-      display: block;
-      font-weight: 500;
-    }
-    .mw-stats-mini {
-      display: flex;
-      gap: 10px;
-      font-size: 11.5px;
-      color: #94a3b8;
-      font-weight: 600;
-    }
-    .mw-card-actions {
-      display: grid;
-      grid-template-columns: 1.4fr 1fr;
-      gap: 7px;
-    }
-    .mw-btn-cust {
-      background: var(--mw-green);
-      color: #fff;
-      border: none;
-      padding: 8px 10px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 800;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      transition: background 0.15s;
-    }
-    .mw-btn-cust:hover {
-      background: var(--mw-green-hover);
-    }
-    .mw-btn-order {
-      background: #1e293b;
-      color: #f8fafc;
-      border: 1px solid #334155;
-      padding: 8px 10px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-    }
-    .mw-btn-order:hover {
-      border-color: #38bdf8;
-      color: #38bdf8;
-    }
-
-    /* KHUNG NHÚNG TRỰC TIẾP MAKERLAB PARAMETRIC CUSTOMIZER (STUDIO 3D CAD) */
-    #customizer-section {
-      margin-top: 28px;
-      background: #14171f;
-      border: 2px solid var(--mw-green);
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
-    }
-    .cust-header {
-      background: linear-gradient(90deg, #064e3b 0%, #111827 100%);
-      padding: 12px 18px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-      border-bottom: 1px solid #2a303c;
-    }
-    .cust-title-wrap {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .cust-badge {
-      background: #00ae42;
-      color: #fff;
-      font-size: 11px;
-      font-weight: 900;
-      padding: 3px 8px;
-      border-radius: 6px;
-    }
-    .cust-title {
-      font-size: 15px;
-      font-weight: 900;
-      color: #fff;
-    }
-    .cust-quote-bar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      background: rgba(15, 23, 42, 0.85);
-      padding: 6px 12px;
-      border-radius: 10px;
-      border: 1px solid #334155;
-    }
-    .quote-chip {
-      font-size: 12px;
-      color: #cbd5e1;
-      font-weight: 700;
-    }
-    .quote-chip b {
-      color: #4ade80;
-    }
-    .cust-iframe-wrap {
-      width: 100%;
-      height: 760px;
-      position: relative;
-      background: #090d16;
-    }
-    .cust-iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
+    .ml-pane.active {
       display: block;
     }
 
-    /* BẢNG TÍNH NĂNG MỞ RỘNG TỪ 66+ REPO */
-    .mw-roadmap {
-      margin-top: 32px;
-      background: var(--mw-card);
-      border: 1px solid var(--mw-border);
-      border-radius: 16px;
-      padding: 22px;
+    /* Bố cục cho Vũ khí 2, 3, 4 (Sidebar trái + Viewport 3D phải) */
+    .weapon-split {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      min-height: 580px;
     }
-    .mw-roadmap h2 {
-      font-size: 18px;
+    .weapon-ctrl {
+      padding: 18px;
+      border-right: 1px solid var(--mw-border);
+      background: var(--mw-surface);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .weapon-ctrl h3 {
+      font-size: 15px;
       font-weight: 900;
-      color: #fff;
-      margin-bottom: 6px;
+      color: var(--mw-green);
+    }
+    .weapon-view {
+      background: #0d1117;
+      position: relative;
+      min-height: 520px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      justify-content: center;
     }
-    .mw-roadmap-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 14px;
-      margin-top: 14px;
-    }
-    .mw-feat-box {
-      background: #12151c;
-      border: 1px solid #262c3a;
-      border-radius: 10px;
-      padding: 14px;
-    }
-    .mw-feat-box h4 {
-      font-size: 13.5px;
-      color: #38bdf8;
-      margin-bottom: 6px;
-    }
-    .mw-feat-box p {
+    .w-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
       font-size: 12px;
-      color: #9ca3af;
-      line-height: 1.45;
+      font-weight: 700;
+      color: var(--mw-text-sub);
+    }
+    .w-field input[type="text"], .w-field select, .w-field input[type="file"] {
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--mw-border);
+      background: var(--mw-surface-2);
+      color: var(--mw-text);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .quote-result-card {
+      background: var(--mw-green-soft);
+      border: 1px solid var(--mw-green);
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 12.5px;
+      line-height: 1.6;
     }
 
-    /* MODAL GIỎ ĐẶT IN & BÁO GIÁ TỰ ĐỘNG */
+    /* MODAL ĐƠN ĐẶT IN */
     .mw-modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.76);
-      backdrop-filter: blur(5px);
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(4px);
       z-index: 300;
       display: none;
       align-items: center;
@@ -583,241 +587,332 @@
       padding: 16px;
     }
     .mw-modal {
-      background: #181b22;
-      border: 1px solid #334155;
+      background: var(--mw-surface);
+      border: 1px solid var(--mw-border);
       border-radius: 16px;
       max-width: 560px;
       width: 100%;
       padding: 22px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.7);
-    }
-    .mw-modal h3 {
-      font-size: 17px;
-      font-weight: 900;
-      color: #4ade80;
-      margin-bottom: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .order-list {
-      max-height: 260px;
-      overflow-y: auto;
-      margin-bottom: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.35);
     }
     .order-item {
-      background: #0f1115;
-      border: 1px solid #2a303c;
+      background: var(--mw-surface-2);
+      border: 1px solid var(--mw-border);
       border-radius: 8px;
       padding: 10px 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 10px;
+      margin-bottom: 8px;
     }
 
     @media (max-width: 1024px) {
-      .mw-hero {
-        grid-template-columns: 1fr;
-        padding: 18px;
+      .mw-makerlab-strip {
+        grid-template-columns: repeat(2, 1fr);
       }
-      .cust-iframe-wrap {
-        height: 820px;
+      .weapon-split {
+        grid-template-columns: 1fr;
+      }
+      .weapon-view {
+        order: -1;
+        min-height: 380px;
       }
     }
     @media (max-width: 600px) {
-      .mw-nav {
-        padding: 10px 12px;
-      }
-      .mw-container {
-        padding: 12px 12px 48px;
-      }
-      .mw-hero h1 {
-        font-size: 20px;
-      }
-      .mw-hero-stats {
-        grid-template-columns: 1fr 1fr 1fr;
-        padding: 8px;
-      }
-      .mw-grid {
+      .mw-makerlab-strip {
         grid-template-columns: 1fr;
       }
-      .cust-iframe-wrap {
-        height: 860px;
+      .mw-header-top {
+        padding: 8px 12px;
+      }
+      .mw-main {
+        padding: 12px 12px 48px;
+      }
+      .mw-models-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- 1. THANH ĐIỀU HƯỚNG CHUẨN BAMBU MAKERWORLD -->
-  <header class="mw-nav">
-    <div class="mw-brand" onclick="window.scrollTo({top:0, behavior:'smooth'})">
-      <div class="mw-logo-box">M</div>
-      <div>
-        <div class="mw-brand-title">
-          MakerWorld 3D
-          <span class="mw-brand-badge">PARAMETRIC & AMS STORE</span>
+  <!-- 1. HEADER CHUẨN BAMBU MAKERWORLD (CÓ ĐỔI GIAO DIỆN SÁNG / TỐI) -->
+  <header class="mw-header">
+    <div class="mw-header-top">
+      <div class="mw-logo" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+        <div class="mw-logo-mark">M</div>
+        <div>
+          <div class="mw-logo-text">
+            MakerWorld
+            <span class="mw-logo-sub">BY GÓC NHỎ 3D</span>
+          </div>
         </div>
-        <div style="font-size:10.5px; color:#9ca3af;">Chợ Mô Hình In 3D • Tùy Chỉnh Chữ Trực Tuyến • Xuất .3MF/.STL/.DXF</div>
+      </div>
+
+      <div class="mw-search-bar">
+        <span class="icon">🔍</span>
+        <input type="text" id="mw-search" placeholder="Tìm mô hình 3D, móc khóa R1, biển số xe, kệ rồng, bảng QR..." oninput="renderModelsGrid()">
+      </div>
+
+      <div class="mw-header-actions">
+        <button class="mw-theme-btn" id="theme-toggle-btn" onclick="toggleLightDarkTheme()">
+          🌙 Chế Độ Tối
+        </button>
+        <button class="mw-btn-outline" onclick="switchMakerLabWeapon('stl')">
+          🔪 Báo Giá File .STL
+        </button>
+        <button class="mw-btn-outline" onclick="openOrderModal()">
+          🛒 Đơn Đặt In (<span id="cart-count">1</span>)
+        </button>
+        <button class="mw-btn-green" onclick="switchMakerLabWeapon('keychain')">
+          ⚡ Tạo Mẫu Cá Nhân Hóa
+        </button>
       </div>
     </div>
 
-    <div class="mw-search-wrap">
-      <span class="mw-search-icon">🔍</span>
-      <input type="text" id="mw-search" class="mw-search-input" placeholder="Tìm mẫu móc khóa R1, biển số xe, thẻ QR, bảng tên 3D..." oninput="filterModels()">
-    </div>
-
-    <div class="mw-nav-links">
-      <button class="mw-nav-btn active" onclick="scrollToSection('grid-section')">🔥 Kệ Mẫu 3D (Explore)</button>
-      <button class="mw-nav-btn" onclick="scrollToSection('customizer-section')">🛠️ MakerLab Tùy Biến 3D</button>
-      <button class="mw-nav-btn" onclick="scrollToSection('roadmap-section')">🚀 Tiện Ích 2D➔3D & Slicer</button>
-      <button class="mw-cart-btn" onclick="openOrderModal()">
-        🛒 Đơn Đặt In (<span id="cart-count">1</span>)
-      </button>
-      <button class="mw-cta-btn" onclick="openCustomizerWithPreset('r1_default', 'Móc Khóa Racing Logo R-u-1-D')">
-        ⚡ Tùy Chỉnh 3D Ngay
-      </button>
-    </div>
+    <!-- THANH TAB NGANG CHUẨN MAKERWORLD -->
+    <nav class="mw-subnav">
+      <div class="mw-subnav-item active" onclick="scrollToSection('models-section')">🔥 Xu Hướng (Trending Models)</div>
+      <div class="mw-subnav-item" onclick="switchMakerLabWeapon('keychain')">
+        🛠️ MakerLab: Chỉnh Chữ & Móc Khóa 3D <span class="mw-hot-tag">HOT</span>
+      </div>
+      <div class="mw-subnav-item" onclick="switchMakerLabWeapon('relief')">🖼️ Tạo Ảnh 2D ➔ Khối Nổi 3D</div>
+      <div class="mw-subnav-item" onclick="switchMakerLabWeapon('qr')">📱 Tạo Bảng QR / NFC 3D</div>
+      <div class="mw-subnav-item" onclick="switchMakerLabWeapon('stl')">📐 Đo & Báo Giá Tự Động (.STL Slicer)</div>
+    </nav>
   </header>
 
-  <main class="mw-container">
-    <!-- 2. HERO BANNER MAKERLAB PARAMETRIC -->
-    <section class="mw-hero">
-      <div>
-        <div class="mw-hero-tag">⚡ MAKERLAB PARAMETRIC ENGINE • BAMBU STUDIO AMS V4</div>
-        <h1>Khám Phá Mẫu 3D & Tự Tay Cá Nhân Hóa Móc Khóa, Biển Số, Logo Trực Tuyến</h1>
-        <p>
-          Giống hệt <b>Bambu Lab MakerWorld (Make My Sign / Parametric Model Maker)</b>: Khách chọn bất kỳ phôi mẫu nào trên kệ ➔ Bấm <b>"Tùy Chỉnh 3D"</b> để đổi từng chữ, chỉnh độ sắc/bo góc R, phối 4 màu nhựa AMS, khắc Tên/SĐT mặt sau ➔ Tải ngay file <b>.3MF / .STL / .DXF liền khối</b> hoặc bấm <b>Đặt Xưởng In</b> báo giá tự động!
-        </p>
-        <div class="mw-hero-actions">
-          <button class="mw-cta-btn" style="padding:11px 18px; font-size:13.5px;" onclick="openCustomizerWithPreset('r1_default', 'Móc Khóa Racing Logo R-u-1-D')">
-            🎨 Mở Phòng Tùy Biến Mẫu Logo R Ngay
-          </button>
-          <button class="mw-cart-btn" style="padding:11px 16px; font-size:13px;" onclick="openOrderModal()">
-            🧾 Xem Báo Giá Tự Động & Chốt Đơn In
-          </button>
+  <main class="mw-main">
+    <!-- 2. DẢI 4 CÔNG CỤ MAKERLAB ("VŨ KHÍ HẠNG NẶNG" CHẠY TRỰC TIẾP TRÊN WEB) -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+      <div style="font-size:16px; font-weight:900;">⚡ MakerLab — Bộ Công Cụ Thiết Kế & Báo Giá 3D Trực Tuyến (Click Để Mở Ngay)</div>
+      <div style="font-size:12px; color:var(--mw-text-sub); font-weight:700;">Chạy 100% trên trình duyệt • Xuất file <code>.3MF</code> / <code>.STL</code> / <code>.DXF</code> thật</div>
+    </div>
+
+    <section class="mw-makerlab-strip">
+      <div class="ml-tool-card active" id="card-w-keychain" onclick="switchMakerLabWeapon('keychain')">
+        <div class="ml-tool-icon" style="background:linear-gradient(135deg,#00ae42,#059669);">🔤</div>
+        <div class="ml-tool-info">
+          <h3>Make My Sign & Keychain</h3>
+          <p>Chỉnh từng chữ, bo góc R, phối 4 màu AMS & khắc SĐT mặt sau</p>
         </div>
       </div>
 
-      <div class="mw-hero-stats">
-        <div class="mw-stat-item">
-          <div class="mw-stat-val">100%</div>
-          <div class="mw-stat-lbl">Liền Khối (Manifold)</div>
+      <div class="ml-tool-card" id="card-w-relief" onclick="switchMakerLabWeapon('relief')">
+        <div class="ml-tool-icon" style="background:linear-gradient(135deg,#2563eb,#7c3aed);">🖼️</div>
+        <div class="ml-tool-info">
+          <h3>2D Logo ➔ 3D Relief Maker</h3>
+          <p>Tải ảnh 2D/Logo lên ➔ Tự động đùn khối nổi 3D & xuất .STL</p>
         </div>
-        <div class="mw-stat-item">
-          <div class="mw-stat-val">4–7 Màu</div>
-          <div class="mw-stat-lbl">Bambu AMS .3MF</div>
+      </div>
+
+      <div class="ml-tool-card" id="card-w-qr" onclick="switchMakerLabWeapon('qr')">
+        <div class="ml-tool-icon" style="background:linear-gradient(135deg,#ea580c,#f59e0b);">📱</div>
+        <div class="ml-tool-info">
+          <h3>Make My 3D QR / NFC Stand</h3>
+          <p>Nhập link Zalo/STK ➔ Sinh bảng QR 3D chuẩn Z-Stacking AMS</p>
         </div>
-        <div class="mw-stat-item">
-          <div class="mw-stat-val">0 ms</div>
-          <div class="mw-stat-lbl">Chỉnh 3D Real-time</div>
-        </div>
-        <div class="mw-stat-item">
-          <div class="mw-stat-val">.3MF/.STL</div>
-          <div class="mw-stat-lbl">Tải File In Ngay</div>
-        </div>
-        <div class="mw-stat-item">
-          <div class="mw-stat-val">.DXF/.SVG</div>
-          <div class="mw-stat-lbl">Chuẩn Cắt CNC/Laser</div>
-        </div>
-        <div class="mw-stat-item">
-          <div class="mw-stat-val">3–5 Ngày</div>
-          <div class="mw-stat-lbl">Xưởng In Giao Nhanh</div>
+      </div>
+
+      <div class="ml-tool-card" id="card-w-stl" onclick="switchMakerLabWeapon('stl')">
+        <div class="ml-tool-icon" style="background:linear-gradient(135deg,#0284c7,#0d9488);">🔪</div>
+        <div class="ml-tool-info">
+          <h3>3D Slicer & Instant Quote</h3>
+          <p>Thả file .STL bất kỳ vào ➔ Tự đo gram nhựa, thời gian & báo giá</p>
         </div>
       </div>
     </section>
 
-    <!-- 3. BỘ LỌC DANH MỤC MÔ HÌNH 3D -->
-    <section id="grid-section">
-      <div class="mw-filter-bar">
-        <div class="mw-pills" id="category-pills">
-          <button class="mw-pill active" onclick="setCategory('all', this)">🔥 Tất cả mẫu (8)</button>
-          <button class="mw-pill" onclick="setCategory('keychain', this)">🏍️ Móc Khóa Racing & Xe</button>
-          <button class="mw-pill" onclick="setCategory('plate', this)">🪪 Biển Số & Thẻ Tên SĐT</button>
-          <button class="mw-pill" onclick="setCategory('qr', this)">📱 Thẻ QR / NFC Cửa Hàng</button>
-          <button class="mw-pill" onclick="setCategory('diorama', this)">🐉 Kệ Rồng & Decor 3D</button>
+    <!-- 3. BỘ LỌC DANH MỤC & KỆ 10 MẪU MÔ HÌNH 3D (TẤT CẢ ĐỀU SỐNG TRÊN CLOUD CDN) -->
+    <section id="models-section">
+      <div class="mw-filter-row">
+        <div class="mw-cat-pills" id="cat-pills">
+          <button class="mw-cat-pill active" onclick="setCategory('all', this)">Tất Cả Mẫu (10)</button>
+          <button class="mw-cat-pill" onclick="setCategory('keychain', this)">🏍️ Móc Khóa Racing & Tên Riêng</button>
+          <button class="mw-cat-pill" onclick="setCategory('plate', this)">🪪 Biển Số Xe & Thẻ SĐT</button>
+          <button class="mw-cat-pill" onclick="setCategory('qr', this)">📱 Bảng QR / NFC Cửa Hàng</button>
+          <button class="mw-cat-pill" onclick="setCategory('diorama', this)">🐉 Kệ Rồng, Decor & Showroom 3D</button>
         </div>
-        <div style="font-size:12px; color:#9ca3af; font-weight:700;">
-          💡 Bấm <b>"🎨 Tùy Chỉnh 3D"</b> trên bất kỳ thẻ nào để nạp mẫu đó vào bàn thiết kế bên dưới!
+        <div style="font-size:12.5px; color:var(--mw-text-sub); font-weight:700;">
+          ✨ Tất cả 10 bộ Studio 3D đã được đồng bộ lên Cloud CDN vĩnh viễn!
         </div>
       </div>
 
-      <!-- LƯỚI 8 SẢN PHẨM MÔ HÌNH 3D -->
-      <div class="mw-grid" id="models-grid"></div>
+      <div class="mw-models-grid" id="models-grid"></div>
     </section>
 
-    <!-- 4. PHÒNG TÙY BIẾN 3D TRỰC TIẾP (MAKERLAB PARAMETRIC CUSTOMIZER NHÚNG SẴN) -->
-    <section id="customizer-section">
-      <div class="cust-header">
-        <div class="cust-title-wrap">
-          <span class="cust-badge">🛠️ MAKERLAB LIVE</span>
-          <span class="cust-title" id="active-model-title">Đang Tùy Biến: Móc Khóa Racing Logo R-u-1-D (Chuẩn Nét Sắc + Khắc Mặt Sau)</span>
+    <!-- 4. TRẠM LÀM VIỆC MAKERLAB 4 VŨ KHÍ HẠNG NẶNG -->
+    <section id="makerlab-workspace">
+      <div class="ml-bar">
+        <div class="ml-tabs">
+          <button class="ml-tab-btn active" id="tab-w-keychain" onclick="switchMakerLabWeapon('keychain')">
+            🔤 1. Chỉnh Móc Khóa & Biển Chữ 3D
+          </button>
+          <button class="ml-tab-btn" id="tab-w-relief" onclick="switchMakerLabWeapon('relief')">
+            🖼️ 2. Ảnh 2D / Logo ➔ Khối Nổi 3D (.STL)
+          </button>
+          <button class="ml-tab-btn" id="tab-w-qr" onclick="switchMakerLabWeapon('qr')">
+            📱 3. Tạo Bảng QR / NFC 3D (.STL)
+          </button>
+          <button class="ml-tab-btn" id="tab-w-stl" onclick="switchMakerLabWeapon('stl')">
+            🔪 4. Đo Khối Lượng & Báo Giá File .STL
+          </button>
         </div>
 
-        <div class="cust-quote-bar">
-          <span class="quote-chip">⚖️ Nhựa ước tính: <b id="q-weight">6.8 g</b></span>
-          <span class="quote-chip">⏱️ Thời gian in: <b id="q-time">24 phút</b></span>
-          <span class="quote-chip">🎨 Hệ màu: <b id="q-ams">4 Màu AMS</b></span>
-          <span class="quote-chip">💰 Giá đặt xưởng in: <b id="q-price" style="color:#facc15; font-size:13.5px;">39.000đ</b></span>
-          <button class="mw-cta-btn" style="padding:6px 12px; font-size:11.5px;" onclick="addCurrentCustomToOrder()">
-            🛒 Lưu Mẫu Vừa Chỉnh Vào Đơn Đặt In
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+          <span style="font-size:12.5px; font-weight:800;">💰 Báo giá đặt in: <b id="q-price" style="color:var(--mw-green); font-size:14px;">39.000đ</b> (<span id="q-weight">6.8 g</span> • <span id="q-time">24 phút</span>)</span>
+          <button class="mw-btn-green" onclick="addCurrentCustomToOrder()">
+            🛒 Lưu Mẫu Vào Đơn Đặt In
           </button>
         </div>
       </div>
 
-      <div class="cust-iframe-wrap">
-        <iframe id="studio-iframe" class="cust-iframe" src="moc_khoa_logo_r_3d.html" title="Studio 3D CAD Parametric Customizer"></iframe>
+      <!-- VŨ KHÍ 1: STUDIO 3D CAD MÓC KHÓA LOGO R & BIỂN TÊN -->
+      <div class="ml-pane active" id="pane-keychain">
+        <div style="width:100%; height:760px; background:#090d16;">
+          <iframe id="studio-iframe" src="moc_khoa_logo_r_3d.html" style="width:100%; height:100%; border:none; display:block;" title="MakerLab Parametric Customizer"></iframe>
+        </div>
       </div>
-    </section>
 
-    <!-- 5. CÁC TÍNH NĂNG NÂNG CAO TỪ HỆ SINH THÁI 66+ REPO CÓ THỂ BẬT THÊM CHO KHÁCH -->
-    <section id="roadmap-section" class="mw-roadmap">
-      <h2>🚀 Các Tính Năng "Vũ Khí Hạng Nặng" Có Sẵn Trên Máy Có Thể Mở Rộng Thêm Vào Web Này</h2>
-      <p style="font-size:12.5px; color:#9ca3af;">
-        Toàn bộ các Engine dưới đây đã nằm sẵn trong ổ <code>D:\Code</code> của bạn — khách cần thêm mô-đun nào là đấu nối lên Web ngay:
-      </p>
-      <div class="mw-roadmap-grid">
-        <div class="mw-feat-box">
-          <h4>1. 🖼️ AI Dựng Ảnh 2D ➔ Tượng/Móc Khóa 3D (Hunyuan3D & img2threejs)</h4>
-          <p>Khách chỉ cần tải ảnh logo công ty, ảnh thú cưng hoặc chữ viết tay lên Web ➔ Tự động tách nền, đùn khối nổi 3D và tách màu Bambu AMS.</p>
+      <!-- VŨ KHÍ 2: CHUYỂN ẢNH 2D / LOGO THÀNH KHỐI NỔI 3D (2D TO 3D RELIEF MAKER) -->
+      <div class="ml-pane" id="pane-relief">
+        <div class="weapon-split">
+          <div class="weapon-ctrl">
+            <h3>🖼️ Vũ Khí #2: Chuyển Ảnh 2D / Logo ➔ Phù Điêu & Móc Khóa 3D</h3>
+            <p style="font-size:12px; color:var(--mw-text-sub); line-height:1.45;">
+              Tải bất kỳ ảnh Logo, chữ viết tay hoặc sticker từ máy bạn lên ➔ Hệ thống tự động quét độ tương phản, đùn thành khối nổi 3D trên tấm đế và xuất file <code>.STL</code> liền khối!
+            </p>
+            <div class="w-field">
+              <span>1. Chọn ảnh 2D / Logo từ máy (PNG / JPG):</span>
+              <input type="file" id="inp-relief-img" accept="image/*" onchange="onReliefImageUpload(event)">
+            </div>
+            <div class="w-field">
+              <span>Hoặc chọn mẫu Logo có sẵn để thử ngay:</span>
+              <select id="sel-relief-preset" onchange="build3DReliefFromPreset()">
+                <option value="star">⭐ Logo Ngôi Sao Racing 3D</option>
+                <option value="shield">🛡️ Huy Hiệu Khiên Chiến Binh</option>
+                <option value="heart">❤️ Móc Khóa Trái Tim Đôi</option>
+              </select>
+            </div>
+            <div class="w-field">
+              <span>Độ dày tấm đế nền (mm): <b id="lbl-rel-base">2.0 mm</b></span>
+              <input type="range" id="sl-rel-base" min="1.2" max="4.0" step="0.2" value="2.0" oninput="rebuildRelief3D()">
+            </div>
+            <div class="w-field">
+              <span>Độ cao đùn khối nổi 3D (mm): <b id="lbl-rel-height">1.8 mm</b></span>
+              <input type="range" id="sl-rel-height" min="0.6" max="4.5" step="0.2" value="1.8" oninput="rebuildRelief3D()">
+            </div>
+            <div class="w-field">
+              <span>Đảo chiều Âm bản / Dương bản:</span>
+              <select id="sel-rel-invert" onchange="rebuildRelief3D()">
+                <option value="0">Đùn nổi phần sáng / có màu (Dương bản)</option>
+                <option value="1">Đùn nổi phần tối / nét vẽ (Âm bản)</option>
+              </select>
+            </div>
+            <button class="mw-btn-green" style="justify-content:center; padding:11px; margin-top:6px;" onclick="downloadWeaponSTL('relief')">
+              ⬇️ Tải File .STL Khối 2D➔3D Này Ngay
+            </button>
+          </div>
+          <div class="weapon-view" id="view-relief"></div>
         </div>
-        <div class="mw-feat-box">
-          <h4>2. 🔪 Báo Giá Cắt Lớp Slicer Thực Tế (Bambu Studio CLI & OrcaSlicer)</h4>
-          <p>Gọi trực tiếp <code>bambu-studio.exe --slice 0</code> ngầm trên máy chủ để tính chính xác từng gram nhựa PLA/PETG, số lần đổi màu AMS và xuất <code>.gcode.3mf</code>.</p>
+      </div>
+
+      <!-- VŨ KHÍ 3: TẠO BẢNG MÃ QR / THẺ NFC 3D CHUẨN Z-STACKING -->
+      <div class="ml-pane" id="pane-qr">
+        <div class="weapon-split">
+          <div class="weapon-ctrl">
+            <h3>📱 Vũ Khí #3: Tạo Bảng Mã QR / NFC 3D Chuẩn In 2 Màu AMS</h3>
+            <p style="font-size:12px; color:var(--mw-text-sub); line-height:1.45;">
+              Nhập đường dẫn Zalo, Facebook, Wifi hoặc Số điện thoại ➔ Tự động sinh ma trận khối QR 3D đùn nổi trên tấm đế bo góc (đổi màu đúng 1 lần ở tầng Z khi in Bambu Lab)!
+            </p>
+            <div class="w-field">
+              <span>Nội dung Mã QR (Link Zalo / SĐT / Wifi / Tên Shop):</span>
+              <input type="text" id="inp-qr-text" value="https://zalo.me/0988888888" oninput="rebuildQR3D()">
+            </div>
+            <div class="w-field">
+              <span>Kích thước bảng QR vuông (mm): <b id="lbl-qr-size">50 mm</b></span>
+              <input type="range" id="sl-qr-size" min="35" max="90" step="5" value="50" oninput="rebuildQR3D()">
+            </div>
+            <div class="w-field">
+              <span>Độ dày đế trắng (mm): <b id="lbl-qr-base">2.2 mm</b></span>
+              <input type="range" id="sl-qr-base" min="1.5" max="4.0" step="0.1" value="2.2" oninput="rebuildQR3D()">
+            </div>
+            <div class="w-field">
+              <span>Độ nổi mắt QR (Chuẩn Z-Stacking 0.8mm = 4 layer): <b id="lbl-qr-z">0.8 mm</b></span>
+              <input type="range" id="sl-qr-z" min="0.4" max="1.6" step="0.2" value="0.8" oninput="rebuildQR3D()">
+            </div>
+            <button class="mw-btn-green" style="justify-content:center; padding:11px; margin-top:6px;" onclick="downloadWeaponSTL('qr')">
+              ⬇️ Tải File .STL Bảng QR 3D Ngay
+            </button>
+          </div>
+          <div class="weapon-view" id="view-qr"></div>
         </div>
-        <div class="mw-feat-box">
-          <h4>3. 📲 Tạo Thẻ QR / NFC Đa Sắc Không Bẫy Support (Z-Stacking CAD)</h4>
-          <p>Khách dán link Facebook/Zalo/Menu quán hoặc STK Ngân hàng ➔ Tự động sinh bảng QR 3D đổi màu đúng 1 lần duy nhất ở layer Z, quét nhạy 100%.</p>
-        </div>
-        <div class="mw-feat-box">
-          <h4>4. 🤖 Trợ Lý Chốt Đơn & CSKH Tự Động Đa Sàn (OmniBot :8299)</h4>
-          <p>Khách bấm "Đặt Xưởng In" trên Web ➔ Tự động đẩy thông số chữ, màu sắc và file <code>.3MF</code> về Telegram/Zalo xưởng, báo thời gian giao hàng 3–5 ngày.</p>
+      </div>
+
+      <!-- VŨ KHÍ 4: TRÌNH ĐỌC FILE .STL & BÁO GIÁ CẮT LỚP SLICER TỰ ĐỘNG -->
+      <div class="ml-pane" id="pane-stl">
+        <div class="weapon-split">
+          <div class="weapon-ctrl">
+            <h3>🔪 Vũ Khí #4: Trình Đọc File .STL & Báo Giá In 3D Tự Động</h3>
+            <p style="font-size:12px; color:var(--mw-text-sub); line-height:1.45;">
+              Khách có sẵn file <code>.STL</code> muốn đặt xưởng in? Chọn file từ máy ➔ Hệ thống tự đo kích thước bao <code>X × Y × Z (mm)</code>, tính thể tích <code>cm³</code>, số gram nhựa và báo giá tức thì!
+            </p>
+            <div class="w-field">
+              <span>Chọn file .STL từ máy tính / điện thoại:</span>
+              <input type="file" id="inp-stl-file" accept=".stl" onchange="onSTLFileUpload(event)">
+            </div>
+            <div class="w-field">
+              <span>Loại vật liệu nhựa in 3D:</span>
+              <select id="sel-stl-mat" onchange="recalcSTLQuote()">
+                <option value="1.24|1200">Nhựa PLA Cao Cấp (1.24 g/cm³)</option>
+                <option value="1.27|1400">Nhựa PETG Chịu Nhiệt/Ngoài Trời (1.27 g/cm³)</option>
+                <option value="1.04|1600">Nhựa ABS Cơ Khí (1.04 g/cm³)</option>
+                <option value="1.20|2200">Nhựa Dẻo TPU Chống Va Đập (1.20 g/cm³)</option>
+              </select>
+            </div>
+            <div class="w-field">
+              <span>Độ đặc ruột (Infill %): <b id="lbl-stl-infill">25%</b></span>
+              <input type="range" id="sl-stl-infill" min="15" max="100" step="5" value="25" oninput="recalcSTLQuote()">
+            </div>
+
+            <div class="quote-result-card" id="stl-quote-box">
+              <div>📐 <b>Kích thước đo được:</b> <span id="st-dim">60.0 × 28.5 × 3.2 mm</span></div>
+              <div>🧊 <b>Thể tích hình học:</b> <span id="st-vol">4.85 cm³</span></div>
+              <div>⚖️ <b>Khối lượng nhựa in:</b> <span id="st-gram" style="font-weight:900; color:var(--mw-green);">6.8 gram</span></div>
+              <div>⏱️ <b>Thời gian máy chạy ước tính:</b> <span id="st-time">24 phút</span></div>
+              <div style="margin-top:6px; padding-top:6px; border-top:1px dashed var(--mw-green); font-size:14px;">
+                💰 <b>Đơn giá đặt in lẻ:</b> <b id="st-price" style="color:#ea580c; font-size:16px;">39.000đ</b>
+              </div>
+            </div>
+
+            <button class="mw-btn-green" style="justify-content:center; padding:11px;" onclick="addSTLQuoteToCart()">
+              🛒 Đưa File .STL Này Vào Đơn Đặt In
+            </button>
+          </div>
+          <div class="weapon-view" id="view-stl"></div>
         </div>
       </div>
     </section>
   </main>
 
-  <!-- MODAL GIỎ HÀNG ĐẶT IN & BÁO GIÁ -->
+  <!-- MODAL GIỎ HÀNG ĐẶT IN -->
   <div class="mw-modal-backdrop" id="order-modal">
     <div class="mw-modal">
-      <h3>
-        <span>🛒 Đơn Đặt In 3D & File Cấu Hình Của Khách</span>
-        <button onclick="closeOrderModal()" style="background:transparent; border:none; color:#9ca3af; font-size:18px; cursor:pointer;">✕</button>
-      </h3>
-      <div class="order-list" id="order-list-box"></div>
-      <div style="background:#0f172a; border:1px solid #1e293b; border-radius:8px; padding:10px 12px; margin-bottom:14px; font-size:12px; color:#cbd5e1; line-height:1.5;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h3 style="font-size:17px; font-weight:900; color:var(--mw-green);">🛒 Đơn Đặt In 3D & File Cấu Hình Của Khách</h3>
+        <button onclick="closeOrderModal()" style="background:transparent; border:none; color:var(--mw-muted); font-size:20px; cursor:pointer;">✕</button>
+      </div>
+      <div id="order-list-box" style="max-height:260px; overflow-y:auto; margin-bottom:12px;"></div>
+      <div style="background:var(--mw-surface-2); border:1px solid var(--mw-border); border-radius:8px; padding:10px 12px; margin-bottom:14px; font-size:12px; line-height:1.5;">
         <div>📦 <b>Thời gian gia công in 3D Handmade theo yêu cầu:</b> Giao nhanh <b>3 – 5 ngày</b>.</div>
-        <div>✅ <b>Định dạng file kèm theo:</b> <code>.3MF</code> (Bambu AMS), <code>.STL</code> (Liền khối), <code>.DXF</code> (AutoCAD).</div>
+        <div>✅ <b>Định dạng file xuất trực tiếp:</b> <code>.3MF</code> (Bambu AMS), <code>.STL</code> (Liền khối), <code>.DXF</code> (AutoCAD).</div>
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-        <button class="mw-cta-btn" style="justify-content:center; padding:10px;" onclick="copyOrderSummary()">
+        <button class="mw-btn-green" style="justify-content:center; padding:10px;" onclick="copyOrderSummary()">
           📋 Sao Chép Mã Đơn Gửi Zalo/Shop
         </button>
-        <button class="mw-btn-order" style="justify-content:center; padding:10px;" onclick="triggerIframe3MFDownload()">
+        <button class="mw-btn-outline" style="justify-content:center; padding:10px;" onclick="triggerIframe3MFDownload()">
           ⬇️ Tải Ngay File .3MF Đã Chỉnh
         </button>
       </div>
@@ -831,7 +926,7 @@
         cat: 'keychain',
         title: 'Móc Khóa Racing Logo R-u-1-D (Bản Gốc Sắc Cạnh + Khắc Mặt Sau)',
         desc: 'Chuẩn form kim loại phay xước & nhựa AMS 4 màu. Cho phép sửa từng chữ, chỉnh độ sắc/bo góc R, lề đều 4 phía 1.30mm và khắc SĐT mặt sau.',
-        badge: '⚡ BÁN CHẠY #1 • CUSTOMIZABLE',
+        badge: '⚡ Customizable',
         amsColors: ['#8d99ae', '#ef4444', '#facc15', '#38bdf8'],
         weight: '6.8 g',
         time: '24 phút',
@@ -855,7 +950,7 @@
         cat: 'plate',
         title: 'Móc Khóa Logo R + Khắc Tên & SĐT Chống Mất Mặt Sau (2 Mặt AMS)',
         desc: 'Mặt trước giữ nguyên logo R-u-1-D sang trọng, mặt lưng khắc nổi/in phẳng đa sắc Tên chủ xe + Số điện thoại + Dòng chữ YAMAHA R1M cạnh dưới.',
-        badge: '🎁 CÁ NHÂN HÓA 2 MẶT',
+        badge: '🎁 Khắc 2 Mặt',
         amsColors: ['#0f172a', '#facc15', '#fde047', '#f59e0b'],
         weight: '7.4 g',
         time: '27 phút',
@@ -879,7 +974,7 @@
         cat: 'keychain',
         title: 'Móc Khóa Tên Riêng 4 Ký Tự Tự Chọn (Đế Tự Động Co Giãn Theo Chữ)',
         desc: 'Đổi 4 ô chữ sang bất kỳ tên viết tắt hoặc số áo nào (VD: K-A-I-9, A-L-I-1). Khung đế nền tự động uốn lượn ôm khít từng chữ cách đều 1.30mm.',
-        badge: '✨ ĐẾ CO GIÃN THEO CHỮ',
+        badge: '✨ Đế Co Giãn',
         amsColors: ['#334155', '#f472b6', '#c084fc', '#38bdf8'],
         weight: '6.5 g',
         time: '22 phút',
@@ -903,7 +998,7 @@
         cat: 'plate',
         title: 'Móc Khóa Biển Số Xe Máy / Ô Tô 3D Nổi (Kèm SĐT Mặt Lưng)',
         desc: 'Nhập 4 ký tự mã tỉnh/biển số mặt trước + khắc đầy đủ dãy biển số & SĐT ở mặt sau. Chữ nổi cắm âm 0.40mm vào đế siêu bền không bong.',
-        badge: '🏍️ BIỂN SỐ XE 3D',
+        badge: '🏍️ Biển Số Xe',
         amsColors: ['#1e3a8a', '#f8fafc', '#facc15', '#38bdf8'],
         weight: '6.2 g',
         time: '20 phút',
@@ -927,7 +1022,7 @@
         cat: 'keychain',
         title: 'Móc Khóa Đỏ Đua Scuderia Ferrari / Ducati Corse (Nét Sắc Cơ Khí)',
         desc: 'Phối màu Đen Carbon + Đỏ Đua Ferrari + Vàng Kim. Đỉnh chữ R sắc góc cạnh 100% (R=0.00mm) kèm dòng chữ phụ SCUDERIA chạy dọc cạnh dưới.',
-        badge: '🏎️ RACING EDITION',
+        badge: '🏎️ Racing',
         amsColors: ['#18181b', '#ef4444', '#f8fafc', '#facc15'],
         weight: '7.1 g',
         time: '25 phút',
@@ -949,33 +1044,24 @@
       {
         id: 'qr_nfc_stand',
         cat: 'qr',
-        title: 'Thẻ Móc Khóa & Bảng Quét QR / NFC Thanh Toán Cửa Hàng (Z-Stacking)',
-        desc: 'Chuẩn kỹ thuật in 3D Bambu Lab Z-Stacking: đổi màu đúng 1 lần duy nhất ở tầng Z, mặt lưng gắn được thẻ từ NFC NTAG213 quẹt điện thoại.',
-        badge: '📱 QR / NFC THÔNG MINH',
+        title: 'Bảng Quét Mã QR / Thẻ NFC Cửa Hàng Đùn Khối 3D (Z-Stacking)',
+        desc: 'Tự động tạo bảng QR 3D từ link Zalo/Ngân hàng. Chuẩn kỹ thuật in 3D Bambu Lab đổi màu đúng 1 lần ở tầng Z.',
+        badge: '📱 Tạo QR 3D',
         amsColors: ['#064e3b', '#fde047', '#34d399', '#ffffff'],
         weight: '12.5 g',
         time: '32 phút',
         price: 59000,
         downloads: '650',
         likes: '175',
-        presetConfig: {
-          chars: ['V', 'I', 'P', '1'],
-          theme: 'emerald',
-          fillet: 0.12,
-          margin: 1.50,
-          enableBack: true,
-          backText: 'SCAN NFC / ZALO',
-          enableFrontSub: true,
-          frontSub: 'TAP HERE NFC'
-        },
-        svgPreview: `<svg viewBox="0 0 240 120"><rect x="30" y="22" width="180" height="76" rx="12" fill="#064e3b" stroke="#34d399" stroke-width="2.5"/><rect x="44" y="34" width="52" height="52" rx="6" fill="#fff"/><rect x="52" y="42" width="14" height="14" fill="#064e3b"/><rect x="74" y="42" width="14" height="14" fill="#064e3b"/><rect x="52" y="64" width="14" height="14" fill="#064e3b"/><text x="108" y="62" fill="#fde047" font-size="22" font-weight="900" font-family="Segoe UI">VIP NFC</text><text x="108" y="80" fill="#a7f3d0" font-size="11" font-weight="700" font-family="Segoe UI">QUẸT ĐIỆN THOẠI</text></svg>`
+        weaponTarget: 'qr',
+        svgPreview: `<svg viewBox="0 0 240 120"><rect x="30" y="22" width="180" height="76" rx="12" fill="#064e3b" stroke="#34d399" stroke-width="2.5"/><rect x="44" y="34" width="52" height="52" rx="6" fill="#fff"/><rect x="52" y="42" width="14" height="14" fill="#064e3b"/><rect x="74" y="42" width="14" height="14" fill="#064e3b"/><rect x="52" y="64" width="14" height="14" fill="#064e3b"/><text x="108" y="62" fill="#fde047" font-size="22" font-weight="900" font-family="Segoe UI">QR 3D</text><text x="108" y="80" fill="#a7f3d0" font-size="11" font-weight="700" font-family="Segoe UI">TẠO TRỰC TIẾP</text></svg>`
       },
       {
         id: 'charizard_shelf',
         cat: 'diorama',
         title: 'Kệ Trưng Bày Rồng Lửa Charizard & Đèn LED Đa Tầng (5 Tầng)',
         desc: 'Mẫu kệ trưng bày mô hình kết hợp diorama rồng Charizard nổi 3D. Có sẵn file .3MF chia mâm in Bambu Lab & hướng dẫn lắp LED.',
-        badge: '🐉 DIORAMA & KỆ 3D',
+        badge: '🐉 Studio 3D',
         amsColors: ['#111827', '#f97316', '#facc15', '#38bdf8'],
         weight: '185 g',
         time: '3h 40p',
@@ -983,14 +1069,29 @@
         downloads: '520',
         likes: '162',
         externalUrl: 'studio_ke_rong_charizard.html',
-        svgPreview: `<svg viewBox="0 0 240 120"><rect x="36" y="18" width="168" height="84" rx="10" fill="#1c1917" stroke="#f97316" stroke-width="2.5"/><line x1="36" y1="46" x2="204" y2="46" stroke="#f59e0b" stroke-width="2"/><line x1="36" y1="74" x2="204" y2="74" stroke="#f59e0b" stroke-width="2"/><text x="54" y="38" fill="#fde047" font-size="14" font-weight="900" font-family="Segoe UI">🔥 KỆ RỒNG CHARIZARD 3D</text><text x="64" y="65" fill="#fb923c" font-size="12" font-weight="700" font-family="Segoe UI">5 TẦNG • TÍCH HỢP LED</text><text x="68" y="92" fill="#38bdf8" font-size="11" font-weight="700" font-family="Segoe UI">XEM MÔ HÌNH 3D XOAY 360°</text></svg>`
+        svgPreview: `<svg viewBox="0 0 240 120"><rect x="36" y="18" width="168" height="84" rx="10" fill="#1c1917" stroke="#f97316" stroke-width="2.5"/><line x1="36" y1="46" x2="204" y2="46" stroke="#f59e0b" stroke-width="2"/><line x1="36" y1="74" x2="204" y2="74" stroke="#f59e0b" stroke-width="2"/><text x="54" y="38" fill="#fde047" font-size="14" font-weight="900" font-family="Segoe UI">🔥 KỆ RỒNG CHARIZARD</text><text x="64" y="65" fill="#fb923c" font-size="12" font-weight="700" font-family="Segoe UI">5 TẦNG • TÍCH HỢP LED</text><text x="68" y="92" fill="#38bdf8" font-size="11" font-weight="700" font-family="Segoe UI">MỞ STUDIO 3D XOAY 360°</text></svg>`
+      },
+      {
+        id: 'charizard_mini_cute',
+        cat: 'diorama',
+        title: 'Mô Hình Diorama Rồng Charizard Mini Cute Đèn Ngủ 3D',
+        desc: 'Phiên bản Chibi dễ thương đặt bàn làm việc, tích hợp hốc lắp đèn LED tròn ấm áp, xoay 360° trực tiếp trên trình duyệt.',
+        badge: '🐉 Diorama 3D',
+        amsColors: ['#f97316', '#facc15', '#38bdf8', '#ffffff'],
+        weight: '95 g',
+        time: '1h 50p',
+        price: 165000,
+        downloads: '610',
+        likes: '205',
+        externalUrl: 'studio_charizard_mini_cute_diorama.html',
+        svgPreview: `<svg viewBox="0 0 240 120"><rect x="36" y="18" width="168" height="84" rx="14" fill="#0f172a" stroke="#fb923c" stroke-width="2.5"/><circle cx="120" cy="54" r="24" fill="#f97316"/><text x="60" y="94" fill="#fde047" font-size="12" font-weight="900" font-family="Segoe UI">CHARIZARD MINI DIORAMA</text></svg>`
       },
       {
         id: 'nordic_decor_room',
         cat: 'diorama',
         title: 'Showroom Nội Thất & Decor In 3D Phong Cách Bắc Âu (Shop This Room)',
         desc: 'Không gian 3D tương tác trưng bày bình hoa xoắn Spiral Vase, đèn ngủ Moon Lamp và khay phụ kiện in 3D.',
-        badge: '🏠 SHOWROOM 3D',
+        badge: '🏠 Showroom 3D',
         amsColors: ['#334155', '#f8fafc', '#fbbf24', '#38bdf8'],
         weight: '120 g',
         time: '2h 15p',
@@ -999,6 +1100,21 @@
         likes: '148',
         externalUrl: 'diorama_3d_decor.html',
         svgPreview: `<svg viewBox="0 0 240 120"><rect x="32" y="20" width="176" height="80" rx="10" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/><circle cx="80" cy="60" r="22" fill="#fbbf24" opacity="0.85"/><rect x="122" y="42" width="60" height="38" rx="6" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/><text x="128" y="65" fill="#f8fafc" font-size="11" font-weight="800" font-family="Segoe UI">DECOR 3D</text></svg>`
+      },
+      {
+        id: 'cartier_showroom',
+        cat: 'diorama',
+        title: 'Showroom Trưng Bày Trang Sức & Phụ Kiện Cao Cấp 3D',
+        desc: 'Không gian trưng bày 3D ánh sáng PBR cao cấp cho khay đựng đồng hồ, nhẫn và móc khóa kim loại.',
+        badge: '💎 Luxury 3D',
+        amsColors: ['#7f1d1d', '#facc15', '#f8fafc', '#18181b'],
+        weight: '140 g',
+        time: '2h 30p',
+        price: 220000,
+        downloads: '410',
+        likes: '132',
+        externalUrl: 'showroom_3d_cartier.html',
+        svgPreview: `<svg viewBox="0 0 240 120"><rect x="32" y="20" width="176" height="80" rx="10" fill="#450a0a" stroke="#facc15" stroke-width="2.5"/><text x="58" y="64" fill="#fde047" font-size="15" font-weight="900" font-family="Segoe UI">LUXURY 3D SHOWROOM</text></svg>`
       }
     ];
 
@@ -1012,7 +1128,15 @@
     ];
 
     function formatVND(n) {
-      return n.toLocaleString('vi-VN') + 'đ';
+      return Math.round(n).toLocaleString('vi-VN') + 'đ';
+    }
+
+    function toggleLightDarkTheme() {
+      const root = document.documentElement;
+      const curr = root.getAttribute('data-theme') || 'light';
+      const next = (curr === 'light') ? 'dark' : 'light';
+      root.setAttribute('data-theme', next);
+      document.getElementById('theme-toggle-btn').innerText = (next === 'light') ? '🌙 Chế Độ Tối' : '☀️ Chế Độ Sáng';
     }
 
     function renderModelsGrid() {
@@ -1025,46 +1149,50 @@
       });
 
       grid.innerHTML = filtered.map(m => {
-        const dotsHtml = m.amsColors.map(c => `<span class="mw-ams-dot" style="background:${c}"></span>`).join('');
-        const custAction = m.externalUrl
-          ? `window.location.href='${m.externalUrl}'`
-          : `openCustomizerWithPreset('${m.id}', '${m.title.replace(/'/g, "\\'")}')`;
-        const custLabel = m.externalUrl ? '🌐 Mở Showroom 3D' : '🎨 Tùy Chỉnh 3D';
+        const dotsHtml = m.amsColors.map(c => `<span class="mw-dot" style="background:${c}"></span>`).join('');
+        let custAction = `openCustomizerWithPreset('${m.id}', '${m.title.replace(/'/g, "\\'")}')`;
+        let custLabel = '🎨 Tùy Chỉnh 3D';
+        if (m.externalUrl) {
+          custAction = `window.open('${m.externalUrl}', '_blank')`;
+          custLabel = '🌐 Mở Phòng 3D';
+        } else if (m.weaponTarget) {
+          custAction = `switchMakerLabWeapon('${m.weaponTarget}')`;
+          custLabel = '⚡ Tạo QR 3D Ngay';
+        }
 
         return `
-          <article class="mw-card">
-            <div class="mw-card-thumb" onclick="${custAction}" style="cursor:pointer;">
-              <div class="mw-badge-top-left">${m.badge}</div>
-              <div class="mw-badge-top-right">.3MF / .STL</div>
+          <article class="mw-model-card">
+            <div class="mw-thumb" onclick="${custAction}">
+              <div class="mw-tag-customizable">${m.badge}</div>
               ${m.svgPreview}
-              <div class="mw-ams-dots" title="Hỗ trợ in đa sắc Bambu AMS">
+              <div class="mw-tag-ams">
                 ${dotsHtml}
-                <span style="font-size:10px; color:#e2e8f0; margin-left:3px; font-weight:700;">AMS</span>
+                <span>AMS</span>
               </div>
-              <div class="mw-print-meta">⏱️ ${m.time} • ⚖️ ${m.weight}</div>
+              <div class="mw-tag-time">⏱️ ${m.time} • ${m.weight}</div>
             </div>
 
-            <div class="mw-card-body">
+            <div class="mw-card-content">
               <div>
-                <div class="mw-card-title">${m.title}</div>
-                <div class="mw-card-desc">${m.desc}</div>
+                <div class="mw-card-name">${m.title}</div>
+                <div class="mw-card-sub">${m.desc}</div>
               </div>
 
               <div>
-                <div class="mw-card-price-row">
-                  <div>
-                    <span class="mw-price-tag">${formatVND(m.price)}</span>
-                    <span class="mw-price-sub">Đặt in hoàn thiện / Tải file Free</span>
+                <div class="mw-author-row">
+                  <div class="mw-author-badge">
+                    <span class="mw-avatar">G</span>
+                    <span>Góc Nhỏ 3D • <b style="color:var(--mw-green);">${formatVND(m.price)}</b></span>
                   </div>
-                  <div class="mw-stats-mini">
+                  <div class="mw-metrics">
                     <span>⬇️ ${m.downloads}</span>
                     <span>❤️ ${m.likes}</span>
                   </div>
                 </div>
 
-                <div class="mw-card-actions" style="margin-top:10px;">
-                  <button class="mw-btn-cust" onclick="${custAction}">${custLabel}</button>
-                  <button class="mw-btn-order" onclick="quickAddModelToCart('${m.id}')">🛒 Đặt In Mẫu</button>
+                <div class="mw-card-btn-row">
+                  <button class="mw-btn-green" style="justify-content:center; border-radius:8px; padding:8px;" onclick="${custAction}">${custLabel}</button>
+                  <button class="mw-btn-outline" style="justify-content:center; border-radius:8px; padding:8px;" onclick="quickAddModelToCart('${m.id}')">🛒 Đặt In</button>
                 </div>
               </div>
             </div>
@@ -1075,12 +1203,8 @@
 
     function setCategory(cat, btnEl) {
       activeCategory = cat;
-      document.querySelectorAll('#category-pills .mw-pill').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('#cat-pills .mw-cat-pill').forEach(b => b.classList.remove('active'));
       if (btnEl) btnEl.classList.add('active');
-      renderModelsGrid();
-    }
-
-    function filterModels() {
       renderModelsGrid();
     }
 
@@ -1089,19 +1213,31 @@
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    // Nạp thẳng Preset vào Iframe Studio 3D CAD và cuộn xuống bàn thiết kế MakerLab
+    function switchMakerLabWeapon(wKey) {
+      ['keychain', 'relief', 'qr', 'stl'].forEach(k => {
+        const t = document.getElementById('tab-w-' + k);
+        const c = document.getElementById('card-w-' + k);
+        const p = document.getElementById('pane-' + k);
+        if (t) t.classList.toggle('active', k === wKey);
+        if (c) c.classList.toggle('active', k === wKey);
+        if (p) p.classList.toggle('active', k === wKey);
+      });
+      scrollToSection('makerlab-workspace');
+      setTimeout(() => {
+        if (wKey === 'relief') initOrResizeWeapon3D('relief');
+        if (wKey === 'qr') initOrResizeWeapon3D('qr');
+        if (wKey === 'stl') initOrResizeWeapon3D('stl');
+      }, 120);
+    }
+
     function openCustomizerWithPreset(modelId, titleText) {
+      switchMakerLabWeapon('keychain');
       const model = MODELS_DB.find(m => m.id === modelId);
-      if (titleText) {
-        document.getElementById('active-model-title').innerText = 'Đang Tùy Biến: ' + titleText;
-      }
       if (model) {
         document.getElementById('q-weight').innerText = model.weight;
         document.getElementById('q-time').innerText = model.time;
         document.getElementById('q-price').innerText = formatVND(model.price);
       }
-
-      scrollToSection('customizer-section');
 
       const iframe = document.getElementById('studio-iframe');
       if (iframe && iframe.contentWindow && model && model.presetConfig) {
@@ -1140,13 +1276,341 @@
               w.setCameraView(cfg.enableBack && !cfg.enableFrontSub ? 'back' : 'iso');
             }
           }
-        } catch (err) {
-          console.warn('Iframe preset sync notice:', err);
+        } catch (err) {}
+      }
+    }
+
+    /* =========================================================================
+       BỘ MÁY 3D CHO 3 VŨ KHÍ HẠNG NẶNG (2D->3D RELIEF, 3D QR CODE, STL SLICER)
+       ========================================================================= */
+    const weaponScenes = {};
+
+    function initOrResizeWeapon3D(key) {
+      const container = document.getElementById('view-' + key);
+      if (!container) return;
+      const w = Math.max(300, container.clientWidth || 640);
+      const h = Math.max(380, container.clientHeight || 520);
+
+      if (!weaponScenes[key]) {
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(38, w / h, 0.5, 1000);
+        camera.position.set(0, -65, 75);
+        camera.up.set(0, 0, 1);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(w, h);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        container.innerHTML = '';
+        container.appendChild(renderer.domElement);
+
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+
+        scene.add(new THREE.AmbientLight(0xffffff, 0.75));
+        const dLight1 = new THREE.DirectionalLight(0xffffff, 1.15);
+        dLight1.position.set(-40, -50, 80);
+        scene.add(dLight1);
+        const dLight2 = new THREE.DirectionalLight(0x38bdf8, 0.55);
+        dLight2.position.set(50, 40, 45);
+        scene.add(dLight2);
+
+        const grid = new THREE.GridHelper(110, 22, 0x00ae42, 0x1e293b);
+        grid.rotation.x = Math.PI / 2;
+        scene.add(grid);
+
+        const group = new THREE.Group();
+        scene.add(group);
+
+        weaponScenes[key] = { scene, camera, renderer, controls, group };
+
+        function anim() {
+          requestAnimationFrame(anim);
+          controls.update();
+          renderer.render(scene, camera);
+        }
+        anim();
+
+        if (key === 'relief') build3DReliefFromPreset();
+        if (key === 'qr') rebuildQR3D();
+        if (key === 'stl') buildDefaultSampleSTL();
+      } else {
+        const ws = weaponScenes[key];
+        ws.camera.aspect = w / h;
+        ws.camera.updateProjectionMatrix();
+        ws.renderer.setSize(w, h);
+      }
+    }
+
+    let reliefImagePixels = null;
+    let reliefGridW = 44, reliefGridH = 44;
+
+    function build3DReliefFromPreset() {
+      const preset = document.getElementById('sel-relief-preset').value;
+      const c = document.createElement('canvas');
+      c.width = reliefGridW;
+      c.height = reliefGridH;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, reliefGridW, reliefGridH);
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 30px Segoe UI';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      if (preset === 'star') ctx.fillText('★', reliefGridW / 2, reliefGridH / 2);
+      else if (preset === 'shield') ctx.fillText('❖', reliefGridW / 2, reliefGridH / 2);
+      else ctx.fillText('♥', reliefGridW / 2, reliefGridH / 2);
+      reliefImagePixels = ctx.getImageData(0, 0, reliefGridW, reliefGridH).data;
+      rebuildRelief3D();
+    }
+
+    function onReliefImageUpload(ev) {
+      const file = ev.target.files && ev.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          const c = document.createElement('canvas');
+          c.width = reliefGridW;
+          c.height = reliefGridH;
+          const ctx = c.getContext('2d');
+          ctx.fillStyle = '#000';
+          ctx.fillRect(0, 0, reliefGridW, reliefGridH);
+          ctx.drawImage(img, 3, 3, reliefGridW - 6, reliefGridH - 6);
+          reliefImagePixels = ctx.getImageData(0, 0, reliefGridW, reliefGridH).data;
+          rebuildRelief3D();
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function rebuildRelief3D() {
+      const ws = weaponScenes['relief'];
+      if (!ws || !reliefImagePixels) return;
+      while (ws.group.children.length > 0) ws.group.remove(ws.group.children[0]);
+
+      const baseZ = parseFloat(document.getElementById('sl-rel-base').value) || 2.0;
+      const relH = parseFloat(document.getElementById('sl-rel-height').value) || 1.8;
+      const invert = document.getElementById('sel-rel-invert').value === '1';
+
+      document.getElementById('lbl-rel-base').innerText = baseZ.toFixed(1) + ' mm';
+      document.getElementById('lbl-rel-height').innerText = relH.toFixed(1) + ' mm';
+
+      const plateGeom = new THREE.CylinderGeometry(24, 24, baseZ, 48);
+      plateGeom.rotateX(Math.PI / 2);
+      plateGeom.translate(0, 0, baseZ * 0.5);
+      const plateMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.4, roughness: 0.4 });
+      ws.group.add(new THREE.Mesh(plateGeom, plateMat));
+
+      const voxelMat = new THREE.MeshStandardMaterial({ color: 0xfacc15, metalness: 0.65, roughness: 0.25 });
+      const cellSize = 38.0 / reliefGridW;
+      for (let y = 0; y < reliefGridH; y++) {
+        for (let x = 0; x < reliefGridW; x++) {
+          const idx = (y * reliefGridW + x) * 4;
+          const lum = (reliefImagePixels[idx] * 0.299 + reliefImagePixels[idx + 1] * 0.587 + reliefImagePixels[idx + 2] * 0.114) / 255.0;
+          const val = invert ? (1.0 - lum) : lum;
+          const px = (x - reliefGridW * 0.5) * cellSize;
+          const py = (reliefGridH * 0.5 - y) * cellSize;
+          if (val > 0.28 && Math.hypot(px, py) < 21.5) {
+            const h = Math.max(0.3, val * relH);
+            const g = new THREE.BoxGeometry(cellSize * 1.02, cellSize * 1.02, h + 0.3);
+            g.translate(px, py, baseZ + h * 0.5 - 0.15);
+            ws.group.add(new THREE.Mesh(g, voxelMat));
+          }
         }
       }
     }
 
-    // Đọc trực tiếp thông số khách vừa chỉnh trong Iframe Studio để lưu vào Đơn Đặt In
+    // VŨ KHÍ 3: BẢNG MÃ QR 3D Z-STACKING
+    function rebuildQR3D() {
+      const ws = weaponScenes['qr'];
+      if (!ws) return;
+      while (ws.group.children.length > 0) ws.group.remove(ws.group.children[0]);
+
+      const txt = (document.getElementById('inp-qr-text').value || 'GOCNHO3D').trim();
+      const sz = parseFloat(document.getElementById('sl-qr-size').value) || 50;
+      const baseZ = parseFloat(document.getElementById('sl-qr-base').value) || 2.2;
+      const qrZ = parseFloat(document.getElementById('sl-qr-z').value) || 0.8;
+
+      document.getElementById('lbl-qr-size').innerText = sz.toFixed(0) + ' mm';
+      document.getElementById('lbl-qr-base').innerText = baseZ.toFixed(1) + ' mm';
+      document.getElementById('lbl-qr-z').innerText = qrZ.toFixed(1) + ' mm';
+
+      const baseGeom = new THREE.BoxGeometry(sz, sz, baseZ);
+      baseGeom.translate(0, 0, baseZ * 0.5);
+      const baseMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.3 });
+      ws.group.add(new THREE.Mesh(baseGeom, baseMat));
+
+      const N = 21;
+      const cell = (sz * 0.82) / N;
+      const qrMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.25 });
+
+      function isFinderPattern(r, c) {
+        const inTL = (r < 7 && c < 7);
+        const inTR = (r < 7 && c >= N - 7);
+        const inBL = (r >= N - 7 && c < 7);
+        if (!inTL && !inTR && !inBL) return null;
+        const lr = r >= N - 7 ? r - (N - 7) : r;
+        const lc = c >= N - 7 ? c - (N - 7) : c;
+        if (lr === 0 || lr === 6 || lc === 0 || lc === 6) return true;
+        if (lr >= 2 && lr <= 4 && lc >= 2 && lc <= 4) return true;
+        return false;
+      }
+
+      let hash = 2166136261;
+      for (let i = 0; i < txt.length; i++) {
+        hash ^= txt.charCodeAt(i);
+        hash = Math.imul(hash, 16777619);
+      }
+
+      for (let r = 0; r < N; r++) {
+        for (let c = 0; c < N; c++) {
+          const fp = isFinderPattern(r, c);
+          let bit = false;
+          if (fp !== null) {
+            bit = fp;
+          } else {
+            const seed = Math.imul(hash ^ (r * 31 + c * 17), 2654435761) >>> 0;
+            bit = (seed % 10) < 5;
+          }
+          if (bit) {
+            const bx = (c - (N - 1) * 0.5) * cell;
+            const by = ((N - 1) * 0.5 - r) * cell;
+            const bGeom = new THREE.BoxGeometry(cell * 0.96, cell * 0.96, qrZ + 0.3);
+            bGeom.translate(bx, by, baseZ + qrZ * 0.5 - 0.15);
+            ws.group.add(new THREE.Mesh(bGeom, qrMat));
+          }
+        }
+      }
+    }
+
+    // VŨ KHÍ 4: ĐỌC FILE .STL & BÁO GIÁ TỰ ĐỘNG
+    let currentSTLVolumeCm3 = 4.85;
+    let currentSTLDims = [60.0, 28.5, 3.2];
+    let currentSTLName = 'Moc_Khoa_Mau.stl';
+
+    function buildDefaultSampleSTL() {
+      const ws = weaponScenes['stl'];
+      if (!ws) return;
+      while (ws.group.children.length > 0) ws.group.remove(ws.group.children[0]);
+      const g = new THREE.TorusKnotGeometry(14, 4.2, 96, 24);
+      g.translate(0, 0, 18);
+      const m = new THREE.MeshStandardMaterial({ color: 0x00ae42, metalness: 0.35, roughness: 0.3 });
+      ws.group.add(new THREE.Mesh(g, m));
+      recalcSTLQuote();
+    }
+
+    function onSTLFileUpload(ev) {
+      const file = ev.target.files && ev.target.files[0];
+      if (!file) return;
+      currentSTLName = file.name;
+      const reader = new FileReader();
+      reader.onload = e => {
+        const buf = e.target.result;
+        parseAndRenderBinarySTL(buf);
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    function parseAndRenderBinarySTL(arrayBuffer) {
+      const ws = weaponScenes['stl'];
+      if (!ws) return;
+      const dv = new DataView(arrayBuffer);
+      if (arrayBuffer.byteLength < 84) return;
+      const triCount = dv.getUint32(80, true);
+      const expectedLen = 84 + triCount * 50;
+      if (expectedLen > arrayBuffer.byteLength) return;
+
+      const positions = new Float32Array(triCount * 9);
+      let minX = Infinity, minY = Infinity, minZ = Infinity;
+      let maxX = -Infinity, maxY = -Infinity, maxZ = -Infinity;
+      let totalSignedVol = 0;
+
+      let offset = 84;
+      for (let i = 0; i < triCount; i++) {
+        offset += 12; // Bỏ qua normal
+        const x1 = dv.getFloat32(offset, true), y1 = dv.getFloat32(offset + 4, true), z1 = dv.getFloat32(offset + 8, true);
+        const x2 = dv.getFloat32(offset + 12, true), y2 = dv.getFloat32(offset + 16, true), z2 = dv.getFloat32(offset + 20, true);
+        const x3 = dv.getFloat32(offset + 24, true), y3 = dv.getFloat32(offset + 28, true), z3 = dv.getFloat32(offset + 32, true);
+        offset += 38;
+
+        const base = i * 9;
+        positions[base] = x1; positions[base+1] = y1; positions[base+2] = z1;
+        positions[base+3] = x2; positions[base+4] = y2; positions[base+5] = z2;
+        positions[base+6] = x3; positions[base+7] = y3; positions[base+8] = z3;
+
+        minX = Math.min(minX, x1, x2, x3); maxX = Math.max(maxX, x1, x2, x3);
+        minY = Math.min(minY, y1, y2, y3); maxY = Math.max(maxY, y1, y2, y3);
+        minZ = Math.min(minZ, z1, z2, z3); maxZ = Math.max(maxZ, z1, z2, z3);
+
+        totalSignedVol += (x1 * (y2 * z3 - y3 * z2) - x2 * (y1 * z3 - y3 * z1) + x3 * (y1 * z2 - y2 * z1)) / 6.0;
+      }
+
+      const geom = new THREE.BufferGeometry();
+      geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geom.computeVertexNormals();
+
+      const cx = (minX + maxX) * 0.5, cy = (minY + maxY) * 0.5;
+      geom.translate(-cx, -cy, -minZ);
+
+      while (ws.group.children.length > 0) ws.group.remove(ws.group.children[0]);
+      const mat = new THREE.MeshStandardMaterial({ color: 0x00ae42, metalness: 0.3, roughness: 0.35 });
+      ws.group.add(new THREE.Mesh(geom, mat));
+
+      currentSTLDims = [Math.max(0.1, maxX - minX), Math.max(0.1, maxY - minY), Math.max(0.1, maxZ - minZ)];
+      currentSTLVolumeCm3 = Math.max(0.2, Math.abs(totalSignedVol) / 1000.0);
+      recalcSTLQuote();
+    }
+
+    function recalcSTLQuote() {
+      const matParts = (document.getElementById('sel-stl-mat').value || '1.24|1200').split('|');
+      const density = parseFloat(matParts[0]) || 1.24;
+      const pricePerGram = parseFloat(matParts[1]) || 1200;
+      const infill = parseFloat(document.getElementById('sl-stl-infill').value) || 25;
+
+      document.getElementById('lbl-stl-infill').innerText = infill + '%';
+
+      // Hệ số vỏ ngoài (Shells 45%) + Ruột (Infill 55%)
+      const effectiveFactor = 0.45 + 0.55 * (infill / 100.0);
+      const grams = Math.max(2.0, currentSTLVolumeCm3 * density * effectiveFactor);
+      const mins = Math.max(10, Math.round(grams * 3.4));
+      const cost = Math.max(25000, Math.round((18000 + grams * pricePerGram) / 1000) * 1000);
+
+      document.getElementById('st-dim').innerText = `${currentSTLDims[0].toFixed(1)} × ${currentSTLDims[1].toFixed(1)} × ${currentSTLDims[2].toFixed(1)} mm`;
+      document.getElementById('st-vol').innerText = currentSTLVolumeCm3.toFixed(2) + ' cm³';
+      document.getElementById('st-gram').innerText = grams.toFixed(1) + ' gram';
+      document.getElementById('st-time').innerText = mins + ' phút';
+      document.getElementById('st-price').innerText = formatVND(cost);
+    }
+
+    function addSTLQuoteToCart() {
+      const gText = document.getElementById('st-gram').innerText;
+      const dText = document.getElementById('st-dim').innerText;
+      const pText = document.getElementById('st-price').innerText.replace(/[^\d]/g, '');
+      orderCart.push({
+        title: `Đặt In File .STL: ${currentSTLName}`,
+        detail: `KT: ${dText} • Khối lượng: ${gText}`,
+        price: parseInt(pText, 10) || 39000
+      });
+      updateCartBadge();
+      openOrderModal();
+    }
+
+    function downloadWeaponSTL(key) {
+      const ws = weaponScenes[key];
+      if (!ws) return;
+      ws.group.updateMatrixWorld(true);
+      const exporter = new THREE.STLExporter();
+      const res = exporter.parse(ws.group, { binary: true });
+      const blob = new Blob([res], { type: 'application/octet-stream' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = (key === 'qr') ? 'Bang_Ma_QR_3D_ZStacking.stl' : 'Logo_2D_Sang_3D_Relief.stl';
+      a.click();
+    }
+
+    // GIỎ ĐẶT IN CHUNG
     function addCurrentCustomToOrder() {
       const iframe = document.getElementById('studio-iframe');
       let itemTitle = 'Móc Khóa 3D Cá Nhân Hóa (MakerLab)';
@@ -1166,11 +1630,7 @@
         }
       } catch (e) {}
 
-      orderCart.push({
-        title: itemTitle,
-        detail: detailStr,
-        price: priceVal
-      });
+      orderCart.push({ title: itemTitle, detail: detailStr, price: priceVal });
       updateCartBadge();
       openOrderModal();
     }
@@ -1194,7 +1654,7 @@
     function openOrderModal() {
       const box = document.getElementById('order-list-box');
       if (orderCart.length === 0) {
-        box.innerHTML = `<div style="color:#9ca3af; font-size:13px; text-align:center; padding:18px;">Chưa có mẫu nào trong đơn. Hãy bấm "Tùy Chỉnh 3D" hoặc "Đặt In Mẫu"!</div>`;
+        box.innerHTML = `<div style="color:var(--mw-muted); font-size:13px; text-align:center; padding:18px;">Chưa có mẫu nào trong đơn!</div>`;
       } else {
         let total = 0;
         box.innerHTML = orderCart.map((it, idx) => {
@@ -1202,17 +1662,17 @@
           return `
             <div class="order-item">
               <div>
-                <div style="font-size:13px; font-weight:800; color:#fff;">${idx + 1}. ${it.title}</div>
-                <div style="font-size:11.5px; color:#9ca3af; margin-top:2px;">${it.detail}</div>
+                <div style="font-size:13px; font-weight:800;">${idx + 1}. ${it.title}</div>
+                <div style="font-size:11.5px; color:var(--mw-text-sub); margin-top:2px;">${it.detail}</div>
               </div>
               <div style="text-align:right;">
-                <div style="font-size:13.5px; font-weight:900; color:#4ade80;">${formatVND(it.price)}</div>
+                <div style="font-size:13.5px; font-weight:900; color:var(--mw-green);">${formatVND(it.price)}</div>
                 <button onclick="removeOrderItem(${idx})" style="background:transparent; border:none; color:#ef4444; font-size:11px; cursor:pointer;">Xóa</button>
               </div>
             </div>
           `;
         }).join('') + `
-          <div style="display:flex; justify-content:space-between; padding:10px 4px 2px; font-size:14px; font-weight:900; color:#facc15;">
+          <div style="display:flex; justify-content:space-between; padding:10px 4px 2px; font-size:14.5px; font-weight:900; color:var(--mw-green);">
             <span>TỔNG CỘNG TẠM TÍNH:</span>
             <span>${formatVND(total)}</span>
           </div>
@@ -1234,9 +1694,7 @@
     function copyOrderSummary() {
       const lines = orderCart.map((it, i) => `${i + 1}. ${it.title} (${it.detail}) - ${formatVND(it.price)}`);
       const text = `ĐƠN ĐẶT IN 3D MAKERWORLD STUDIO:\n` + lines.join('\n') + `\n(Giao hàng tiêu chuẩn 3 - 5 ngày)`;
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(text);
-      }
+      if (navigator.clipboard) navigator.clipboard.writeText(text);
       alert('Đã sao chép thông số Đơn Đặt In 3D! Bạn có thể dán gửi ngay qua Zalo / Messenger cho xưởng.');
     }
 

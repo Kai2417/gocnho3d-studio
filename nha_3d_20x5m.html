@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mô Hình 3D Nhà 20m × 5m Chuẩn Số Liệu Bản Vẽ Tay — BIM & Sa Bàn 3D</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/STLExporter.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", system-ui, -apple-system, sans-serif; }
+    body { background: #090d16; color: #f1f5f9; display: flex; height: 100vh; width: 100vw; overflow: hidden; }
+
+    #sidebar {
+      width: 430px; min-width: 430px; height: 100vh;
+      background: #0f172a; border-right: 1px solid #1e293b;
+      display: flex; flex-direction: column; padding: 14px 16px; gap: 10px;
+      overflow-y: auto; z-index: 10;
+    }
+    h1 { font-size: 16.5px; color: #38bdf8; font-weight: 800; letter-spacing: 0.2px; }
+    .subtitle { font-size: 11.5px; color: #94a3b8; line-height: 1.4; }
+
+    .mode-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .mode-tab {
+      padding: 8px 10px; border-radius: 7px; border: 1px solid #334155;
+      background: #1e293b; color: #cbd5e1; font-size: 12px; font-weight: 700;
+      cursor: pointer; text-align: center; transition: 0.18s;
+    }
+    .mode-tab.active { background: #0284c7; color: #fff; border-color: #38bdf8; }
+
+    .ctrl-card {
+      background: #111827; border: 1px solid #1e293b; border-radius: 9px; padding: 10px 12px;
+    }
+    .ctrl-title { font-size: 12px; font-weight: 800; color: #fb923c; margin-bottom: 7px; display: flex; justify-content: space-between; }
+    .slider-row { margin-bottom: 7px; }
+    .slider-lbl { display: flex; justify-content: space-between; font-size: 11.5px; color: #cbd5e1; margin-bottom: 3px; }
+    input[type="range"] { width: 100%; accent-color: #38bdf8; cursor: pointer; }
+
+    .chk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 4px; }
+    .chk-item { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: #e2e8f0; cursor: pointer; user-select: none; }
+    .chk-item input { accent-color: #22c55e; width: 14px; height: 14px; cursor: pointer; }
+
+    .room-list { display: flex; flex-direction: column; gap: 5px; }
+    .room-btn {
+      display: flex; justify-content: space-between; align-items: center;
+      background: #1e293b; border: 1px solid #334155; color: #e2e8f0;
+      padding: 7px 10px; border-radius: 7px; font-size: 11.5px; font-weight: 600;
+      cursor: pointer; text-align: left; transition: 0.15s;
+    }
+    .room-btn:hover, .room-btn.active { background: #0369a1; border-color: #38bdf8; color: #fff; }
+    .room-btn .dim-tag {
+      background: #0f172a; color: #fde047; padding: 2px 7px; border-radius: 5px;
+      font-size: 10.5px; font-weight: 700; white-space: nowrap;
+    }
+
+    .spec-table { width: 100%; border-collapse: collapse; font-size: 11.5px; margin-top: 4px; }
+    .spec-table td { padding: 4px 0; border-bottom: 1px dashed #1e293b; }
+    .spec-table td:first-child { color: #94a3b8; }
+    .spec-table td:last-child { color: #f8fafc; font-weight: 700; text-align: right; }
+
+    .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: auto; }
+    .act-btn {
+      padding: 9px 10px; border-radius: 7px; border: none; font-weight: 700;
+      font-size: 11.5px; cursor: pointer; color: #fff; transition: 0.2s;
+    }
+    #btn-stl { background: #059669; }
+    #btn-3mf { background: #d97706; }
+    #btn-svg { grid-column: span 2; background: linear-gradient(135deg, #2563eb, #7c3aed); }
+
+    #viewport { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    #hud {
+      position: absolute; top: 14px; left: 14px; background: rgba(15, 23, 42, 0.92);
+      border: 1px solid #334155; padding: 10px 14px; border-radius: 9px;
+      pointer-events: none; z-index: 5; max-width: 560px;
+    }
+    #hud-title { font-size: 14px; font-weight: 800; color: #38bdf8; }
+    #hud-sub { font-size: 11.5px; color: #cbd5e1; margin-top: 3px; }
+
+    #legend-box {
+      position: absolute; top: 14px; right: 14px; width: 270px;
+      background: rgba(15, 23, 42, 0.92); border: 1px solid #334155;
+      border-radius: 9px; padding: 10px 12px; z-index: 5; font-size: 11.5px;
+    }
+    .leg-hdr { font-weight: 800; color: #fde047; margin-bottom: 6px; font-size: 12px; border-bottom: 1px solid #1e293b; padding-bottom: 4px; }
+    .leg-row { display: flex; align-items: center; justify-content: space-between; margin: 4px 0; color: #cbd5e1; }
+    .leg-dot { width: 10px; height: 10px; border-radius: 3px; display: inline-block; margin-right: 6px; }
+
+    #cam-bar {
+      position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 7px; z-index: 6; background: rgba(15, 23, 42, 0.92);
+      padding: 7px 12px; border-radius: 999px; border: 1px solid #334155;
+    }
+    .cam-btn {
+      background: #1e293b; color: #e2e8f0; border: 1px solid #475569;
+      padding: 6px 12px; border-radius: 999px; font-size: 11.5px; font-weight: 700; cursor: pointer;
+    }
+    .cam-btn:hover, .cam-btn.active { background: #38bdf8; color: #0f172a; border-color: #38bdf8; }
+
+    /* Nhãn kích thước 3D nổi (HTML Overlay Labels) */
+    #labels-container { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 4; }
+    .dim-label {
+      position: absolute; transform: translate(-50%, -50%);
+      background: rgba(15, 23, 42, 0.88); color: #fde047; border: 1px solid #f59e0b;
+      padding: 2px 6px; border-radius: 4px; font-size: 10.5px; font-weight: 700;
+      white-space: nowrap; box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    }
+    .room-label {
+      position: absolute; transform: translate(-50%, -50%);
+      background: rgba(2, 132, 199, 0.88); color: #ffffff; border: 1px solid #7dd3fc;
+      padding: 3px 7px; border-radius: 5px; font-size: 11px; font-weight: 800;
+      white-space: nowrap; text-align: center; line-height: 1.25;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.55);
+    }
+
+    #svg-panel {
+      display: none; position: absolute; inset: 0; background: #0b1120;
+      overflow: auto; padding: 20px; z-index: 8; flex-direction: column; align-items: center;
+    }
+    #svg-panel svg {
+      max-width: 1050px; width: 100%; height: auto; background: #0f172a;
+      border: 1px solid #334155; border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.6);
+    }
+  </style>
+</head>
+<body>
+  <div id="sidebar">
+    <h1>🏠 MÔ HÌNH 3D NHÀ 20m × 5m (CHUẨN BẢN VẼ TAY)</h1>
+    <div class="subtitle">Dựng chính xác 100% theo số liệu bản vẽ tay: Tổng dài <b>20.0m</b> × Rộng <b>5.0m</b> (Đường luồng <b>1.2m</b> + Dãy phòng <b>3.8m</b>)</div>
+
+    <div class="mode-tabs">
+      <div class="mode-tab active" id="tab-3d" onclick="switchMode('3d')">🧊 Phối Cảnh 3D Nội Thất</div>
+      <div class="mode-tab" id="tab-svg" onclick="switchMode('svg')">📐 Bản Vẽ CAD 2D Chuẩn</div>
+    </div>
+
+    <div class="ctrl-card">
+      <div class="ctrl-title">
+        <span>🎚️ TÙY CHỈNH MẶT CẮT TƯỜNG & HIỂN THỊ</span>
+        <span id="wall-h-val" style="color:#38bdf8;">Cao 2.8m</span>
+      </div>
+      <div class="slider-row">
+        <div class="slider-lbl">
+          <span>Chiều cao tường bao & vách phòng:</span>
+          <span>(Vách chắn bếp cố định Cao 2.0m)</span>
+        </div>
+        <input type="range" id="wall-slider" min="0.4" max="3.4" step="0.1" value="2.8" oninput="updateWallHeight()">
+      </div>
+      <div class="chk-grid">
+        <label class="chk-item"><input type="checkbox" id="chk-labels" checked onchange="toggleLabels()"> 🏷️ Hiện số đo & tên phòng</label>
+        <label class="chk-item"><input type="checkbox" id="chk-furniture" checked onchange="toggleFurniture()"> 🛋️ Hiện nội thất & tủ thờ</label>
+        <label class="chk-item"><input type="checkbox" id="chk-doors" checked onchange="toggleDoors()"> 🚪 Hiện cửa đi & cửa sổ</label>
+        <label class="chk-item"><input type="checkbox" id="chk-roof" onchange="toggleRoof()"> 🏠 Đậy mái/trần kính mờ</label>
+      </div>
+    </div>
+
+    <div class="ctrl-card">
+      <div class="ctrl-title"><span>📍 BẤM CHỌN TỪNG KHU VỰC (DỌC THEO 20M)</span><span>100% Khớp Số Đo</span></div>
+      <div class="room-list">
+        <button class="room-btn active" id="rbtn-all" onclick="focusZone('all')">
+          <span>★ Toàn Bộ Nhà (Tổng Dài 20m × Rộng 5m)</span>
+          <span class="dim-tag">100.0 m²</span>
+        </button>
+        <button class="room-btn" id="rbtn-front" onclick="focusZone('front')">
+          <span>1. Hè Trước (1.5m) + Ô Kính + Phòng Khách & Tủ Thờ (4m)</span>
+          <span class="dim-tag">5.0m × 5.5m</span>
+        </button>
+        <button class="room-btn" id="rbtn-kitchen" onclick="focusZone('kitchen')">
+          <span>2. Khu Kệ Bếp Chữ L + Vách Chắn (Dài 2m × Cao 2m) + Cửa 1m</span>
+          <span class="dim-tag">Dài 2.0m</span>
+        </button>
+        <button class="room-btn" id="rbtn-bed3" onclick="focusZone('bed3')">
+          <span>3. Phòng Ngủ 3 (Có VS Khép Kín 1m) + Hành Lang 1.2m</span>
+          <span class="dim-tag">3.8m × 3.5m</span>
+        </button>
+        <button class="room-btn" id="rbtn-bed12" onclick="focusZone('bed12')">
+          <span>4. Phòng Ngủ 1 (3m) & Phòng Ngủ 2 (3m) + Cửa Sổ Phải</span>
+          <span class="dim-tag">3.8m × 6.0m</span>
+        </button>
+        <button class="room-btn" id="rbtn-bath" onclick="focusZone('bath')">
+          <span>5. Khu Tắm (2m) + VS Cuối Nhà (1m)</span>
+          <span class="dim-tag">Dài 3.0m</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="ctrl-card">
+      <div class="ctrl-title"><span>📊 BẢNG TỔNG HỢP SỐ LIỆU ĐỐI CHIẾU BẢN VẼ</span></div>
+      <table class="spec-table">
+        <tr><td>Tổng chiều dài (Trục dọc phải)</td><td>1 + 2 + 3 + 3 + 3.5 + 2 + 4 + 1.5 = <b>20.0 m</b></td></tr>
+        <tr><td>Tổng chiều rộng (Trục ngang)</td><td>1.2m (Đg luồng) + 3.8m (Phòng) = <b>5.0 m</b></td></tr>
+        <tr><td>3 Phòng ngủ (Giữa nhà)</td><td>PN1 (3.0m) + PN2 (3.0m) + PN3 (3.5m, có VS 1m)</td></tr>
+        <tr><td>Khu Bếp & Vách che Tủ Thờ</td><td>Dài 2.0m · Vách che <b>dài 2.0m × cao 2.0m</b></td></tr>
+        <tr><td>Phòng Khách & Hè trước</td><td>Khách <b>4.0m × 5.0m</b> + Hè <b>1.5m</b> (Có vách Kính trái)</td></tr>
+      </table>
+    </div>
+
+    <div class="btn-row">
+      <button class="act-btn" id="btn-stl" onclick="exportHouseSTL()">⬇️ Tải Sa Bàn .STL (1:100)</button>
+      <button class="act-btn" id="btn-3mf" onclick="exportHouse3MF()">🎨 Tải .3MF Đa Màu Bambu</button>
+      <button class="act-btn" id="btn-svg" onclick="downloadHouseSVG()">📐 Tải Bản Vẽ Kỹ Thuật 2D (.SVG)</button>
+    </div>
+  </div>
+
+  <div id="viewport">
+    <div id="hud">
+      <div id="hud-title">MÔ HÌNH 3D NHÀ 20.0m × 5.0m — ĐỐI CHIẾU 1:1 BẢN VẼ TAY</div>
+      <div id="hud-sub">🖱️ Chuột trái: Xoay 360° | Chuột phải: Kéo di chuyển | Con lăn: Phóng to / Thu nhỏ</div>
+    </div>
+
+    <div id="legend-box">
+      <div class="leg-hdr">🧭 CHÚ GIẢI PHÂN KHU (20m × 5m)</div>
+      <div class="leg-row"><span><i class="leg-dot" style="background:#f59e0b"></i>Hè (1.5m) & Phòng Khách + Tủ Thờ (4m)</span><b>27.5 m²</b></div>
+      <div class="leg-row"><span><i class="leg-dot" style="background:#10b981"></i>Khu Kệ Bếp (2m) & Vách Cao 2m</span><b>10.0 m²</b></div>
+      <div class="leg-row"><span><i class="leg-dot" style="background:#3b82f6"></i>3 Phòng Ngủ (3m + 3m + 3.5m)</span><b>36.1 m²</b></div>
+      <div class="leg-row"><span><i class="leg-dot" style="background:#a855f7"></i>Khu VS (1m) + Tắm (2m) + VS trong (1m)</span><b>11.4 m²</b></div>
+      <div class="leg-row"><span><i class="leg-dot" style="background:#64748b"></i>Đường Luồng Dọc Trái (Rộng 1.2m)</span><b>15.0 m²</b></div>
+    </div>
+
+    <div id="labels-container"></div>
+
+    <div id="cam-bar">
+      <button class="cam-btn active" id="cbtn-iso" onclick="setCam('iso')">🧊 Phối Cảnh 3D Tổng Thể</button>
+      <button class="cam-btn" id="cbtn-top" onclick="setCam('top')">📐 Nhìn Thẳng Từ Trên Xuống (Đúng Hướng Giấy Vẽ)</button>
+      <button class="cam-btn" id="cbtn-front" onclick="setCam('front')">🏛️ Nhìn Từ Mặt Tiền (Hè 1.5m → Phòng Khách)</button>
+      <button class="cam-btn" id="cbtn-kitchen" onclick="setCam('kitchen')">🍳 Cận Cảnh Bếp, Vách 2m & Tủ Thờ</button>
+      <button class="cam-btn" id="cbtn-side" onclick="setCam('side')">📏 Mặt Cắt Dọc 20m</button>
+    </div>
+
+    <!-- BẢN VẼ KỸ THUẬT 2D SVG CHUẨN TỶ LỆ -->
+    <div id="svg-panel">
+      <svg id="house-svg" viewBox="0 0 920 1180" xmlns="http://www.w3.org/2000/svg">
+        <rect width="920" height="1180" fill="#0b1120"/>
+        <text x="460" y="38" fill="#38bdf8" font-size="20" font-weight="bold" text-anchor="middle">BẢN VẼ KỸ THUẬT MẶT BẰNG 2D — NHÀ ỐNG 20.0m × 5.0m (CHUẨN SỐ LIỆU BẢN VẼ TAY)</text>
+        <text x="460" y="62" fill="#94a3b8" font-size="13" text-anchor="middle">Tỷ lệ chuẩn 1:1 (1m = 48px) | Tổng dài: 1m + 2m + 3m + 3m + 3.5m + 2m + 4m + 1.5m = 20.0m | Rộng: 1.2m (Đg luồng) + 3.8m = 5.0m</text>
+
+        <!-- Gốc bản vẽ mặt bằng: X_left = 260, Y_top = 110, Width = 5m * 48 = 240px, Height = 20m * 48 = 960px -->
+        <g transform="translate(260, 110)">
+          <!-- Nền tổng 5m x 20m -->
+          <rect x="0" y="0" width="240" height="960" fill="#1e293b" stroke="#f8fafc" stroke-width="4"/>
+
+          <!-- Đường luồng bên trái (1.2m = 57.6px) chạy từ đầu trên xuống hết Phòng Ngủ 3 (12.5m = 600px) -->
+          <rect x="0" y="0" width="57.6" height="600" fill="#0f172a" stroke="#475569" stroke-width="1.5"/>
+          <text x="28" y="320" fill="#38bdf8" font-size="13" font-weight="bold" text-anchor="middle" transform="rotate(-90 28 320)">ĐƯỜNG LUỒNG (RỘNG 1m2)</text>
+
+          <!-- 1. KHU VS CUỐI NHÀ (0 -> 1m = 0 -> 48px) & TẮM (1m -> 3m = 48 -> 144px) -->
+          <!-- Bậc / Sảnh phụ trước phòng tắm (x=57.6..148, y=0..144) -->
+          <rect x="57.6" y="0" width="90.4" height="144" fill="#172554" stroke="#64748b" stroke-width="2"/>
+          <rect x="85" y="108" width="63" height="36" fill="#1e3a8a" stroke="#93c5fd" stroke-width="1.5"/>
+          <!-- Phòng VS (x=148..240, y=0..48) -->
+          <rect x="148" y="0" width="92" height="48" fill="#3b0764" stroke="#e2e8f0" stroke-width="2.5"/>
+          <text x="194" y="28" fill="#f3e8ff" font-size="13" font-weight="bold" text-anchor="middle">VS (1m)</text>
+          <path d="M 148,24 L 172,24 A 24,24 0 0,1 148,48" fill="none" stroke="#fde047" stroke-width="1.5" stroke-dasharray="3,3"/>
+          <!-- Phòng Tắm (x=148..240, y=48..144) -->
+          <rect x="148" y="48" width="92" height="96" fill="#4c1d95" stroke="#e2e8f0" stroke-width="2.5"/>
+          <text x="194" y="100" fill="#f3e8ff" font-size="13" font-weight="bold" text-anchor="middle">TẮM (2m)</text>
+          <path d="M 148,72 L 172,72 A 24,24 0 0,0 148,48" fill="none" stroke="#fde047" stroke-width="1.5" stroke-dasharray="3,3"/>
+
+          <!-- 2. PHÒNG NGỦ 1 (3m -> 6m = 144 -> 288px, Rộng 3.8m = 182.4px) -->
+          <rect x="57.6" y="144" width="182.4" height="144" fill="#1e3a8a" stroke="#f8fafc" stroke-width="3"/>
+          <text x="148" y="212" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">PHÒNG NGỦ 1</text>
+          <text x="148" y="232" fill="#93c5fd" font-size="12" text-anchor="middle">(3m8 × 3m = 11.4 m²)</text>
+          <!-- Cửa mở vào PN1 ở góc dưới-trái -->
+          <line x1="57.6" y1="252" x2="93.6" y2="252" stroke="#fde047" stroke-width="3"/>
+          <path d="M 57.6,288 A 36,36 0 0,0 93.6,252" fill="none" stroke="#fde047" stroke-width="1.5" stroke-dasharray="4,4"/>
+          <!-- Cửa sổ bên tường phải -->
+          <rect x="236" y="195" width="8" height="42" fill="#38bdf8" stroke="#fff" stroke-width="1"/>
+
+          <!-- 3. PHÒNG NGỦ 2 (6m -> 9m = 288 -> 432px, Rộng 3.8m = 182.4px) -->
+          <rect x="57.6" y="288" width="182.4" height="144" fill="#1d4ed8" stroke="#f8fafc" stroke-width="3"/>
+          <text x="148" y="356" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">PHÒNG NGỦ 2</text>
+          <text x="148" y="376" fill="#bfdbfe" font-size="12" text-anchor="middle">(3m8 × 3m = 11.4 m²)</text>
+          <!-- Cửa mở vào PN2 -->
+          <line x1="57.6" y1="396" x2="93.6" y2="396" stroke="#fde047" stroke-width="3"/>
+          <path d="M 57.6,432 A 36,36 0 0,0 93.6,396" fill="none" stroke="#fde047" stroke-width="1.5" stroke-dasharray="4,4"/>
+          <!-- Cửa sổ bên tường phải -->
+          <rect x="236" y="340" width="8" height="42" fill="#38bdf8" stroke="#fff" stroke-width="1"/>
+
+          <!-- 4. PHÒNG NGỦ 3 (9m -> 12.5m = 432 -> 600px, Dài 3.5m, có VS 1m ở góc trên phải) -->
+          <rect x="57.6" y="432" width="182.4" height="168" fill="#1e40af" stroke="#f8fafc" stroke-width="3"/>
+          <!-- VS khép kín trong PN3 (dài 1m = 48px, ngang 1.8m = 86px) -->
+          <rect x="154" y="432" width="86" height="48" fill="#581c87" stroke="#f8fafc" stroke-width="2.5"/>
+          <text x="197" y="460" fill="#f3e8ff" font-size="12" font-weight="bold" text-anchor="middle">VS (1m)</text>
+          <text x="142" y="528" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">PHÒNG NGỦ 3</text>
+          <text x="142" y="548" fill="#bfdbfe" font-size="12" text-anchor="middle">(3m8 × 3m5 = 13.3 m²)</text>
+          <!-- Cửa mở vào PN3 -->
+          <line x1="57.6" y1="564" x2="93.6" y2="564" stroke="#fde047" stroke-width="3"/>
+          <path d="M 57.6,600 A 36,36 0 0,0 93.6,564" fill="none" stroke="#fde047" stroke-width="1.5" stroke-dasharray="4,4"/>
+          <!-- Cửa sổ bên tường phải -->
+          <rect x="236" y="510" width="8" height="42" fill="#38bdf8" stroke="#fff" stroke-width="1"/>
+
+          <!-- 5. KHU KỆ BẾP (12.5m -> 14.5m = 600 -> 696px, Dài 2.0m) -->
+          <!-- Kệ bếp chữ L -->
+          <path d="M 135,600 L 240,600 L 240,696 L 214,696 L 214,626 L 135,626 Z" fill="#047857" stroke="#34d399" stroke-width="2"/>
+          <text x="175" y="618" fill="#ecfdf5" font-size="11.5" font-weight="bold" text-anchor="middle">KỆ BẾP CHỮ L</text>
+          <!-- Cửa ngách 1m bên phải cuối bếp -->
+          <rect x="236" y="665" width="8" height="32" fill="#fde047"/>
+          <!-- Vách ngăn lửng (dài 2m = 96px, Cao 2m) ngăn Bếp và Tủ thờ -->
+          <rect x="144" y="696" width="96" height="14" fill="#d97706" stroke="#fef08a" stroke-width="2"/>
+          <text x="192" y="690" fill="#fde047" font-size="11" font-weight="bold" text-anchor="middle">Vách dài 2m · Cao 2m</text>
+
+          <!-- 6. TỦ THỜ & PHÒNG KHÁCH RỘNG 5m (14.5m -> 18.5m = 696 -> 888px, Dài 4.0m) -->
+          <!-- Tủ thờ đặt ngay lưng vách ngăn 2m -->
+          <rect x="156" y="716" width="68" height="26" fill="#991b1b" stroke="#fca5a5" stroke-width="2"/>
+          <text x="190" y="733" fill="#fef2f2" font-size="11" font-weight="bold" text-anchor="middle">TỦ THỜ</text>
+          <text x="115" y="795" fill="#38bdf8" font-size="16" font-weight="bold" text-anchor="middle">PHÒNG KHÁCH (RỘNG 5m × DÀI 4m)</text>
+          <text x="115" y="818" fill="#94a3b8" font-size="12.5" text-anchor="middle">Không gian mở 20.0 m² liên thông đường luồng</text>
+
+          <!-- Bộ cửa chính 4 cánh mở ra Hè (ở mốc y = 888px) -->
+          <line x1="84" y1="888" x2="204" y2="888" stroke="#fde047" stroke-width="4"/>
+          <path d="M 84,888 L 84,858 A 30,30 0 0,1 114,888 M 144,888 A 30,30 0 0,1 114,858 L 114,888 M 144,888 L 144,858 A 30,30 0 0,1 174,888 M 204,888 A 30,30 0 0,1 174,858 L 174,888" fill="none" stroke="#fde047" stroke-width="1.5" stroke-dasharray="3,3"/>
+
+          <!-- 7. HÈ TRƯỚC NHÀ (18.5m -> 20.0m = 888 -> 960px, Dài 1.5m) & KÍNH -->
+          <rect x="64" y="888" width="176" height="72" fill="#334155" stroke="#cbd5e1" stroke-width="2.5"/>
+          <text x="152" y="930" fill="#fde047" font-size="15" font-weight="bold" text-anchor="middle">HÈ TRƯỚC NHÀ (1,5m)</text>
+          <!-- Ô Kính bên trái (thẳng trục đường luồng) -->
+          <rect x="12" y="902" width="32" height="58" fill="#0284c7" stroke="#bae6fd" stroke-width="2"/>
+          <text x="28" y="935" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle" transform="rotate(-90 28 935)">KÍNH</text>
+
+          <!-- ĐƯỜNG GHI KÍCH THƯỚC BÊN TRÁI (TỔNG DÀI 20m) -->
+          <line x1="-55" y1="0" x2="-55" y2="960" stroke="#38bdf8" stroke-width="2"/>
+          <line x1="-65" y1="0" x2="-45" y2="0" stroke="#38bdf8" stroke-width="2"/>
+          <line x1="-65" y1="960" x2="-45" y2="960" stroke="#38bdf8" stroke-width="2"/>
+          <text x="-75" y="480" fill="#38bdf8" font-size="16" font-weight="bold" text-anchor="middle" transform="rotate(-90 -75 480)">TỔNG CHIỀU DÀI = 20.0m</text>
+
+          <!-- ĐƯỜNG GHI KÍCH THƯỚC BÊN PHẢI (8 ĐOẠN CHI TIẾT ĐÚNG BẢN VẼ TAY) -->
+          <g transform="translate(265, 0)" fill="#fde047" font-size="13" font-weight="bold">
+            <line x1="0" y1="0" x2="0" y2="960" stroke="#f59e0b" stroke-width="2"/>
+            <!-- 1m -->
+            <line x1="-8" y1="0" x2="8" y2="0" stroke="#f59e0b" stroke-width="2"/>
+            <text x="16" y="28">1m (VS)</text>
+            <!-- 2m -->
+            <line x1="-8" y1="48" x2="8" y2="48" stroke="#f59e0b" stroke-width="2"/>
+            <text x="16" y="100">2m (Tắm)</text>
+            <!-- 3m -->
+            <line x1="-8" y1="144" x2="8" y2="144" stroke="#f59e0b" stroke-width="2"/>
+            <text x="16" y="220">3m (Phòng 1)</text>
+            <!-- 3m -->
+            <line x1="-8" y1="288" x2="8" y2="288" stroke="#f59e0b" stroke-width="2"/>
+            <text x="16" y="365">3m (Phòng 2)</text>
+            <!-- 3,5m -->
+            <line x1="-8" y1="432" x2="8" y2="432" stroke="#f59e0b" stroke-width="2"/>
+            <text x="16" y="520">3,5m (Phòng 3 + VS 1m)</text>
+            <!-- 2m -->
+            <line x1="-8" y1="600" x2="8" y2="600" stroke="#f59e0b" stroke-width="2"/>
+            <text x="16" y="652">2m (Kệ bếp + Cửa 1m)</text>
+            <!-- 4m -->
+            <line x1="-8" y1="696" x2="8" y2="696" stroke="#f59e0b" stroke-width="2"/>
+            <text x="16" y="795">4m (Tủ thờ + Khách 5m)</text>
+            <!-- 1,5m -->
+            <line x1="-8" y1="888" x2="8" y2="888" stroke="#f59e0b" stroke-width="2"/>
+            <text x="16" y="930">1,5m (Hè trước)</text>
+            <line x1="-8" y1="960" x2="8" y2="960" stroke="#f59e0b" stroke-width="2"/>
+          </g>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // DỮ LIỆU HÌNH HỌC KIẾN TRÚC CHUẨN 1:1 THEO BẢN VẼ TAY (ĐƠN VỊ: MÉT)
+    // Trục X: -2.5m (Trái) -> +2.5m (Phải) => Tổng rộng = 5.0m
+    //   - Đường luồng trái: X = -2.5m -> -1.3m (Rộng 1.2m)
+    //   - Dãy phòng phải:   X = -1.3m -> +2.5m (Rộng 3.8m)
+    // Trục Z: -10.0m (Đầu trên / Cuối nhà) -> +10.0m (Đầu dưới / Mặt tiền Hè) => Tổng dài = 20.0m
+    //   1. Z = -10.0 -> -9.0 (1.0m): VS cuối nhà
+    //   2. Z = -9.0  -> -7.0 (2.0m): Phòng Tắm
+    //   3. Z = -7.0  -> -4.0 (3.0m): Phòng Ngủ 1
+    //   4. Z = -4.0  -> -1.0 (3.0m): Phòng Ngủ 2
+    //   5. Z = -1.0  -> +2.5 (3.5m): Phòng Ngủ 3 (có VS khép kín 1.0m ở Z = -1.0 -> 0.0)
+    //   6. Z = +2.5  -> +4.5 (2.0m): Khu Kệ Bếp chữ L + Vách chắn (dài 2.0m, Cao 2.0m tại Z = +4.5)
+    //   7. Z = +4.5  -> +8.5 (4.0m): Tủ Thờ + Phòng Khách (rộng đủ 5.0m)
+    //   8. Z = +8.5  -> +10.0 (1.5m): Hè trước nhà + Ô Kính bên trái
+    // =========================================================================
+
+    const viewport = document.getElementById("viewport");
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x090d16);
+
+    const camera = new THREE.PerspectiveCamera(42, (window.innerWidth - 430) / window.innerHeight, 0.1, 500);
+    camera.position.set(14.5, 16.5, 16.5);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+    renderer.setSize(window.innerWidth - 430, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    viewport.appendChild(renderer.domElement);
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.target.set(0, 1.0, 0.5);
+    controls.enableDamping = true;
+
+    // Ánh sáng Kiến trúc
+    scene.add(new THREE.AmbientLight(0xffffff, 0.68));
+    const sunLight = new THREE.DirectionalLight(0xfffbeb, 0.92);
+    sunLight.position.set(18, 28, 16);
+    sunLight.castShadow = true;
+    sunLight.shadow.mapSize.width = 2048;
+    sunLight.shadow.mapSize.height = 2048;
+    scene.add(sunLight);
+
+    const fillLight = new THREE.DirectionalLight(0x93c5fd, 0.38);
+    fillLight.position.set(-16, 14, -12);
+    scene.add(fillLight);
+
+    // Lưới nền & Mặt đất
+    const grid = new THREE.GridHelper(32, 32, 0x334155, 0x1e293b);
+    grid.position.y = -0.02;
+    scene.add(grid);
+
+    function makeMat(hex, rough = 0.45, metal = 0.05, extId = 1, name = "Part", transparent = false, opacity = 1.0) {
+      const m = new THREE.MeshStandardMaterial({ color: hex, roughness: rough, metalness: metal, transparent, opacity });
+      m.userData = { extruder: extId, name };
+      return m;
+    }
+
+    const matWallExt    = makeMat(0xf8fafc, 0.40, 0.05, 1, "Tuong_Bao_Trang");
+    const matWallInt    = makeMat(0xe2e8f0, 0.45, 0.05, 1, "Vach_Ngan_Phong");
+    const matWallCap    = makeMat(0x0284c7, 0.35, 0.10, 2, "Vien_Dinh_Tuong");
+    const matPartition2m = makeMat(0xf59e0b, 0.35, 0.10, 3, "Vach_Bep_Cao_2m");
+    const matFloorHall  = makeMat(0x334155, 0.50, 0.05, 4, "San_Duong_Luong");
+    const matFloorBed   = makeMat(0xd97706, 0.42, 0.08, 3, "San_Go_Phong_Ngu");
+    const matFloorLiv   = makeMat(0xfef3c7, 0.30, 0.08, 1, "San_Gach_Phong_Khach");
+    const matFloorBath  = makeMat(0x0d9488, 0.35, 0.10, 2, "San_Khu_Tam_VS");
+    const matFloorPorch = makeMat(0x64748b, 0.55, 0.05, 4, "San_He_Truoc");
+    const matKitchen    = makeMat(0x059669, 0.32, 0.12, 2, "Ke_Bep_Chu_L");
+    const matAltar      = makeMat(0x991b1b, 0.35, 0.15, 3, "Tu_Tho_Go_Gu");
+    const matDoorWood   = makeMat(0xb45309, 0.40, 0.10, 3, "Cua_Go");
+    const matGlass      = makeMat(0x38bdf8, 0.15, 0.20, 2, "Vach_Kinh_Cua_So", true, 0.52);
+
+    const houseRoot = new THREE.Group();
+    const wallsDynamic = []; // Các tường thay đổi chiều cao theo thanh trượt
+    const furnitureGroup = new THREE.Group();
+    const doorsGroup = new THREE.Group();
+    const roofGroup = new THREE.Group();
+    roofGroup.visible = false;
+
+    scene.add(houseRoot);
+    houseRoot.add(furnitureGroup);
+    houseRoot.add(doorsGroup);
+    houseRoot.add(roofGroup);
+
+    // Helper tạo sàn phân khu
+    function addFloorZone(x1, z1, x2, z2, mat, yTop = 0.12) {
+      const w = Math.abs(x2 - x1);
+      const d = Math.abs(z2 - z1);
+      const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, yTop, d), mat);
+      mesh.position.set((x1 + x2) / 2, yTop / 2, (z1 + z2) / 2);
+      mesh.receiveShadow = true;
+      houseRoot.add(mesh);
+    }
+
+    // Helper tạo tường (cho phép thay đổi chiều cao hoặc khóa cứng chiều cao như Vách Bếp 2m)
+    function addWallSegment(x1, z1, x2, z2, thickness = 0.16, fixedHeight = null, customMat = null) {
+      const dx = x2 - x1;
+      const dz = z2 - z1;
+      const len = Math.sqrt(dx * dx + dz * dz);
+      const angle = Math.atan2(dx, dz);
+
+      const hInit = fixedHeight !== null ? fixedHeight : 2.8;
+      const wMat = customMat || (thickness >= 0.15 ? matWallExt : matWallInt);
+
+      const grp = new THREE.Group();
+      grp.position.set((x1 + x2) / 2, 0.12, (z1 + z2) / 2);
+      grp.rotation.y = angle;
+
+      const body = new THREE.Mesh(new THREE.BoxGeometry(thickness, 1.0, len), wMat);
+      body.scale.y = hInit;
+      body.position.y = hInit / 2;
+      body.castShadow = true;
+      body.receiveShadow = true;
+      grp.add(body);
+
+      // Viền đỉnh tường giúp nhìn mặt cắt 3D cực kỳ sắc nét
+      const cap = new THREE.Mesh(new THREE.BoxGeometry(thickness + 0.02, 0.05, len + 0.02), fixedHeight ? matPartition2m : matWallCap);
+      cap.position.y = hInit + 0.025;
+      grp.add(cap);
+
+      houseRoot.add(grp);
+      if (fixedHeight === null) {
+        wallsDynamic.push({ body, cap });
+      }
+      return grp;
+    }
+
+    // Helper tạo cửa đi 1 cánh có vòng cung mở trên mặt sàn
+    function addSingleDoor(xHinge, zHinge, width, openDirX, openDirZ) {
+      const g = new THREE.Group();
+      // Cánh cửa gỗ mở 45 độ
+      const leaf = new THREE.Mesh(new THREE.BoxGeometry(width, 2.05, 0.05), matDoorWood);
+      leaf.position.set(xHinge + openDirX * (width * 0.35), 0.12 + 1.025, zHinge + openDirZ * (width * 0.35));
+      leaf.rotation.y = Math.atan2(openDirZ, openDirX) + 0.65;
+      g.add(leaf);
+
+      // Khung bao trên cửa
+      const frame = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.08, width), matDoorWood);
+      frame.position.set(xHinge, 0.12 + 2.08, zHinge + (openDirZ * width) / 2);
+      g.add(frame);
+      doorsGroup.add(g);
+    }
+
+    // Helper tạo cửa sổ kính bên tường phải
+    function addRightWallWindow(zCenter, width = 1.1) {
+      const g = new THREE.Group();
+      const glass = new THREE.Mesh(new THREE.BoxGeometry(0.22, 1.2, width), matGlass);
+      glass.position.set(2.5, 0.12 + 1.45, zCenter);
+      g.add(glass);
+
+      const sill = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.08, width + 0.12), matDoorWood);
+      sill.position.set(2.5, 0.12 + 0.82, zCenter);
+      g.add(sill);
+      doorsGroup.add(g);
+    }
+
+    // Helper tạo Giường ngủ 3D
+    function addBed(cx, cz) {
+      const g = new THREE.Group();
+      const base = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.35, 1.6), matDoorWood);
+      base.position.set(cx, 0.12 + 0.175, cz);
+      g.add(base);
+      const mattress = new THREE.Mesh(new THREE.BoxGeometry(1.9, 0.18, 1.5), matWallExt);
+      mattress.position.set(cx - 0.03, 0.12 + 0.42, cz);
+      g.add(mattress);
+      const blanket = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.20, 1.52), makeMat(0x3b82f6, 0.5, 0.05, 2, "Blanket"));
+      blanket.position.set(cx - 0.35, 0.12 + 0.43, cz);
+      g.add(blanket);
+      // 2 Gối nằm sát đầu giường bên tường phải
+      [-0.38, 0.38].forEach(dz => {
+        const pillow = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.12, 0.52), makeMat(0xfef08a, 0.4, 0.05, 3, "Pillow"));
+        pillow.position.set(cx + 0.68, 0.12 + 0.55, cz + dz);
+        g.add(pillow);
+      });
+      furnitureGroup.add(g);
+    }
+
+    function buildArchitecturalModel() {
+      // 1. NỀN ĐẾ CHUNG (5.0m x 20.0m)
+      addFloorZone(-2.5, -10.0, 2.5, 10.0, matWallExt, 0.08);
+
+      // 2. CÁC PHÂN KHU SÀN THEO ĐÚNG SỐ LIỆU BẢN VẼ TAY:
+      // - Đường luồng bên trái (X = -2.5 -> -1.3, Rộng 1.2m; chạy dọc từ đầu trên Z=-10.0 tới hết PN3 Z=+2.5)
+      addFloorZone(-2.5, -10.0, -1.3, 2.5, matFloorHall, 0.13);
+      // - Khu VS cuối nhà (1m: Z=-10.0 -> -9.0) & Phòng Tắm (2m: Z=-9.0 -> -7.0)
+      addFloorZone(-1.3, -10.0, 2.5, -7.0, matFloorBath, 0.13);
+      // - 3 Phòng ngủ liên tiếp bên phải (Rộng 3.8m: X = -1.3 -> +2.5):
+      //   + PN1 (3m: Z=-7.0 -> -4.0), PN2 (3m: Z=-4.0 -> -1.0), PN3 (3.5m: Z=-1.0 -> +2.5)
+      addFloorZone(-1.3, -7.0, 2.5, 2.5, matFloorBed, 0.13);
+      //   + Sàn VS khép kín 1m trong PN3 (Z=-1.0 -> 0.0, X=0.7 -> 2.5)
+      addFloorZone(0.7, -1.0, 2.5, 0.0, matFloorBath, 0.14);
+      // - Khu Bếp (2m: Z=+2.5 -> +4.5) + Phòng Khách & Tủ Thờ (4m: Z=+4.5 -> +8.5), rộng thông suốt 5.0m
+      addFloorZone(-2.5, 2.5, 2.5, 8.5, matFloorLiv, 0.13);
+      // - Hè trước nhà (1.5m: Z=+8.5 -> +10.0)
+      addFloorZone(-2.5, 8.5, 2.5, 10.0, matFloorPorch, 0.13);
+
+      // 3. HỆ TƯỜNG BAO QUANH NHÀ (DÀI 20.0m × RỘNG 5.0m)
+      // - Tường dọc bên trái (X = -2.5, từ Z = -10.0 đến +10.0)
+      addWallSegment(-2.5, -10.0, -2.5, 10.0, 0.18);
+      // - Tường dọc bên phải (X = +2.5, từ Z = -10.0 đến +10.0)
+      addWallSegment(2.5, -10.0, 2.5, 10.0, 0.18);
+      // - Tường hậu sau cùng (Z = -10.0, từ X = -1.3 đến +2.5; chừa lối thông đường luồng 1.2m hoặc cửa sau)
+      addWallSegment(-1.3, -10.0, 2.5, -10.0, 0.18);
+
+      // 4. VÁCH NGĂN DỌC HÀNH LANG ĐƯỜNG LUỒNG 1.2m (Tại X = -1.3m, từ Z = -7.0 đến +2.5)
+      // Có chừa 3 ô cửa mở vào Phòng Ngủ 1, Phòng Ngủ 2, Phòng Ngủ 3 đúng vị trí bản vẽ tay:
+      // - Đoạn PN1 (Z = -7.0 -> -4.0): Tường từ -7.0 -> -4.85, Cửa 0.85m (-4.85 -> -4.0)
+      addWallSegment(-1.3, -7.0, -1.3, -4.85, 0.14);
+      addSingleDoor(-1.3, -4.0, 0.85, 1, -1);
+      // - Đoạn PN2 (Z = -4.0 -> -1.0): Tường từ -4.0 -> -1.85, Cửa 0.85m (-1.85 -> -1.0)
+      addWallSegment(-1.3, -4.0, -1.3, -1.85, 0.14);
+      addSingleDoor(-1.3, -1.0, 0.85, 1, -1);
+      // - Đoạn PN3 (Z = -1.0 -> +2.5): Tường từ -1.0 -> +1.65, Cửa 0.85m (+1.65 -> +2.5)
+      addWallSegment(-1.3, -1.0, -1.3, 1.65, 0.14);
+      addSingleDoor(-1.3, 2.5, 0.85, 1, -1);
+
+      // 5. CÁC VÁCH NGĂN NGANG THEO ĐÚNG 8 SỐ ĐO BÊN LỀ PHẢI (1m | 2m | 3m | 3m | 3.5m | 2m | 4m | 1.5m):
+      // (a) Khu VS cuối nhà (Z = -10.0 -> -9.0, dài 1m) & Phòng Tắm (Z = -9.0 -> -7.0, dài 2m)
+      addWallSegment(0.6, -9.0, 2.5, -9.0, 0.14); // Vách ngăn giữa VS (1m) và Tắm (2m)
+      addWallSegment(0.6, -10.0, 0.6, -7.0, 0.14); // Vách dọc của VS & Tắm
+      addSingleDoor(0.6, -9.2, 0.75, 1, -1);       // Cửa VS
+      addSingleDoor(0.6, -8.2, 0.75, 1, 1);        // Cửa Tắm
+      // Bệ bậc phụ trước phòng tắm (Z = -7.8 -> -7.0, X = -0.6 -> +0.6)
+      addWallSegment(-0.6, -7.8, 0.6, -7.8, 0.12, 0.9);
+      addWallSegment(-0.6, -7.8, -0.6, -7.0, 0.12, 0.9);
+
+      // (b) Vách ngang đầu Phòng Ngủ 1 (Tại mốc 3m từ trên xuống: Z = -7.0, rộng 3.8m từ X = -1.3 đến +2.5)
+      addWallSegment(-1.3, -7.0, 2.5, -7.0, 0.15);
+      addRightWallWindow(-5.5, 1.1); // Cửa sổ PN1 bên phải
+
+      // (c) Vách ngang giữa Phòng Ngủ 1 & Phòng Ngủ 2 (Tại mốc 6m: Z = -4.0, rộng 3.8m từ X = -1.3 đến +2.5)
+      addWallSegment(-1.3, -4.0, 2.5, -4.0, 0.15);
+      addRightWallWindow(-2.5, 1.1); // Cửa sổ PN2 bên phải
+
+      // (d) Vách ngang giữa Phòng Ngủ 2 & Phòng Ngủ 3 (Tại mốc 9m: Z = -1.0, rộng 3.8m từ X = -1.3 đến +2.5)
+      addWallSegment(-1.3, -1.0, 2.5, -1.0, 0.15);
+      // Phòng VS khép kín 1m bên trong góc trên-phải của Phòng Ngủ 3 (Z = -1.0 -> 0.0, X = +0.7 -> +2.5)
+      addWallSegment(0.7, -1.0, 0.7, 0.0, 0.12);
+      addWallSegment(0.7, 0.0, 2.5, 0.0, 0.12);
+      addSingleDoor(0.7, -0.2, 0.7, 1, -1);
+      addRightWallWindow(1.25, 1.1); // Cửa sổ PN3 bên phải
+
+      // (e) Vách ngang cuối Phòng Ngủ 3 / Đầu Khu Bếp (Tại mốc 12.5m: Z = +2.5, rộng 3.8m từ X = -1.3 đến +2.5)
+      addWallSegment(-1.3, 2.5, 2.5, 2.5, 0.15);
+
+      // (f) Khu Kệ Bếp (Z = +2.5 -> +4.5, dài 2.0m) & VÁCH NGĂN LỬNG (dài 2.0m, Cao 2.0m cố định đúng bản vẽ!)
+      // Trên bản vẽ ghi rõ: "dài 2m | Cao 2m" ngăn giữa Bếp và Tủ Thờ tại Z = +4.5, từ X = +0.5 đến +2.5:
+      addWallSegment(0.5, 4.5, 2.5, 4.5, 0.18, 2.0, matPartition2m);
+      // Cửa ngách 1m bên tường phải cuối bếp (ký hiệu "-> 1m" và dấu X trên vách phải ngay trên vách 2m)
+      const sideDoor = new THREE.Mesh(new THREE.BoxGeometry(0.24, 2.0, 0.9), matGlass);
+      sideDoor.position.set(2.5, 0.12 + 1.0, 4.0);
+      doorsGroup.add(sideDoor);
+
+      // (g) Vách mặt tiền ngăn giữa Phòng Khách (4m) và Hè trước (1.5m) tại mốc 18.5m (Z = +8.5):
+      // Từ X = -1.1 đến +2.5, có Bộ Cửa Chính 4 Cánh ở giữa (X = -0.5 đến +1.9)
+      addWallSegment(-1.1, 8.5, -0.5, 8.5, 0.18);
+      addWallSegment(1.9, 8.5, 2.5, 8.5, 0.18);
+      addWallSegment(-1.1, 8.5, -1.1, 10.0, 0.16); // Vách bên trái Hè
+
+      // Bộ cửa chính 4 cánh mở vào trong như nét đứt trên bản vẽ
+      [-0.2, 0.4, 1.0, 1.6].forEach((xLeaf, idx) => {
+        const leaf = new THREE.Mesh(new THREE.BoxGeometry(0.58, 2.25, 0.06), matDoorWood);
+        leaf.position.set(xLeaf, 0.12 + 1.125, 8.32);
+        leaf.rotation.y = (idx % 2 === 0) ? 0.35 : -0.35;
+        doorsGroup.add(leaf);
+      });
+
+      // (h) Ô "Kính" ở đầu dưới bên trái (Z = +8.7 -> +10.0, X = -2.1 -> -1.45) đúng vị trí chữ "Kính" trên bản vẽ
+      const frontGlassBox = new THREE.Mesh(new THREE.BoxGeometry(0.65, 2.2, 1.25), matGlass);
+      frontGlassBox.position.set(-1.85, 0.12 + 1.1, 9.35);
+      houseRoot.add(frontGlassBox);
+
+      // 6. NỘI THẤT CHI TIẾT ĐÚNG BẢN VẼ TAY (KỆ BẾP CHỮ L, TỦ THỜ, GIƯỜNG, BÀN KHÁCH, THIẾT BỊ VS)
+      // - Kệ bếp chữ L (Z = +2.5 -> +4.4, cao 0.85m, sâu 0.62m)
+      const kTop = new THREE.Mesh(new THREE.BoxGeometry(2.1, 0.85, 0.62), matKitchen);
+      kTop.position.set(1.45, 0.12 + 0.425, 2.85);
+      furnitureGroup.add(kTop);
+      const kRight = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.85, 1.35), matKitchen);
+      kRight.position.set(2.15, 0.12 + 0.425, 3.75);
+      furnitureGroup.add(kRight);
+      // Bồn rửa & bếp từ trên mặt kệ bếp
+      const stove = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.04, 0.42), makeMat(0x111827, 0.2, 0.5, 4, "Stove"));
+      stove.position.set(1.35, 0.12 + 0.86, 2.85);
+      furnitureGroup.add(stove);
+
+      // - TỦ THỜ (Đặt ngay phía trước vách chắn 2m, tại Z = +4.85, X = +1.5, cao 1.45m, có 3 bát hương như hình vẽ!)
+      const altar = new THREE.Mesh(new THREE.BoxGeometry(1.35, 1.38, 0.58), matAltar);
+      altar.position.set(1.5, 0.12 + 0.69, 4.92);
+      furnitureGroup.add(altar);
+      [-0.35, 0, 0.35].forEach(dx => {
+        const censer = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.07, 0.14, 16), makeMat(0xfacc15, 0.25, 0.8, 3, "Bat_Huong"));
+        censer.position.set(1.5 + dx, 0.12 + 1.45, 4.92);
+        furnitureGroup.add(censer);
+      });
+
+      // - Bộ bàn ghế Sofa Phòng Khách (Trong khu 4m x 5m: Z = +5.8 -> +7.6)
+      const table = new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.42, 0.75), matDoorWood);
+      table.position.set(-0.2, 0.12 + 0.21, 6.65);
+      furnitureGroup.add(table);
+      const sofaMain = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.78, 2.1), makeMat(0x475569, 0.5, 0.05, 4, "Sofa"));
+      sofaMain.position.set(-1.35, 0.12 + 0.39, 6.65);
+      furnitureGroup.add(sofaMain);
+
+      // - 3 Giường ngủ trong PN1, PN2, PN3
+      addBed(1.1, -5.5); // PN1
+      addBed(1.1, -2.5); // PN2
+      addBed(1.1, 1.15); // PN3
+
+      // - Thiết bị vệ sinh trong VS (1m), Tắm (2m) và VS khép kín PN3 (1m)
+      [[-9.5, 1.8], [-0.5, 1.8]].forEach(([zz, xx]) => {
+        const wc = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.65, 0.55), matWallExt);
+        wc.position.set(xx, 0.12 + 0.325, zz);
+        furnitureGroup.add(wc);
+      });
+      const shower = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.12, 0.9), matGlass);
+      shower.position.set(1.85, 0.12 + 0.06, -8.0);
+      furnitureGroup.add(shower);
+
+      // 7. MÁI KÍNH MỜ ĐẬY TRÊN (TÙY CHỌN BẬT/TẮT)
+      const roof = new THREE.Mesh(new THREE.BoxGeometry(5.1, 0.12, 20.1), makeMat(0xbae6fd, 0.2, 0.1, 1, "Roof", true, 0.28));
+      roof.position.set(0, 3.0, 0);
+      roofGroup.add(roof);
+    }
+
+    buildArchitecturalModel();
+
+    // =========================================================================
+    // HỆ THỐNG NHÃN SỐ ĐO & TÊN PHÒNG 3D BÁM THEO MÔ HÌNH (HTML OVERLAY)
+    // =========================================================================
+    const LABELS_DATA = [
+      // Các phòng chính
+      { text: "VS Cuối\n(1m)", pos: [1.55, 1.2, -9.5], cls: "room-label" },
+      { text: "Phòng Tắm\n(2m)", pos: [1.55, 1.2, -8.0], cls: "room-label" },
+      { text: "Phòng Ngủ 1\n(3m8 × 3m)", pos: [0.6, 1.2, -5.5], cls: "room-label" },
+      { text: "Phòng Ngủ 2\n(3m8 × 3m)", pos: [0.6, 1.2, -2.5], cls: "room-label" },
+      { text: "Phòng Ngủ 3\n(3m8 × 3,5m)", pos: [0.4, 1.2, 1.0], cls: "room-label" },
+      { text: "VS Trong\n(1m)", pos: [1.6, 1.2, -0.5], cls: "room-label" },
+      { text: "Kệ Bếp Chữ L\n(Dài 2m)", pos: [1.5, 1.2, 3.4], cls: "room-label" },
+      { text: "Vách Chắn Bếp\n(Dài 2m · Cao 2m)", pos: [1.5, 2.25, 4.5], cls: "dim-label" },
+      { text: "Tủ Thờ", pos: [1.5, 1.6, 4.95], cls: "room-label" },
+      { text: "Phòng Khách\n(Rộng 5m × Dài 4m)", pos: [0.0, 1.2, 6.6], cls: "room-label" },
+      { text: "Hè Trước (1,5m)\n+ Cửa 4 Cánh", pos: [0.6, 1.0, 9.25], cls: "room-label" },
+      { text: "Kính", pos: [-1.85, 1.5, 9.35], cls: "room-label" },
+      { text: "Đường Luồng Dọc\n(Rộng 1m2)", pos: [-1.9, 1.1, -2.5], cls: "room-label" },
+      // Nhãn kích thước dọc lề phải & lề trái
+      { text: "⬅ Tổng dài 20m ➡", pos: [-3.3, 0.5, 0.0], cls: "dim-label" },
+      { text: "1m", pos: [3.1, 0.5, -9.5], cls: "dim-label" },
+      { text: "2m", pos: [3.1, 0.5, -8.0], cls: "dim-label" },
+      { text: "3m", pos: [3.1, 0.5, -5.5], cls: "dim-label" },
+      { text: "3m", pos: [3.1, 0.5, -2.5], cls: "dim-label" },
+      { text: "3,5m", pos: [3.1, 0.5, 0.75], cls: "dim-label" },
+      { text: "2m (Cửa 1m)", pos: [3.2, 0.5, 3.5], cls: "dim-label" },
+      { text: "4m", pos: [3.1, 0.5, 6.5], cls: "dim-label" },
+      { text: "1,5m", pos: [3.1, 0.5, 9.25], cls: "dim-label" }
+    ];
+
+    const labelsContainer = document.getElementById("labels-container");
+    const labelEls = LABELS_DATA.map(item => {
+      const el = document.createElement("div");
+      el.className = item.cls;
+      el.innerHTML = item.text.replace(/\n/g, "<br>");
+      labelsContainer.appendChild(el);
+      return { el, vec: new THREE.Vector3(item.pos[0], item.pos[1], item.pos[2]) };
+    });
+
+    function updateLabelsProjection() {
+      if (!document.getElementById("chk-labels").checked) return;
+      const w = renderer.domElement.clientWidth;
+      const h = renderer.domElement.clientHeight;
+      labelEls.forEach(item => {
+        const v = item.vec.clone().project(camera);
+        if (v.z > 1.0) {
+          item.el.style.display = "none";
+          return;
+        }
+        const x = (v.x * 0.5 + 0.5) * w;
+        const y = (-v.y * 0.5 + 0.5) * h;
+        item.el.style.display = "block";
+        item.el.style.left = `${x}px`;
+        item.el.style.top = `${y}px`;
+      });
+    }
+
+    // =========================================================================
+    // CÁC HÀM TƯƠNG TÁC GIAO DIỆN
+    // =========================================================================
+    function updateWallHeight() {
+      const h = Number(document.getElementById("wall-slider").value);
+      document.getElementById("wall-h-val").innerText = `Cao ${h.toFixed(1)}m`;
+      wallsDynamic.forEach(w => {
+        w.body.scale.y = h;
+        w.body.position.y = h / 2;
+        w.cap.position.y = h + 0.025;
+      });
+    }
+
+    function toggleLabels() {
+      const show = document.getElementById("chk-labels").checked;
+      labelsContainer.style.display = show ? "block" : "none";
+    }
+    function toggleFurniture() {
+      furnitureGroup.visible = document.getElementById("chk-furniture").checked;
+    }
+    function toggleDoors() {
+      doorsGroup.visible = document.getElementById("chk-doors").checked;
+    }
+    function toggleRoof() {
+      roofGroup.visible = document.getElementById("chk-roof").checked;
+    }
+
+    function switchMode(mode) {
+      document.querySelectorAll(".mode-tab").forEach(b => b.classList.remove("active"));
+      document.getElementById("tab-" + mode).classList.add("active");
+      document.getElementById("svg-panel").style.display = (mode === "svg") ? "flex" : "none";
+    }
+
+    function setCam(view) {
+      document.querySelectorAll(".cam-btn").forEach(b => b.classList.remove("active"));
+      const btn = document.getElementById("cbtn-" + view);
+      if (btn) btn.classList.add("active");
+
+      if (view === "iso") {
+        camera.position.set(14.5, 16.5, 16.5);
+        controls.target.set(0, 1.0, 0.5);
+      } else if (view === "top") {
+        // Nhìn thẳng từ trên xuống đúng chiều tờ giấy vẽ tay (Đầu trên là VS 1m, Đầu dưới là Hè 1.5m)
+        camera.position.set(0, 26.5, 0.01);
+        controls.target.set(0, 0, 0);
+      } else if (view === "front") {
+        camera.position.set(0, 7.5, 22.0);
+        controls.target.set(0, 1.2, 5.0);
+      } else if (view === "kitchen") {
+        camera.position.set(-7.5, 8.2, 7.5);
+        controls.target.set(1.2, 1.2, 4.2);
+      } else if (view === "side") {
+        camera.position.set(22.0, 8.5, 0);
+        controls.target.set(0, 1.0, 0);
+      }
+      controls.update();
+    }
+
+    function focusZone(zone) {
+      document.querySelectorAll(".room-btn").forEach(b => b.classList.remove("active"));
+      const btn = document.getElementById("rbtn-" + zone);
+      if (btn) btn.classList.add("active");
+
+      if (zone === "all") {
+        setCam("iso");
+      } else if (zone === "front") {
+        camera.position.set(7.5, 8.8, 15.5);
+        controls.target.set(0.2, 1.0, 6.8);
+      } else if (zone === "kitchen") {
+        camera.position.set(-6.8, 7.5, 7.2);
+        controls.target.set(1.2, 1.1, 3.8);
+      } else if (zone === "bed3") {
+        camera.position.set(-7.5, 8.5, 3.2);
+        controls.target.set(0.5, 1.0, 0.8);
+      } else if (zone === "bed12") {
+        camera.position.set(-8.5, 9.2, -3.5);
+        controls.target.set(0.5, 1.0, -4.0);
+      } else if (zone === "bath") {
+        camera.position.set(-6.5, 8.0, -11.5);
+        controls.target.set(0.8, 1.0, -8.5);
+      }
+      controls.update();
+    }
+
+    // =========================================================================
+    // XUẤT FILE SA BÀN IN 3D (.STL & .3MF TỶ LỆ 1:100 = 200mm x 50mm) & BẢN VẼ .SVG
+    // =========================================================================
+    function exportHouseSTL() {
+      const clone = houseRoot.clone();
+      // Scale 1m -> 10mm (Tỷ lệ 1:100 => Nhà 20m x 5m thành Sa bàn 200mm x 50mm vừa khít bàn in Bambu Lab!)
+      clone.scale.set(10, 10, 10);
+      clone.updateMatrixWorld(true);
+      const exporter = new THREE.STLExporter();
+      const result = exporter.parse(clone, { binary: true });
+      const blob = new Blob([result], { type: "application/octet-stream" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "Sa_Ban_3D_Nha_20x5m_TyLe_1_100.stl";
+      a.click();
+    }
+
+    async function exportHouse3MF() {
+      const zip = new JSZip();
+      zip.file("[Content_Types].xml", `<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="model" ContentType="application/vnd.ms-package.3dmanufacturing-3dmodel+xml"/></Types>`);
+      zip.folder("_rels").file(".rels", `<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Target="/3D/3dmodel.model" Id="rel0" Type="http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel"/></Relationships>`);
+
+      let objXml = [], buildXml = [], objId = 1;
+      houseRoot.updateMatrixWorld(true);
+      houseRoot.traverse(node => {
+        if (!node.isMesh || !node.geometry) return;
+        const g = node.geometry.clone();
+        g.applyMatrix4(node.matrixWorld);
+        const pos = g.attributes.position;
+        const idx = g.index;
+        let vL = [], tL = [];
+        for (let i = 0; i < pos.count; i++) {
+          // Chuyển sang hệ trục máy in (mm, tỷ lệ 1:100 => 200mm x 50mm đặt giữa bàn 256x256)
+          const x = pos.getX(i) * 10 + 128;
+          const y = -pos.getZ(i) * 10 + 128;
+          const z = Math.max(0, pos.getY(i) * 10);
+          vL.push(`<vertex x="${x.toFixed(2)}" y="${y.toFixed(2)}" z="${z.toFixed(2)}"/>`);
+        }
+        if (idx) {
+          for (let i = 0; i < idx.count; i += 3) {
+            tL.push(`<triangle v1="${idx.getX(i)}" v2="${idx.getX(i+1)}" v3="${idx.getX(i+2)}"/>`);
+          }
+        }
+        objXml.push(`<object id="${objId}" type="model"><mesh><vertices>${vL.join("")}</vertices><triangles>${tL.join("")}</triangles></mesh></object>`);
+        buildXml.push(`<item objectid="${objId}"/>`);
+        objId++;
+      });
+
+      const modelXml = `<?xml version="1.0" encoding="UTF-8"?><model unit="millimeter" xml:lang="en-US" xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02"><resources>${objXml.join("\n")}</resources><build>${buildXml.join("\n")}</build></model>`;
+      zip.folder("3D").file("3dmodel.model", modelXml);
+      const blob = await zip.generateAsync({ type: "blob", compression: "DEFLATE" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "Sa_Ban_3D_Nha_20x5m_Bambu_DaMau.3mf";
+      a.click();
+    }
+
+    function downloadHouseSVG() {
+      const svgEl = document.getElementById("house-svg");
+      const svgData = '<?xml version="1.0" encoding="UTF-8"?>\n' + svgEl.outerHTML;
+      const blob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "Ban_Ve_Mat_Bang_2D_Nha_20x5m.svg";
+      a.click();
+    }
+
+    window.addEventListener("resize", () => {
+      camera.aspect = (window.innerWidth - 430) / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth - 430, window.innerHeight);
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+      updateLabelsProjection();
+    }
+    animate();
+  </script>
+</body>
+</html>

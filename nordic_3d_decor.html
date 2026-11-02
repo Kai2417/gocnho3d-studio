@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <script src="assets/kx_order_integrity.js?v=20261101d"></script>
+  <meta name="color-scheme" content="dark" />
+  <meta name="darkreader-lock" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5" />
+  <title>MẪU 4: NORDIC 3D ATELIER — Không Gian Điêu Khắc Ánh Sáng & Mô Hình 3D Bắc Âu</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧊</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <style>
+    :root {
+      --cream: #f6f3ec;
+      --sand: #eae3d5;
+      --card: #fdfbf7;
+      --ink: #181614;
+      --muted: #655f56;
+      --line: #d8d0c1;
+      --terracotta: #c85a32;
+      --terracotta-dark: #a6431f;
+      --sage: #3b5944;
+      --gold: #b88938;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; background: var(--cream); color: var(--ink); font-family: 'Be Vietnam Pro', system-ui, -apple-system, sans-serif; }
+    body { padding-bottom: 82px; overflow-x: hidden; background: radial-gradient(circle at 85% 8%, rgba(200,90,50,0.08), transparent 45%), var(--cream); }
+    a { color: inherit; text-decoration: none; }
+    .serif { font-family: 'Playfair Display', 'Cormorant Garamond', 'Be Vietnam Pro', Georgia, Arial, serif; }
+
+    /* Scandinavian Editorial Header */
+    .nd-nav { position: sticky; top: 0; z-index: 60; height: 70px; background: rgba(246,243,236,0.92); backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; padding: 0 28px; }
+    .nd-logo { font-size: 22px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; display: flex; align-items: center; gap: 10px; }
+    .nd-logo-badge { font-family: 'Be Vietnam Pro', sans-serif; font-size: 10.5px; font-weight: 800; letter-spacing: 0.1em; padding: 4px 10px; border-radius: 999px; background: var(--terracotta); color: #fff; }
+    .nd-links { display: flex; gap: 22px; font-size: 13px; font-weight: 700; color: var(--muted); }
+    .nd-links a, .nd-links button { background: none; border: 0; font: inherit; color: inherit; cursor: pointer; transition: color .16s; }
+    .nd-links a:hover, .nd-links button:hover { color: var(--terracotta); }
+    .nd-actions { display: flex; align-items: center; gap: 8px; }
+    .nd-pill { height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--ink); background: var(--ink); color: var(--cream); font-size: 12.5px; font-weight: 800; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; transition: all .18s; }
+    .nd-pill:hover { background: var(--terracotta); border-color: var(--terracotta); color: #fff; transform: translateY(-1px); }
+    .nd-pill.outline { background: var(--card); color: var(--ink); border-color: var(--line); }
+    .nd-pill.outline:hover { border-color: var(--terracotta); color: var(--terracotta); }
+
+    /* Split-Screen Gantri × Nordic 3D Atelier Stage */
+    .atelier-hero { max-width: 1320px; margin: 0 auto; padding: 26px 24px 44px; display: grid; grid-template-columns: minmax(0, 1.28fr) minmax(0, 0.92fr); gap: 34px; align-items: start; }
+    .stage-wrap { position: sticky; top: 88px; border-radius: 28px; overflow: hidden; border: 1px solid var(--line); background: #26211c; height: 620px; box-shadow: 0 28px 65px -20px rgba(24,22,20,0.26); display: flex; flex-direction: column; }
+    #nordic-canvas { width: 100%; height: 100%; display: block; cursor: grab; }
+    .stage-top-bar { position: absolute; top: 14px; left: 14px; right: 14px; display: flex; justify-content: space-between; align-items: center; gap: 8px; pointer-events: none; z-index: 5; }
+    .stage-tag { pointer-events: auto; background: rgba(253,251,247,0.92); backdrop-filter: blur(10px); padding: 7px 14px; border-radius: 999px; font-size: 11.5px; font-weight: 800; border: 1px solid var(--line); color: var(--ink); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+    .stage-ctrl-dock { position: absolute; bottom: 14px; left: 14px; right: 14px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; background: rgba(24,22,20,0.82); backdrop-filter: blur(12px); padding: 9px 14px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.16); color: #f6f3ec; z-index: 5; }
+    .st-btn { height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.22); background: rgba(255,255,255,0.1); color: #fff; font-size: 11.5px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: .15s; }
+    .st-btn:hover, .st-btn.active { background: var(--terracotta); border-color: var(--terracotta); }
+
+    /* Right Configurator Editorial Column */
+    .cfg-col { display: flex; flex-direction: column; gap: 16px; background: var(--card); border: 1px solid var(--line); border-radius: 28px; padding: 26px; box-shadow: 0 18px 45px -22px rgba(24,22,20,0.12); }
+    .kicker { font-size: 11px; font-weight: 900; letter-spacing: 0.14em; text-transform: uppercase; color: var(--terracotta); }
+    .cfg-title { font-size: clamp(24px, 2.8vw, 34px); line-height: 1.15; font-weight: 800; }
+    .cfg-price-row { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .cfg-price { font-size: 28px; font-weight: 900; color: var(--terracotta); }
+    .cfg-lead { font-size: 12px; color: var(--sage); font-weight: 800; background: rgba(59,89,68,0.12); padding: 5px 12px; border-radius: 999px; }
+
+    .opt-block { border-top: 1px solid var(--line); padding-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+    .opt-label { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); display: flex; justify-content: space-between; align-items: center; }
+
+    .shape-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 7px; max-height: 195px; overflow-y: auto; padding-right: 4px; }
+    .shape-btn { padding: 9px 11px; border-radius: 12px; border: 1px solid var(--line); background: var(--cream); color: var(--ink); font-size: 12px; font-weight: 700; text-align: left; cursor: pointer; transition: .15s; display: flex; justify-content: space-between; align-items: center; gap: 6px; min-width: 0; overflow: hidden; }
+    .shape-btn.active, .shape-btn:hover { border-color: var(--ink); background: var(--ink); color: var(--cream); }
+
+    .kelvin-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+    .kelvin-btn { padding: 8px 6px; border-radius: 10px; border: 1px solid var(--line); background: var(--cream); font-size: 11px; font-weight: 800; cursor: pointer; transition: .15s; }
+    .kelvin-btn.active { border-color: var(--terracotta); background: var(--terracotta); color: #fff; }
+
+    .swatch-row { display: flex; gap: 9px; flex-wrap: wrap; }
+    .swatch { width: 34px; height: 34px; border-radius: 999px; border: 2px solid var(--line); cursor: pointer; transition: transform .15s; }
+    .swatch.active { transform: scale(1.16); outline: 2px solid var(--ink); outline-offset: 2px; }
+
+    .engrave-inp { height: 42px; border-radius: 12px; border: 1px solid var(--line); background: var(--cream); padding: 0 14px; font-size: 13px; color: var(--ink); outline: none; width: 100%; }
+    .engrave-inp:focus { border-color: var(--terracotta); background: #fff; }
+
+    .btn-atelier-buy { height: 50px; border-radius: 999px; border: 0; background: linear-gradient(135deg, var(--terracotta), var(--terracotta-dark)); color: #fff; font-size: 14.5px; font-weight: 800; cursor: pointer; box-shadow: 0 12px 26px -8px rgba(200,90,50,0.55); transition: transform .16s, filter .16s; }
+    .btn-atelier-buy:hover { filter: brightness(1.07); transform: translateY(-1px); }
+
+    /* Curated Architectural Collection Grid */
+    .collection-sec { max-width: 1320px; margin: 0 auto; padding: 38px 24px; border-top: 1px solid var(--line); }
+    .nd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(275px, 1fr)); gap: 22px; margin-top: 22px; }
+    .nd-card { background: var(--card); border: 1px solid var(--line); border-radius: 22px; overflow: hidden; display: flex; flex-direction: column; transition: transform .2s, box-shadow .2s; box-shadow: 0 10px 28px -14px rgba(24,22,20,0.1); }
+    .nd-card:hover { transform: translateY(-5px); box-shadow: 0 20px 38px -14px rgba(24,22,20,0.2); border-color: var(--terracotta); }
+    .nd-thumb { aspect-ratio: 4/3; background: var(--sand); overflow: hidden; position: relative; }
+    .nd-thumb img, .nd-thumb video { width: 100%; height: 100%; object-fit: cover; }
+    .nd-card-body { padding: 18px; display: flex; flex-direction: column; gap: 7px; flex: 1; }
+
+    /* Slide-over Cart & In-Page 3-Step VietQR Checkout */
+    .nd-drawer-backdrop { position: fixed; inset: 0; background: rgba(24,22,20,0.62); backdrop-filter: blur(5px); z-index: 95; display: none; justify-content: flex-end; }
+    .nd-drawer-backdrop.open { display: flex; }
+    .nd-drawer { width: min(460px, 100vw); height: 100%; background: var(--card); border-left: 1px solid var(--line); padding: 22px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; color: var(--ink); }
+
+    @media (max-width: 960px) {
+      .nd-links { display: none; }
+      .atelier-hero { grid-template-columns: 1fr; padding: 16px; gap: 20px; }
+      .stage-wrap { position: relative; top: 0; height: 430px; }
+      .kelvin-row { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+  <meta name="description" content="Bộ sưu tập đèn ngủ kiến trúc Lamella, bình hoa gợn sóng và phụ kiện bàn làm việc in 3D sinh học PLA+ phong cách Bắc Âu ấm áp tại Khối Xinh 3D Studio." />
+<!-- CLAUDE_SEO_GEO_START -->
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <link rel="canonical" href="http://127.0.0.1:8088/nordic_3d_decor.html" />
+  <link rel="alternate" hreflang="vi-VN" href="http://127.0.0.1:8088/nordic_3d_decor.html" />
+  <link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8088/nordic_3d_decor.html" />
+  <link rel="alternate" type="text/markdown" href="http://127.0.0.1:8088/nordic_3d_decor.html.md" title="Markdown version for AI Search & LLMs" />
+  <link rel="ai-catalog" href="http://127.0.0.1:8088/.well-known/ai-catalog.json" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="vi_VN" />
+  <meta property="og:site_name" content="Khối Xinh 3D Studio" />
+  <meta property="og:title" content="Mẫu 4: Đèn Ngủ Kiến Trúc & Decor In 3D Phong Cách Bắc Âu | Khối Xinh 3D" />
+  <meta property="og:description" content="Bộ sưu tập đèn ngủ kiến trúc Lamella, bình hoa gợn sóng và phụ kiện bàn làm việc in 3D sinh học PLA+ phong cách Bắc Âu ấm áp tại Khối Xinh 3D Studio." />
+  <meta property="og:url" content="http://127.0.0.1:8088/nordic_3d_decor.html" />
+  <meta property="og:image" content="http://127.0.0.1:8088/assets/images/bedrooms/bedroom_3_modern_luxury.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Mẫu 4: Đèn Ngủ Kiến Trúc & Decor In 3D Phong Cách Bắc Âu | Khối Xinh 3D" />
+  <meta name="twitter:description" content="Bộ sưu tập đèn ngủ kiến trúc Lamella, bình hoa gợn sóng và phụ kiện bàn làm việc in 3D sinh học PLA+ phong cách Bắc Âu ấm áp tại Khối Xinh 3D Studio." />
+  <meta name="twitter:image" content="http://127.0.0.1:8088/assets/images/bedrooms/bedroom_3_modern_luxury.jpg" />
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": ["OnlineStore", "LocalBusiness"], "@id": "http://127.0.0.1:8088/#organization", "name": "Khối Xinh 3D Studio", "url": "http://127.0.0.1:8088/nordic_3d_decor.html", "logo": "http://127.0.0.1:8088/assets/images/bedrooms/bedroom_3_modern_luxury.jpg", "image": "http://127.0.0.1:8088/assets/images/bedrooms/bedroom_3_modern_luxury.jpg", "description": "Bộ sưu tập đèn ngủ kiến trúc Lamella, bình hoa gợn sóng và phụ kiện bàn làm việc in 3D sinh học PLA+ phong cách Bắc Âu ấm áp tại Khối Xinh 3D Studio.", "priceRange": "59.000₫ - 590.000₫", "address": {"@type": "PostalAddress", "addressLocality": "TP. Hồ Chí Minh", "addressCountry": "VN"}}, {"@type": "WebSite", "@id": "http://127.0.0.1:8088/#website", "url": "http://127.0.0.1:8088", "name": "Khối Xinh 3D Studio", "inLanguage": "vi-VN", "publisher": {"@id": "http://127.0.0.1:8088/#organization"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Trang chủ Khối Xinh 3D", "item": "http://127.0.0.1:8088/khoixinh_3d_hub.html"}, {"@type": "ListItem", "position": 2, "name": "Mẫu 4: Đèn Ngủ Kiến Trúc & Decor In 3D Phong Cách Bắc Âu | Khối Xinh 3D", "item": "http://127.0.0.1:8088/nordic_3d_decor.html"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "In 3D theo yêu cầu (.STL / .3MF) tại Khối Xinh mất bao lâu?", "acceptedAnswer": {"@type": "Answer", "text": "Toàn bộ sản phẩm in 3D handmade và đặt in theo file .STL/.3MF tại xưởng Khối Xinh được hoàn thiện và giao tận tay toàn quốc trong 3 – 5 ngày."}}, {"@type": "Question", "name": "Làm sao để biết giá in 3D file .STL của tôi trước khi đặt?", "acceptedAnswer": {"@type": "Answer", "text": "Bạn chỉ cần tải file .STL, .3MF hoặc .OBJ lên khung Báo Giá 3 Bước trên web, hệ thống tự động dựng mô hình trên bàn in 256×256×256mm, đo kích thước (mm), thể tích thực (cm³) và báo giá tức thì."}}]}]}</script>
+  <script src="assets/studio3d_seo_webmcp.js?v=20261101d" defer></script>
+  <!-- CLAUDE_SEO_GEO_END -->
+  <link rel="stylesheet" href="assets/khoixinh_mobile_fix.css?v=20261101_v10" />
+</head>
+<body>
+  <header class="nd-nav">
+    <a href="#" class="nd-logo serif">
+      <span>Gantri × Nordic 3D</span>
+      <span class="nd-logo-badge">ATELIER BẮC ÂU</span>
+    </a>
+    <nav class="nd-links">
+      <a href="#atelier">🏛️ Bệ Đá Xoay 3D & Thử Ánh Sáng</a>
+      <a href="#bo-suu-tap">📚 Bộ Sưu Tập 13 Mẫu 3D Thực Tế</a>
+      <button type="button" onclick="window.Studio3DSuite && window.Studio3DSuite.openModal('slicer')">📐 Báo Giá File .3MF/.STL</button>
+      <button type="button" onclick="window.Studio3DSuite && window.Studio3DSuite.openModal('chibi')">🎭 Đặt Tượng 2D→3D</button>
+      <button type="button" onclick="window.Studio3DSuite && window.Studio3DSuite.openModal('track')">📦 Tra Đơn & Xưởng In</button>
+    </nav>
+    <div class="nd-actions">
+      <button type="button" class="nd-pill outline" id="btn-nd-upload-top">📤 Tải .3MF / .STL</button>
+      <input type="file" id="nd-personal-3d-input" accept=".3mf,.stl,.glb,.gltf" hidden />
+      <button type="button" class="nd-pill" id="btn-nd-open-cart">🛒 Giỏ hàng (<span id="nd-cart-count">0</span>)</button>
+    </div>
+  </header>
+
+  <!-- SPLIT-SCREEN 3D ARCHITECTURAL LIGHTING & REAL 3D MODEL CONFIGURATOR -->
+  <section class="atelier-hero" id="atelier">
+    <div class="stage-wrap">
+      <div class="stage-top-bar">
+        <div class="stage-tag" id="nd-stage-badge">✨ Bệ Đá Travertine Bắc Âu · Đang tải mô hình 3D thực tế</div>
+        <button type="button" class="st-btn active" id="btn-nd-autorotate" style="pointer-events:auto;">🛑 Dừng Xoay</button>
+      </div>
+      <canvas id="nordic-canvas"></canvas>
+      <div class="stage-ctrl-dock">
+        <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:190px;">
+          <span style="font-size:11.5px;font-weight:800;white-space:nowrap;">💥 Bóc tách cụm 3D: <b id="nd-explode-val" style="color:#f59e0b;">0%</b></span>
+          <input type="range" id="nd-explode-slider" min="0" max="100" value="0" style="flex:1;min-width:70px;accent-color:var(--terracotta);cursor:pointer;" />
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button type="button" class="st-btn" id="btn-nd-zoom-in" title="Phóng to mô hình 3D">🔍+ Phóng to</button>
+          <button type="button" class="st-btn" id="btn-nd-zoom-out" title="Thu nhỏ mô hình 3D">🔍− Thu nhỏ</button>
+          <button type="button" class="st-btn" id="btn-nd-reset-cam">🎯 Reset Góc</button>
+          <button type="button" class="st-btn" id="btn-nd-upload-dock">📤 Tải File .3MF/.STL</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="cfg-col">
+      <div class="kicker">SCANDINAVIAN ARCHITECTURAL & REAL 3D STUDIO</div>
+      <h1 class="cfg-title serif" id="nd-title">Tượng Chibi Cô Giáo Hải Ngọc (7 Màu AMS)</h1>
+      <div class="cfg-price-row">
+        <span class="cfg-price" id="nd-price">650.000 ₫</span>
+        <span class="cfg-lead">🌿 In 3D Handmade · Giao 3 – 5 ngày</span>
+      </div>
+      <p style="color:var(--muted);font-size:13.5px;line-height:1.55;" id="nd-summary">
+        Tượng Chibi dựng từ ảnh 2D tách 7 cụm màu Đa Sắc Cao Cấp kèm bảng tên khắc nổi, đặt trên bệ đá Travertine dưới ánh đèn studio 2700K chuẩn Gantri Bắc Âu.
+      </p>
+
+      <!-- 1. Select Real 3D Model or Architectural Lamp Form -->
+      <div class="opt-block">
+        <div class="opt-label">
+          <span>1. Chọn Mẫu 3D Thực Tế Hoặc Đèn Kiến Trúc</span>
+          <span style="color:var(--terracotta);font-weight:800;" id="nd-model-count">13 Mẫu 3D + 4 Đèn</span>
+        </div>
+        <div class="shape-grid" id="nd-shape-grid">
+          <!-- Populated dynamically with 13 real 3D models + 4 Gantri sculptural lamps -->
+        </div>
+      </div>
+
+      <!-- 2. Interactive Light-Transmission Dimmer & Kelvin Switch -->
+      <div class="opt-block">
+        <div class="opt-label"><span>2. Chế Độ Ánh Sáng Phòng Trưng Bày</span><span id="nd-kelvin-txt">2700K Ấm Dịu</span></div>
+        <div class="kelvin-row" id="nd-kelvin-row">
+          <button type="button" class="kelvin-btn" data-kelvin="off">☀️ Nắng Bắc Âu</button>
+          <button type="button" class="kelvin-btn" data-kelvin="2200">🕯️ 2200K Ánh Nến</button>
+          <button type="button" class="kelvin-btn active" data-kelvin="2700">💡 2700K Chuẩn Gantri</button>
+          <button type="button" class="kelvin-btn" data-kelvin="4000">⚪ 4000K Gallery</button>
+        </div>
+      </div>
+
+      <!-- 3. Plant-PLA Matte Swatches -->
+      <div class="opt-block">
+        <div class="opt-label"><span>3. Phối Màu Nhựa Sinh Học Plant-PLA</span><span id="nd-color-name">Nguyên Bản Studio</span></div>
+        <div class="swatch-row" id="nd-swatches">
+          <button type="button" class="swatch active" data-hex="" data-label="Nguyên Bản Đa Sắc" style="background:conic-gradient(#f4efe6,#d96b43,#7c9070,#5b7083);" title="Giữ nguyên màu gốc đa sắc của file 3D"></button>
+          <button type="button" class="swatch" data-hex="#f4efe6" data-label="Kem Đá Vôi (Limestone)" style="background:#f4efe6;"></button>
+          <button type="button" class="swatch" data-hex="#d96b43" data-label="Đất Nung (Terracotta)" style="background:#d96b43;"></button>
+          <button type="button" class="swatch" data-hex="#e59f3c" data-label="Vàng Mật Ong (Amber)" style="background:#e59f3c;"></button>
+          <button type="button" class="swatch" data-hex="#7c9070" data-label="Xanh Ô Liu (Sage Green)" style="background:#7c9070;"></button>
+          <button type="button" class="swatch" data-hex="#5b7083" data-label="Xanh Fjord Bắc Âu" style="background:#5b7083;"></button>
+          <button type="button" class="swatch" data-hex="#2f3033" data-label="Đen Tuyền Nhám (Charcoal)" style="background:#2f3033;"></button>
+        </div>
+      </div>
+
+      <!-- 4. Custom Base Engraving -->
+      <div class="opt-block">
+        <div class="opt-label"><span>4. Khắc Tên / Biển Số / Lời Tặng Lên Đế</span><span style="color:var(--sage);">Miễn phí</span></div>
+        <input type="text" id="nd-engrave" class="engrave-inp" maxlength="26" placeholder="VD: Cô Giáo Hải Ngọc · Warm Home 2026..." />
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr auto;gap:10px;">
+        <button type="button" class="btn-atelier-buy" id="btn-nd-add-cart">🛒 Đặt Chế Tác Mẫu Này · Giao 3 – 5 Ngày</button>
+        <button type="button" class="nd-pill outline" onclick="window.Studio3DSuite && window.Studio3DSuite.openModal('slicer')" style="height:50px;padding:0 16px;" title="Tải file .STL/.3MF để đo cm³ báo giá">📐 Báo Giá STL</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CURATED LIVE COLLECTION FROM /api/products -->
+  <section class="collection-sec" id="bo-suu-tap">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px;">
+      <div>
+        <div class="kicker">CURATED REAL 3D CATALOG · 100% VERIFIED MESHES</div>
+        <h2 class="serif" style="font-size:30px;margin-top:4px;">Trọn Bộ 13 Tuyệt Tác Mô Hình 3D Thực Tế (.STL Đa Cụm & .GLB 4K)</h2>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button type="button" class="nd-pill outline" onclick="window.Studio3DSuite && window.Studio3DSuite.openModal('chibi')">🎭 Đặt Làm Tượng Chibi Từ Ảnh 2D</button>
+        <button type="button" class="nd-pill outline" onclick="document.getElementById('studio3d-livechat-panel')?.classList.add('open');">💬 Tư Vấn &amp; Đặt Mẫu Riêng (CSKH)</button>
+      </div>
+    </div>
+    <div class="nd-grid" id="nd-collection-grid"></div>
+  </section>
+
+  <!-- IN-PAGE SLIDE-OVER CART & 3-STEP VIETQR / COD CHECKOUT -->
+  <div class="nd-drawer-backdrop" id="nd-cart-modal">
+    <aside class="nd-drawer">
+      <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:12px;">
+        <h3 class="serif" style="font-size:22px;">🛒 Giỏ Hàng & Thanh Toán VietQR</h3>
+        <button type="button" class="nd-pill outline" id="btn-nd-close-cart" style="height:32px;padding:0 12px;">Đóng ×</button>
+      </div>
+
+      <div id="nd-cart-items" style="display:flex;flex-direction:column;gap:10px;max-height:240px;overflow-y:auto;"></div>
+
+      <form id="nd-checkout-form" style="border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px;">
+        <div style="font-size:12px;font-weight:800;text-transform:uppercase;color:var(--terracotta);">Thông Tin Nhận Hàng (Giao nhanh 3 – 5 ngày)</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <input type="text" id="nd-co-name" class="engrave-inp" placeholder="Họ và tên người nhận *" required />
+          <input type="tel" id="nd-co-phone" class="engrave-inp" placeholder="Số điện thoại Zalo *" required />
+        </div>
+        <input type="text" id="nd-co-addr" class="engrave-inp" placeholder="Địa chỉ nhận hàng chi tiết *" required />
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="nd-co-coupon" class="engrave-inp" placeholder="Mã giảm giá (LOP10 / FREESHIP)" style="flex:1;text-transform:uppercase;" />
+          <select id="nd-co-method" class="engrave-inp" style="width:155px;font-weight:700;">
+            <option value="VIETQR">📱 Quét VietQR</option>
+            <option value="COD">📦 Ship COD</option>
+          </select>
+        </div>
+
+        <div style="background:var(--cream);border:1px solid var(--line);border-radius:14px;padding:12px;font-size:13px;display:flex;flex-direction:column;gap:5px;">
+          <div style="display:flex;justify-content:space-between;"><span>Tạm tính:</span><strong id="nd-co-sub">0 ₫</strong></div>
+          <div style="display:flex;justify-content:space-between;"><span>Vận chuyển (Freeship đơn từ 500k):</span><strong id="nd-co-ship">0 ₫</strong></div>
+          <div style="display:flex;justify-content:space-between;font-size:17px;font-weight:900;color:var(--terracotta);border-top:1px solid var(--line);padding-top:6px;">
+            <span>Tổng thanh toán:</span><span id="nd-co-total">0 ₫</span>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-atelier-buy" style="width:100%;">💳 Xác Nhận Đặt Hàng & Hiện Mã VietQR</button>
+      </form>
+      <div id="nd-co-result" style="display:none;padding:14px;border-radius:14px;background:rgba(59,89,68,0.12);border:1px solid var(--sage);font-size:13px;text-align:center;"></div>
+    </aside>
+  </div>
+
+  <script src="assets/kx_model_colors.js?v=20261101d"></script>
+  <script src="assets/khoixinh_3d_models_proc.js?v=20261101f"></script>
+  <script src="assets/khoixinh_3d_models_extra.js?v=20261101f"></script>
+  <script src="assets/khoixinh_showcase_stage.js?v=20261101_v10"></script>
+  <script src="assets/kx_direct_3d_2d_viewer.js?v=20261101_v10"></script>
+  <script src="assets/nordic_3d_stage.js?v=20261101_v10"></script>
+  <script src="assets/nordic_3d_decor.js?v=20261101_rev3"></script>
+  <script src="assets/gamified_3d_staff_runner.js?v=20261101_v10"></script>
+  <script src="assets/multisite_dock_suite.js?v=20261101_v10"></script>
+  <script src="assets/multisite_dock.js?v=20261101_v10"></script>
+</body>
+</html>

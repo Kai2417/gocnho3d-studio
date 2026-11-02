@@ -1,0 +1,1900 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Studio 3D CAD — Kệ Xếp Gọn 2 Tầng 8 Hộp Pokémon + Đầu Rồng Charizard Pegboard (Chuẩn In Bambu Lab)</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/STLExporter.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+    body { display: flex; width: 100vw; height: 100vh; overflow: hidden; background: #090d16; color: #f8fafc; }
+
+    #sidebar { width: 450px; background: #111827; border-right: 2px solid #1f2937; display: flex; flex-direction: column; padding: 14px 16px; overflow-y: auto; z-index: 10; }
+    h1 { font-size: 15.5px; color: #fb923c; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.4px; display: flex; align-items: center; gap: 6px; }
+    .subtitle { font-size: 11.5px; color: #9ca3af; margin-bottom: 10px; line-height: 1.35; }
+
+    .mode-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 10px; }
+    .mode-tab { padding: 8px 6px; text-align: center; font-size: 12px; font-weight: 700; background: #0b1120; border: 1px solid #374151; color: #9ca3af; border-radius: 7px; cursor: pointer; transition: 0.2s; }
+    .mode-tab.active { background: linear-gradient(135deg, #f97316, #ea580c); color: #fff; border-color: #fdba74; }
+
+    .slider-box { background: #0b1120; border: 1px solid #374151; border-radius: 8px; padding: 10px 12px; margin-bottom: 10px; }
+    .slider-row { margin-bottom: 8px; }
+    .slider-row:last-child { margin-bottom: 0; }
+    .slider-label { font-size: 12px; font-weight: 700; color: #fde047; display: flex; justify-content: space-between; margin-bottom: 4px; }
+    input[type=range] { width: 100%; cursor: pointer; accent-color: #f97316; }
+
+    .size-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 10px; }
+    .size-btn { padding: 7px 8px; font-size: 11px; font-weight: 700; border-radius: 6px; border: 1px solid #374151; background: #0b1120; color: #cbd5e1; cursor: pointer; text-align: center; }
+    .size-btn.active { background: #0284c7; border-color: #38bdf8; color: #fff; }
+
+    .part-list { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
+    .part-btn { width: 100%; text-align: left; padding: 8px 11px; background: #0b1120; border: 1px solid #374151; color: #e2e8f0; border-radius: 7px; cursor: pointer; font-size: 12.2px; font-weight: 600; transition: 0.18s; display: flex; justify-content: space-between; align-items: center; }
+    .part-btn:hover { border-color: #fb923c; background: #1e293b; }
+    .part-btn.active { background: #1d4ed8; border-color: #60a5fa; color: #fff; }
+    .badge { font-size: 10.5px; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.14); white-space: nowrap; }
+
+    #spec-box { background: #0b1120; border: 1px solid #374151; border-radius: 8px; padding: 10px 12px; flex: 1; min-height: 150px; }
+    #spec-title { font-size: 13.5px; font-weight: bold; color: #38bdf8; margin-bottom: 6px; border-bottom: 1px solid #1f2937; padding-bottom: 4px; }
+    .spec-table { width: 100%; border-collapse: collapse; font-size: 11.5px; margin-bottom: 8px; }
+    .spec-table td { padding: 4px 3px; border-bottom: 1px dashed #1f2937; }
+    .spec-table td:first-child { color: #9ca3af; }
+    .spec-table td:last-child { color: #f8fafc; font-weight: 600; text-align: right; }
+    #spec-note { font-size: 11.5px; color: #cbd5e1; line-height: 1.42; background: #1e293b; padding: 8px; border-radius: 6px; border-left: 3px solid #f97316; }
+
+    .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 9px; }
+    .action-btn { padding: 10px 8px; border: none; border-radius: 7px; font-weight: 700; font-size: 12px; cursor: pointer; transition: 0.2s; }
+    #export-btn { background: #10b981; color: #fff; }
+    #export-btn:hover { background: #059669; }
+    #export-3mf-btn { background: #f59e0b; color: #0f172a; }
+    #export-3mf-btn:hover { background: #d97706; }
+    #export-all-btn { grid-column: span 2; background: linear-gradient(135deg, #ec4899, #8b5cf6); color: #fff; padding: 10px; }
+    #export-all-btn:hover { opacity: 0.92; }
+
+    #viewport { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; }
+    #hud { position: absolute; top: 14px; left: 14px; background: rgba(15, 23, 42, 0.9); border: 1px solid #334155; padding: 10px 14px; border-radius: 8px; pointer-events: none; z-index: 5; max-width: 500px; }
+    #hud-title { font-size: 14px; font-weight: bold; color: #fb923c; }
+    #hud-sub { font-size: 11px; color: #cbd5e1; margin-top: 3px; }
+    #ops-panel { position: absolute; top: 14px; right: 14px; width: 320px; background: rgba(15, 23, 42, 0.94); border: 1px solid #38bdf8; border-radius: 10px; padding: 11px 13px; z-index: 7; box-shadow: 0 10px 25px rgba(0,0,0,0.5); font-size: 11.5px; }
+    .ops-hdr { display: flex; justify-content: space-between; align-items: center; font-weight: 800; color: #38bdf8; font-size: 12.5px; margin-bottom: 8px; border-bottom: 1px solid #1e293b; padding-bottom: 5px; }
+    .ops-check { display: flex; align-items: center; gap: 7px; margin: 5px 0; color: #e2e8f0; cursor: pointer; user-select: none; }
+    .ops-check input { accent-color: #22c55e; width: 14px; height: 14px; cursor: pointer; }
+    #drop-2d-box { margin: 8px 0; padding: 9px; border: 1.5px dashed #f97316; border-radius: 8px; background: rgba(249, 115, 22, 0.08); text-align: center; color: #fed7aa; cursor: pointer; transition: 0.2s; font-size: 11px; }
+    #drop-2d-box:hover, #drop-2d-box.dragover { background: rgba(249, 115, 22, 0.22); border-color: #fde047; color: #fff; }
+    .quote-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; background: #090d16; border: 1px solid #1e293b; border-radius: 7px; padding: 7px 9px; margin: 7px 0; }
+    .q-item { font-size: 11px; color: #94a3b8; }
+    .q-item b { color: #fde047; font-size: 12px; display: block; }
+    #publish-store-btn { width: 100%; padding: 9px; border: none; border-radius: 7px; background: linear-gradient(135deg, #16a34a, #059669); color: #fff; font-weight: 800; font-size: 12px; cursor: pointer; margin-top: 4px; box-shadow: 0 4px 12px rgba(22, 163, 74, 0.35); }
+    #publish-store-btn:hover { filter: brightness(1.1); }
+    #store-status { margin-top: 6px; font-size: 11px; line-height: 1.35; display: none; padding: 6px 8px; border-radius: 6px; background: rgba(22, 163, 74, 0.18); border: 1px solid #22c55e; color: #bbf7d0; }
+    #cam-bar { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 6; background: rgba(15,23,42,0.88); padding: 7px 12px; border-radius: 999px; border: 1px solid #334155; }
+    .cam-btn { background: #1e293b; color: #e2e8f0; border: 1px solid #475569; padding: 5px 11px; border-radius: 999px; font-size: 11.5px; font-weight: 600; cursor: pointer; }
+    .cam-btn:hover { background: #38bdf8; color: #0f172a; border-color: #38bdf8; }
+
+    #svg-panel { display: none; position: absolute; inset: 0; background: #0b1120; overflow: auto; padding: 20px; z-index: 8; flex-direction: column; align-items: center; }
+    #svg-panel svg { max-width: 1060px; width: 100%; height: auto; background: #111827; border: 1px solid #374151; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.55); }
+  </style>
+</head>
+<body>
+  <div id="sidebar">
+    <h1>🐉 STUDIO 3D — KỆ XẾP GỌN RỒNG CHARIZARD</h1>
+    <div class="subtitle">Kệ Gập 2 Tầng × 8 Hộp Bài Pokémon (8 Hệ) + Đầu Rồng Pegboard Z-Stacking & Chốt Bấm Snap-Fit</div>
+
+    <div class="mode-tabs">
+      <div class="mode-tab active" id="tab-3d" onclick="switchMode('3d')">🧊 Mô Hình 3D & Gập Mở</div>
+      <div class="mode-tab" id="tab-svg" onclick="switchMode('svg')">📐 Bản Vẽ Kỹ Thuật SVG 2D</div>
+    </div>
+
+    <div class="size-toggle">
+      <div class="size-btn active" id="sz-booster" onclick="setSizePreset('booster')">🃏 Chuẩn Booster Pack (Lòng 72mm)</div>
+      <div class="size-btn" id="sz-compact" onclick="setSizePreset('compact')">📦 Bản Gọn 1 Bàn In (Ngang 240mm)</div>
+    </div>
+
+    <div class="slider-box">
+      <div class="slider-row">
+        <div class="slider-label">
+          <span>🔄 Gập / Mở Kệ (Thanh truyền 4 khâu):</span>
+          <span id="angle-val">Mở trưng bày (52°)</span>
+        </div>
+        <input type="range" id="fold-slider" min="14" max="58" value="52" oninput="updateKinematics()">
+      </div>
+      <div class="slider-row">
+        <div class="slider-label">
+          <span>💥 Tách Rời Chi Tiết (Exploded View):</span>
+          <span id="explode-val">Lắp ráp (0%)</span>
+        </div>
+        <input type="range" id="explode-slider" min="0" max="100" value="0" oninput="updateKinematics()">
+      </div>
+    </div>
+
+    <div class="part-list">
+      <button class="part-btn active" id="pbtn-0" onclick="showPart(0)">
+        <span>★ Tổng Thể Kệ Xếp Gọn + Rồng Charizard + 8 Hộp</span>
+        <span class="badge">Full Bộ</span>
+      </button>
+      <button class="part-btn" id="pbtn-1" onclick="showPart(1)">
+        <span>1. Bảng Đầu Rồng Charizard Liền Khối (Không Đục Lỗ)</span>
+        <span class="badge">288×178×5.6mm</span>
+      </button>
+      <button class="part-btn" id="pbtn-2" onclick="showPart(2)">
+        <span>2. Khay Đỡ Tầng Có Rãnh Ngàm & Lỗ Chốt (×2 Tầng)</span>
+        <span class="badge">206×50mm</span>
+      </button>
+      <button class="part-btn" id="pbtn-3" onclick="showPart(3)">
+        <span>3. Bộ 8 Hộp Đựng Bài Trơn (Gọn Vừa Thẻ Bài — Không Logo)</span>
+        <span class="badge">48×42×52mm (×8)</span>
+      </button>
+      <button class="part-btn" id="pbtn-4" onclick="showPart(4)">
+        <span>4. Thanh Truyền Gập Hông & Chân Chống Sau</span>
+        <span class="badge">4 Thanh + 2 Chân</span>
+      </button>
+      <button class="part-btn" id="pbtn-5" onclick="showPart(5)">
+        <span>5. Bộ 14 Chốt Bản Lề Snap-Fit (Đã Bỏ Pokéball/Charm)</span>
+        <span class="badge">14 Chốt Khớp</span>
+      </button>
+    </div>
+
+    <div id="spec-box">
+      <div id="spec-title">Thông số kỹ thuật</div>
+      <table class="spec-table" id="spec-table"></table>
+      <div id="spec-note"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="action-btn" id="export-btn" onclick="exportCurrentSTL()">⬇️ Tải Part .STL (0.1s)</button>
+      <button class="action-btn" id="export-3mf-btn" onclick="exportCurrent3MF()">🎨 Tải .3MF Đa Màu Bambu</button>
+      <button class="action-btn" id="export-all-btn" onclick="exportAllPlates3MF()">📦 Tải Trọn Bộ .3MF Đã Xếp Sẵn Lên Mặt Bàn In (Z=0)</button>
+    </div>
+  </div>
+
+  <div id="viewport">
+    <div id="hud">
+      <div id="hud-title">KỆ XẾP GỌN 2 TẦNG 8 HỘP TRƠN + ĐẦU RỒNG CHARIZARD LIỀN KHỐI (KHÔNG LỖ & KHÔNG LOGO TRÒN)</div>
+      <div id="hud-sub">🖱️ Kéo chuột trái: Xoay 360° | Chuột phải: Di chuyển | Con lăn: Phóng to/Thu nhỏ</div>
+    </div>
+
+    <!-- TRẠM VẬN HÀNH IN 3D & ĐẨY LÊN WEB BÁN HÀNG (:8088) -->
+    <div id="ops-panel">
+      <div class="ops-hdr">
+        <span>⚡ VẬN HÀNH XƯỞNG IN & ĐẨY WEB BÁN HÀNG</span>
+        <span style="font-size:10px;background:#1e293b;color:#fde047;padding:2px 6px;border-radius:4px;">LIVE 3D</span>
+      </div>
+
+      <label class="ops-check">
+        <input type="checkbox" id="chk-no-holes" checked disabled>
+        <span><b>Không đục lỗ Pegboard</b> (Bề mặt rồng liền khối 100%)</span>
+      </label>
+      <label class="ops-check">
+        <input type="checkbox" id="chk-no-pokeball" checked onchange="onOpsToggleChange()">
+        <span><b>Bỏ trái Pokéball & Charm rời</b> (Theo đơn khách Ali_ilA)</span>
+      </label>
+      <label class="ops-check">
+        <input type="checkbox" id="chk-no-circles" checked onchange="onOpsToggleChange()">
+        <span><b>Bỏ 8 hình vòng tròn mặt hộp</b> (8 hộp mặt trơn phẳng)</span>
+      </label>
+
+      <div style="margin:6px 0;">
+        <div style="display:flex;justify-content:space-between;color:#cbd5e1;font-size:11px;margin-bottom:2px;">
+          <span>🔍 Cỡ Mặt & Đầu Rồng Topper:</span>
+          <b id="head-scale-lbl" style="color:#fb923c;">100% (288mm)</b>
+        </div>
+        <input type="range" id="head-scale-slider" min="85" max="125" value="100" oninput="onOpsToggleChange()">
+      </div>
+
+      <div id="drop-2d-box" onclick="document.getElementById('file-2d-input').click()"
+           ondragover="event.preventDefault();this.classList.add('dragover');"
+           ondragleave="this.classList.remove('dragover');"
+           ondrop="handleDrop2DEvent(event)">
+        📂 <b>Kéo-Thả Ảnh 2D Khách Gửi Vào Đây</b><br>
+        <span style="color:#94a3b8;font-size:10.5px;">Tự tách 4 lớp màu Z-Stacking (0→5.6mm) gắn lên kệ để in ngay</span>
+        <input type="file" id="file-2d-input" accept="image/*" style="display:none" onchange="if(this.files[0])processCustomer2DImage(this.files[0])">
+      </div>
+      <button id="reset-topper-btn" onclick="resetToCharizardTopper()" style="display:none;width:100%;padding:5px;margin-bottom:6px;background:#334155;color:#fde047;border:1px solid #475569;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;">🔄 Khôi Phục Đầu Rồng Charizard Chuẩn</button>
+
+      <div class="quote-grid">
+        <div class="q-item">Nhựa in (PLA Đa Sắc):<b id="q-gram">385 g</b></div>
+        <div class="q-item">Thời gian in Bambu:<b id="q-hours">~6.8 giờ</b></div>
+        <div class="q-item">Giá vốn xưởng (Điện+Nhựa):<b id="q-cost" style="color:#38bdf8;">84.000 đ</b></div>
+        <div class="q-item">Giá bán lẻ đề xuất:<b id="q-price" style="color:#4ade80;">389.000 đ</b></div>
+      </div>
+
+      <div style="margin-bottom:6px;padding:6px;background:rgba(15,23,42,0.85);border:1px solid #334155;border-radius:7px;">
+        <div style="font-size:11px;font-weight:800;color:#fde047;margin-bottom:4px;">🎯 Đạo Diễn Theo Nhân Vật & Tệp Khách:</div>
+        <select id="persona-select" onchange="onPersonaPresetChange(this.value)" style="width:100%;padding:5px 7px;border-radius:6px;background:#1e293b;color:#f8fafc;border:1px solid #f97316;font-size:11px;font-weight:700;margin-bottom:5px;">
+          <option value="tcg_collector">🔥 Người Chơi & Sưu Tầm Pokémon TCG (Highlight 8 Deck Bài)</option>
+          <option value="anime_decor">✨ Decor Góc Gaming / Bàn Học Anime (Highlight Sải Cánh 288mm)</option>
+          <option value="tournament_fold">🎒 Đấu Thủ Đi Giải Cơ Động (Highlight Gập Phẳng 14° Bỏ Balo)</option>
+          <option value="custom_trainer">🎨 Fan Cá Nhân Hóa Theo Hệ (Đổi Màu Hộp & Lắp Snap-Fit)</option>
+        </select>
+        <div style="font-size:10.5px;color:#cbd5e1;margin-bottom:3px;font-weight:700;">🎨 Phối màu 8 Hộp theo Hệ Pokémon:</div>
+        <select id="box-theme-select" onchange="setBoxThemePreset(this.value)" style="width:100%;padding:4px 7px;border-radius:6px;background:#0f172a;color:#38bdf8;border:1px solid #334155;font-size:11px;font-weight:700;margin-bottom:5px;">
+          <option value="pastel_8_types">🌈 8 Hệ Pokémon Pastel (Chuẩn đơn khách)</option>
+          <option value="charizard_flame">🔥 Lửa Hoàng Kim Charizard (Đỏ - Cam - Vàng Gold)</option>
+          <option value="gengar_shadow">🔮 Bóng Đêm Gengar & Mewtwo (Tím - Xanh Đêm)</option>
+          <option value="tournament_pro">🏆 Đen Nhám Đấu Giải TCG (Đen Matte - Cam Lửa)</option>
+        </select>
+        <div style="font-size:10.5px;color:#94a3b8;margin-bottom:2px;">⚙️ Tùy chỉnh các chức năng phụ đưa vào cảnh quay:</div>
+        <label class="ops-check" style="margin:2px 0;">
+          <input type="checkbox" id="chk-hl-carddraw" checked onchange="onHighlightToggleChange()">
+          <span>🃏 <b>Hiệu ứng Rút/Cất 8 Bộ Bài TCG</b> (Nhô thẻ bài theo hệ)</span>
+        </label>
+        <label class="ops-check" style="margin:2px 0;">
+          <input type="checkbox" id="chk-hl-props" checked onchange="onHighlightToggleChange()">
+          <span>✨ <b>Bày Thẻ Hologram & Deck Bài Decor</b> quanh chân kệ</span>
+        </label>
+        <label class="ops-check" style="margin:2px 0;">
+          <input type="checkbox" id="chk-hl-fold" checked onchange="onHighlightToggleChange()">
+          <span>📐 <b>Gập Phẳng 14° ↔ Mở Đứng 52°</b> (Thanh truyền 4 khâu)</span>
+        </label>
+      </div>
+
+      <div style="margin-bottom:7px;">
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;color:#cbd5e1;">
+          <span>🏡 Bối cảnh Đời Thực (Không AI):</span>
+        </div>
+        <select id="real-bg-select" onchange="setRealBackgroundMode(this.value)" style="width:100%;padding:5px 7px;border-radius:6px;background:#1e293b;color:#f8fafc;border:1px solid #38bdf8;font-size:11px;font-weight:700;">
+          <option value="oak_desk">🏡 Bàn Gỗ Sưu Tập Pokémon TCG (Decor Đời Thực)</option>
+          <option value="cutting_mat">🕹️ Bàn Đấu Giải & Setup Kỹ Thuật (Màn Hình + Thảm)</option>
+          <option value="bambu_pei">🖨️ Mâm Nhiệt PEI Bambu Lab (Hậu Trường Xưởng)</option>
+          <option value="cad_dark">🌌 Phông Kỹ Thuật CAD Tối (Mặc định)</option>
+        </select>
+      </div>
+      <button id="publish-store-btn" onclick="publishToStore8088()">🛍️ Đẩy Mẫu Này Lên Web Bán Hàng (:8088)</button>
+      <button id="play-storyboard-btn" onclick="runLive5SceneStoryboard()" style="width:100%;padding:8px;border:none;border-radius:7px;background:linear-gradient(135deg,#ea580c,#f59e0b);color:#fff;font-weight:800;font-size:11.5px;cursor:pointer;margin-top:6px;">🎬 Chạy Showcase Decor Pokémon 4 Cảnh & Tải .MP4</button>
+      <div id="store-status"></div>
+    </div>
+
+    <div id="live-sub-banner" style="display:none;position:absolute;bottom:68px;left:50%;transform:translateX(-50%);background:rgba(9,13,22,0.92);border:2px solid #f59e0b;padding:8px 18px;border-radius:10px;z-index:9;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.65);pointer-events:none;">
+      <div id="sub-scene-tag" style="font-size:11px;font-weight:800;color:#38bdf8;margin-bottom:2px;">🎬 CẢNH 1 / 5</div>
+      <div id="sub-main-txt" style="font-size:16px;font-weight:900;color:#ffffff;text-shadow:0 2px 4px #000;">SIÊU PHẨM KỆ XẾP GỌN 2 TẦNG RỒNG CHARIZARD!</div>
+    </div>
+
+    <div id="cam-bar">
+      <button class="cam-btn" onclick="setCameraView('front')">👁️ Chính Diện</button>
+      <button class="cam-btn" onclick="setCameraView('iso')">🧊 Góc Nghiêng 3D</button>
+      <button class="cam-btn" onclick="setCameraView('side')">📐 Mặt Cắt Hông (Xem Khớp Gập)</button>
+      <button class="cam-btn" onclick="setCameraView('back')">🔙 Mặt Sau (Ngàm Rồng & Chân Gập)</button>
+      <button class="cam-btn" onclick="setCameraView('dragon')">🐉 Cận Cảnh Đầu Rồng</button>
+    </div>
+
+    <div id="svg-panel">
+      <svg id="blueprint-svg" viewBox="0 0 1040 720" xmlns="http://www.w3.org/2000/svg">
+        <rect width="1040" height="720" fill="#0b1120"/>
+        <text x="520" y="34" fill="#fb923c" font-size="20" font-weight="bold" text-anchor="middle">BẢN VẼ KỸ THUẬT 2D SVG — KỆ XẾP GỌN 2 TẦNG 8 HỘP TRƠN & ĐẦU RỒNG CHARIZARD LIỀN KHỐI</text>
+        <text x="520" y="56" fill="#9ca3af" font-size="13" text-anchor="middle">Chuẩn yêu cầu khách: Bề mặt liền khối không đục lỗ + Bỏ Pokéball & Bỏ hình tròn mặt trước 8 hộp + Mặt rồng to 288mm + Hộp gọn 48mm</text>
+
+        <!-- KHUNG 1: ĐẦU RỒNG CHARIZARD LIỀN KHỐI -->
+        <g transform="translate(25, 75)">
+          <rect width="485" height="295" rx="10" fill="#111827" stroke="#374151"/>
+          <text x="242" y="24" fill="#fb923c" font-size="14" font-weight="bold" text-anchor="middle">1. ĐẦU RỒNG CHARIZARD LIỀN KHỐI (KHÔNG ĐỤC LỖ — Z-STACK 4 LỚP MÀU)</text>
+          <g id="svg-dragon-cad-group" transform="translate(242, 185) scale(0.95, -0.95)"></g>
+          <text x="242" y="280" fill="#fde047" font-size="11.5" font-weight="bold" text-anchor="middle">Sải cánh: 288mm × Mặt rồng: 136mm | Phẳng mịn không lỗ & không Pokéball</text>
+        </g>
+
+        <!-- KHUNG 2: CƠ CẤU GẬP 2 TẦNG & CHÂN CHỐNG -->
+        <g transform="translate(530, 75)">
+          <rect width="485" height="295" rx="10" fill="#111827" stroke="#374151"/>
+          <text x="242" y="26" fill="#38bdf8" font-size="14.5" font-weight="bold" text-anchor="middle">2. MẶT CẮT HÔNG — CƠ CẤU XẾP GỌN 2 TẦNG & CHỐT SNAP-FIT</text>
+          <!-- Khay dưới -->
+          <path d="M 75,235 L 225,235 L 225,185 L 205,185 L 185,212 L 95,212 L 95,198 L 75,198 Z" fill="#f8fafc" stroke="#38bdf8" stroke-width="2.5"/>
+          <!-- Khay trên -->
+          <path d="M 165,145 L 315,145 L 315,95 L 295,95 L 275,122 L 185,122 L 185,108 L 165,108 Z" fill="#f8fafc" stroke="#38bdf8" stroke-width="2.5"/>
+          <!-- 2 Thanh truyền song song -->
+          <line x1="105" y1="220" x2="195" y2="130" stroke="#facc15" stroke-width="10" stroke-linecap="round"/>
+          <line x1="195" y1="220" x2="285" y2="130" stroke="#fde047" stroke-width="10" stroke-linecap="round"/>
+          <!-- Chân chống gập sau -->
+          <line x1="300" y1="115" x2="365" y2="235" stroke="#c084fc" stroke-width="11" stroke-linecap="round"/>
+          <!-- Lỗ chốt xoay Ø6.4mm -->
+          <circle cx="105" cy="220" r="5" fill="#0b1120" stroke="#ef4444" stroke-width="2"/>
+          <circle cx="195" cy="220" r="5" fill="#0b1120" stroke="#ef4444" stroke-width="2"/>
+          <circle cx="195" cy="130" r="5" fill="#0b1120" stroke="#ef4444" stroke-width="2"/>
+          <circle cx="285" cy="130" r="5" fill="#0b1120" stroke="#ef4444" stroke-width="2"/>
+          <text x="242" y="262" fill="#e2e8f0" font-size="12" text-anchor="middle">Thanh truyền 4 khâu giữ 2 tầng luôn song song khi gập từ 52° về 14°</text>
+          <text x="242" y="280" fill="#9ca3af" font-size="11.5" text-anchor="middle">Chốt bấm Snap-Fit Ø6.0mm xẻ rãnh đàn hồi — Lắp tay 100% không cần ốc vít</text>
+        </g>
+
+        <!-- KHUNG 3: HỘP ĐỰNG BÀI RỜI MẶT TRƯỚC TRƠN PHẲNG (KHÔNG HÌNH TRÒN) -->
+        <g transform="translate(25, 395)">
+          <rect width="485" height="295" rx="10" fill="#111827" stroke="#374151"/>
+          <text x="242" y="26" fill="#4ade80" font-size="13.5" font-weight="bold" text-anchor="middle">3. BỘ 8 HỘP ĐỰNG BÀI RỜI TRƠN PHẲNG (KHÔNG HÌNH TRÒN)</text>
+          <!-- Hình chiếu mặt trước hộp trơn phẳng không logo -->
+          <rect x="48" y="60" width="115" height="145" rx="8" fill="#fda4af" stroke="#f43f5e" stroke-width="2.5"/>
+          <rect x="58" y="42" width="95" height="45" rx="4" fill="#fde047" stroke="#eab308" stroke-width="1.5"/>
+          <text x="105" y="140" fill="#881337" font-size="11.5" font-weight="bold" text-anchor="middle">MẶT TRƯỚC TRƠN</text>
+          <text x="105" y="158" fill="#881337" font-size="10.5" text-anchor="middle">(Không hình tròn)</text>
+          <text x="105" y="232" fill="#f8fafc" font-size="11.5" font-weight="bold" text-anchor="middle">Kích thước: 48×42×52mm</text>
+          <text x="105" y="250" fill="#9ca3af" font-size="10.5" text-anchor="middle">(Ôm vừa khít thẻ bài)</text>
+
+          <!-- 8 Màu Pastel của 8 hộp -->
+          <g transform="translate(215, 62)">
+            <text x="122" y="14" fill="#fde047" font-size="12" font-weight="bold" text-anchor="middle">8 Hộp Nhựa Pastel Mặt Trơn:</text>
+            <rect x="12" y="32" width="44" height="44" rx="6" fill="#fda4af"/>
+            <rect x="69" y="32" width="44" height="44" rx="6" fill="#f9a8d4"/>
+            <rect x="126" y="32" width="44" height="44" rx="6" fill="#bef264"/>
+            <rect x="183" y="32" width="44" height="44" rx="6" fill="#fef08a"/>
+            <rect x="12" y="92" width="44" height="44" rx="6" fill="#d8b4fe"/>
+            <rect x="69" y="92" width="44" height="44" rx="6" fill="#fb923c"/>
+            <rect x="126" y="92" width="44" height="44" rx="6" fill="#7dd3fc"/>
+            <rect x="183" y="92" width="44" height="44" rx="6" fill="#38bdf8"/>
+            <text x="122" y="168" fill="#cbd5e1" font-size="11" text-anchor="middle">Đã bỏ toàn bộ 8 hình vòng tròn mặt trước</text>
+          </g>
+        </g>
+
+        <!-- KHUNG 4: SƠ ĐỒ XẾP BÀN IN BAMBU LAB 256x256MM -->
+        <g transform="translate(530, 395)">
+          <rect width="485" height="295" rx="10" fill="#111827" stroke="#374151"/>
+          <text x="242" y="26" fill="#c084fc" font-size="14.5" font-weight="bold" text-anchor="middle">4. SƠ ĐỒ TÁCH PART IN BAMBU LAB (0% SUPPORT — Z-STACKING)</text>
+          <text x="30" y="62" fill="#f8fafc" font-size="12.5" font-weight="bold">• Bàn in 1 (Đầu Rồng Charizard Liền Khối Không Lỗ):</text>
+          <text x="45" y="82" fill="#9ca3af" font-size="12">Đặt nằm phẳng sát bàn (Z=0). Đổi màu theo lớp cao độ Z: 4.0mm → 4.8mm → 5.6mm.</text>
+          <text x="30" y="112" fill="#f8fafc" font-size="12.5" font-weight="bold">• Bàn in 2 (2 Khay Đỡ Tầng + Thanh Truyền + 14 Chốt Snap-Fit):</text>
+          <text x="45" y="132" fill="#9ca3af" font-size="12">Khay ngang 206mm vừa gọn 1 bàn in. Chốt Snap-Fit in nằm ngang siêu bền.</text>
+          <text x="30" y="162" fill="#f8fafc" font-size="12.5" font-weight="bold">• Bàn in 3 (8 Hộp Đựng Bài Mặt Trước Trơn Phẳng):</text>
+          <text x="45" y="182" fill="#9ca3af" font-size="12">In đáy hộp úp xuống bàn in (0% support), mặt trước phẳng mịn không có vòng tròn.</text>
+          <rect x="30" y="205" width="425" height="68" rx="8" fill="#1e293b" stroke="#f97316"/>
+          <text x="242" y="232" fill="#fde047" font-size="13" font-weight="bold" text-anchor="middle">✅ ĐÃ KIỂM ĐỊNH DFAM BAMBU LAB P1S / X1C / A1 (256×256mm)</text>
+          <text x="242" y="254" fill="#cbd5e1" font-size="11.5" text-anchor="middle">Khe hở lắp ghép (Clearance): 0.25mm cho ngàm cố định | 0.40mm cho khớp xoay bản lề</text>
+        </g>
+      </svg>
+      <button onclick="downloadSVG()" style="margin-top:14px;padding:10px 22px;background:#f97316;color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer;">⬇️ Tải Bản Vẽ Kỹ Thuật .SVG (Mở bằng Fusion 360 / Blender / OrcaSlicer)</button>
+    </div>
+  </div>
+
+  <script>
+    let currentSizePreset = "booster";
+    let activePartId = 0;
+
+    const PART_SPECS = {
+      0: {
+        title: "★ Tổng Thể Kệ Xếp Gọn 2 Tầng + Rồng Charizard Liền Khối + 8 Hộp Trơn",
+        hud: "★ MÔ HÌNH TỔNG THỂ CHUẨN YÊU CẦU KHÁCH — KHÔNG ĐỤC LỖ, KHÔNG POKÉBALL, HỘP TRƠN KHÔNG HÌNH TRÒN",
+        file: "Full_Ke_Xep_Gon_Rong_Charizard_Pokemon",
+        rows: [
+          ["Cấu trúc tổng thể", "2 Tầng xếp gọn + 8 Hộp trơn phẳng + Đầu Rồng liền khối"],
+          ["Kích thước mỗi hộp", "Rộng 48 mm × Sâu 42 mm × Cao 52 mm (Ôm vừa khít thẻ bài)"],
+          ["Mặt trước 8 hộp", "Trơn phẳng 100% (Đã bỏ hoàn toàn 8 hình vòng tròn Pokémon)"],
+          ["Đầu Rồng Charizard", "Sải cánh 288 mm × Mặt rồng 136 mm (Phẳng mịn không đục lỗ)"],
+          ["Phụ kiện đã lược bỏ", "Đã bỏ toàn bộ Pokéball, Charm và lỗ đục theo yêu cầu khách"],
+          ["Công nghệ in đa sắc", "Z-Stacking theo lớp cao độ Z (0g rác tháp xả AMS)"]
+        ],
+        note: "💡 <b>Chuẩn bản chốt:</b> Đã bỏ hoàn toàn lỗ đục trên Đầu Rồng, bỏ Pokéball/Charm, bỏ toàn bộ 8 hình vòng tròn trên mặt trước 8 hộp, phóng to mặt rồng và thu gọn 8 hộp vừa khít thẻ bài!"
+      },
+      1: {
+        title: "1. Bảng Đầu Rồng Charizard Liền Khối (Không Đục Lỗ — Z-Stacking 4 Màu)",
+        hud: "PART 1: ĐẦU RỒNG CHARIZARD MẶT TO NỔI BẬT — BỀ MẶT LIỀN KHỐI KHÔNG ĐỤC LỖ",
+        file: "Part1_Dau_Rong_Charizard_Pegboard_ZStack",
+        rows: [
+          ["Kích thước bao", "Ngang sải cánh 288 mm × Ngang mặt 136 mm × Dày 5.6 mm"],
+          ["Lớp 1 (Z = 0 → 4.0mm)", "Màu Cam Rồng (#FB6913) + Thân ngàm cắm liền khối"],
+          ["Lớp 2 (Z = 0 → 4.0mm)", "Màu Xanh Cổ Vịt (#0E9AA7) — Lòng cánh & Tròng mắt"],
+          ["Lớp 3 (Z = 4.0 → 4.8mm)", "Màu Trắng (#FFFFFF) — Củng mạc mắt, Điểm sáng & 2 Nanh"],
+          ["Lớp 4 (Z = 4.8 → 5.6mm)", "Màu Đen (#1E1B18) — Viền контур sắc nét không bị rời màu"],
+          ["Bề mặt hoàn thiện", "Đặc liền khối 100% (0 lỗ đục, 0 Pokéball)"]
+        ],
+        note: "🔥 <b>Đi nét chuẩn 1:1:</b> Giữ nguyên mép ngoài cánh cam & mép lượn sóng cánh xanh không viền đen, nối liền mạch viền má và chóp cánh không bị lộ màu cam thừa!"
+      },
+      2: {
+        title: "2. Khay Đỡ Tầng Nhỏ Gọn Có Vách Định Vị (×2 Tầng)",
+        hud: "PART 2: KHAY ĐỠ TẦNG GỌN 206MM KHOÉT THỦNG LỖ CHỐT XOAY Ø6.4MM & HỐC CẮM RỒNG",
+        file: "Part2_Khay_Do_Tang_Collapsible_Tray",
+        rows: [
+          ["Số lượng cần in", "2 Khay (1 Khay tầng trên có hốc cắm Rồng + 1 Khay tầng dưới)"],
+          ["Kích thước bao", "Ngang 206 mm × Sâu 50 mm × Cao thành sau 30 mm"],
+          ["Lỗ chốt bản lề hông", "4 lỗ Ø6.4 mm khoét thủng thật qua thành hông"],
+          ["Hốc cắm Đầu Rồng", "2 ống ngàm sau lưng khay tầng trên giữ thẳng Bảng Đầu Rồng"]
+        ],
+        note: "🛠️ <b>Vừa gọn 1 bàn in 256×256mm:</b> Khay rộng 206mm in nguyên chiếc 1 lần trên mọi máy Bambu Lab P1S/X1C/A1."
+      },
+      3: {
+        title: "3. Bộ 8 Hộp Đựng Bài Rời Mặt Trước Trơn Phẳng (Không Hình Tròn)",
+        hud: "PART 3: BỘ 8 HỘP ĐỰNG BÀI GỌN VỪA THẺ BÀI — MẶT TRƯỚC TRƠN PHẲNG KHÔNG CÓ VÒNG TRÒN POKÉMON",
+        file: "Part3_Bo_8_Hop_Dung_Bai_Pokemon",
+        rows: [
+          ["Kích thước mỗi hộp", "Rộng 48 mm × Sâu 42 mm × Cao 52 mm (Mặt trước cao 34 mm)"],
+          ["Độ dày thành hộp", "2.2 mm (Cứng cáp, in 0% support)"],
+          ["Mặt trước hộp", "Phẳng mịn liền lạc 100% — Không có hình vòng tròn Pokémon"],
+          ["8 Màu Pastel", "Đỏ Hồng, Hồng Phấn, Xanh Lá, Vàng, Tím, Cam, Xanh Băng, Xanh Ngọc"]
+        ],
+        note: "🃏 <b>Đúng yêu cầu khách:</b> Thu gọn kích thước ôm vừa khít xấp thẻ bài Pokémon và bỏ hoàn toàn các hình vòng tròn ở mặt trước mỗi hộp."
+      },
+      4: {
+        title: "4. Thanh Truyền Gập Hông 4 Khâu & Chân Chống Gập Sau",
+        hud: "PART 4: 4 THANH TRUYỀN SONG SONG + 2 CHÂN CHỐNG GẬP SAU (KHOÉT LỖ THẬT Ø6.4MM)",
+        file: "Part5_Thanh_Truyen_Va_Chan_Chong_Gap",
+        rows: [
+          ["Thanh truyền chính", "4 thanh dài 88 mm × dày 4.5 mm"],
+          ["Chân chống gập sau", "2 chân dài 100 mm × dày 5.5 mm (Gập sát lưng khi đóng gói)"],
+          ["Cơ cấu gập phẳng", "Giữ 2 tầng khay luôn song song khi gập từ 52° về 14°"]
+        ],
+        note: "📐 <b>Cơ cấu 4 khâu hình bình hành:</b> Giúp cả 2 tầng khay luôn giữ phương ngang song song mặt bàn dù đang mở hay đang gập."
+      },
+      5: {
+        title: "5. Bộ 14 Chốt Bấm Bản Lề Snap-Fit (Đã Bỏ Pokéball & Charm)",
+        hud: "PART 5: 14 CHỐT BẤM SNAP-FIT XẺ RÃNH ĐÀN HỒI — LẮP BẤM TAY KHÔNG CẦN ỐC VÍT",
+        file: "Part6_Chot_SnapFit_Va_Charm_Pegboard",
+        rows: [
+          ["Chốt xoay Snap-Fit", "12 chốt Ø6.0 mm có ngàm đàn hồi xẻ rãnh (Lắp bấm tay)"],
+          ["Chốt khóa góc mở 52°", "2 chốt khóa có tay nắm rút nhanh khi muốn gập kệ"],
+          ["Phụ kiện Charm", "Đã bỏ hoàn toàn Pokéball & Charm theo yêu cầu khách"]
+        ],
+        note: "🔩 <b>Không cần ốc vít:</b> Chốt Snap-Fit được đặt nằm phẳng trên mặt bàn in để thớ nhựa chạy dọc thân chốt, bấm mở hàng trăm lần không gãy!"
+      }
+    };
+
+    // =========================================================================
+    // KHỞI TẠO THREE.JS SCENE
+    // =========================================================================
+    const viewport = document.getElementById("viewport");
+    const scene = new THREE.Scene();
+    scene.background = null;
+    viewport.style.backgroundImage = "url('/assets/real_bgs/bg_oak_desk_16x9.jpg')";
+    viewport.style.backgroundSize = "cover";
+    viewport.style.backgroundPosition = "center";
+
+    const camera = new THREE.PerspectiveCamera(38, (window.innerWidth - 450) / window.innerHeight, 1, 5000);
+    camera.position.set(0, 220, 560);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+    renderer.setClearColor(0x000000, 0);
+    renderer.setSize(window.innerWidth - 450, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    viewport.appendChild(renderer.domElement);
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.target.set(0, 125, 0);
+    controls.enableDamping = true;
+
+    scene.add(new THREE.AmbientLight(0xfffbeb, 0.80));
+    const dirLight1 = new THREE.DirectionalLight(0xfff7ed, 0.92);
+    dirLight1.position.set(180, 460, 290);
+    dirLight1.castShadow = true;
+    dirLight1.shadow.mapSize.width = 2048;
+    dirLight1.shadow.mapSize.height = 2048;
+    dirLight1.shadow.camera.near = 50;
+    dirLight1.shadow.camera.far = 1200;
+    dirLight1.shadow.camera.left = -280;
+    dirLight1.shadow.camera.right = 280;
+    dirLight1.shadow.camera.top = 280;
+    dirLight1.shadow.camera.bottom = -280;
+    dirLight1.shadow.bias = -0.0005;
+    scene.add(dirLight1);
+    const dirLight2 = new THREE.DirectionalLight(0xe0f2fe, 0.42);
+    dirLight2.position.set(-240, 220, -220);
+    scene.add(dirLight2);
+
+    const grid = new THREE.GridHelper(520, 26, 0x334155, 0x1e293b);
+    grid.position.y = 0;
+    grid.visible = false;
+    scene.add(grid);
+
+    // Mặt phẳng hứng bóng đổ vật lý thật (Contact Shadow Catcher) lên mặt bàn gỗ / thảm cắt đời thực
+    const shadowCatcher = new THREE.Mesh(
+      new THREE.PlaneGeometry(1200, 1200),
+      new THREE.ShadowMaterial({ opacity: 0.36 })
+    );
+    shadowCatcher.rotation.x = -Math.PI / 2;
+    shadowCatcher.position.y = -0.2;
+    shadowCatcher.receiveShadow = true;
+    scene.add(shadowCatcher);
+
+    // Tạo vân lớp in 3D PLA 0.16mm thật (Procedural FDM Layer Micro-Texture)
+    function createPlaLayerBumpTexture() {
+      const c = document.createElement("canvas");
+      c.width = 64;
+      c.height = 256;
+      const ctx = c.getContext("2d");
+      for (let y = 0; y < 256; y++) {
+        const v = Math.round(128 + 42 * Math.sin((y / 3.0) * Math.PI * 2));
+        ctx.fillStyle = `rgb(${v},${v},${v})`;
+        ctx.fillRect(0, y, 64, 1);
+      }
+      const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(8, 28);
+      return tex;
+    }
+    const plaBumpTex = createPlaLayerBumpTexture();
+
+    // =========================================================================
+    // VẬT LIỆU ĐA SẮC (GẮN SẴN EXTRUDER ID CHO BAMBU STUDIO .3MF + VÂN NHỰA PLA THẬT)
+    // =========================================================================
+    function makeMat(hex, roughness, metalness, extruderId, name) {
+      const m = new THREE.MeshStandardMaterial({
+        color: hex,
+        roughness: Math.max(0.38, roughness),
+        metalness: metalness,
+        bumpMap: plaBumpTex,
+        bumpScale: 0.14
+      });
+      m.userData = { extruder: extruderId, name };
+      return m;
+    }
+
+    const matTrayWhite   = makeMat(0xf8fafc, 0.35, 0.05, 1, "Tray_White");
+    const matPegPurple   = makeMat(0xc084fc, 0.40, 0.08, 2, "Backbone_Lavender");
+    const matDragonOrg   = makeMat(0xf97316, 0.35, 0.08, 1, "Charizard_Orange_L1");
+    const matDragonTeal  = makeMat(0x0d9488, 0.35, 0.08, 2, "Charizard_Teal_L2");
+    const matDragonWhite = makeMat(0xffffff, 0.30, 0.05, 3, "Charizard_White_L3");
+    const matDragonBlack = makeMat(0x111827, 0.45, 0.10, 4, "Charizard_Black_L4");
+    const matDragonRed   = makeMat(0xef4444, 0.35, 0.08, 1, "Charm_Red");
+    const matDragonYel   = makeMat(0xfacc15, 0.35, 0.10, 3, "Linkage_Gold");
+    const matLeafGreen   = makeMat(0x22c55e, 0.38, 0.08, 2, "Charm_Green");
+
+    const BIN_CONFIGS = [
+      // Tầng trên (4 hộp: Lửa, Nước, Cỏ, Điện)
+      { name: "Hop_1_Lua",      binHex: 0xfda4af, badgeHex: 0xef4444, iconHex: 0x111827, type: "fire",      tier: 1, col: 0 },
+      { name: "Hop_2_Nuoc",     binHex: 0xf9a8d4, badgeHex: 0x0284c7, iconHex: 0x111827, type: "water",     tier: 1, col: 1 },
+      { name: "Hop_3_Co",       binHex: 0xbef264, badgeHex: 0x16a34a, iconHex: 0x111827, type: "grass",     tier: 1, col: 2 },
+      { name: "Hop_4_Dien",     binHex: 0xfef08a, badgeHex: 0xfacc15, iconHex: 0x111827, type: "lightning", tier: 1, col: 3 },
+      // Tầng dưới (4 hộp: Tâm Linh, Giác Đấu, Bóng Tối, Thép)
+      { name: "Hop_5_TamLinh",  binHex: 0xd8b4fe, badgeHex: 0x9333ea, iconHex: 0x111827, type: "psychic",   tier: 0, col: 0 },
+      { name: "Hop_6_GiacDau",  binHex: 0xfb923c, badgeHex: 0xb45309, iconHex: 0x111827, type: "fighting",  tier: 0, col: 1 },
+      { name: "Hop_7_BongToi",  binHex: 0x7dd3fc, badgeHex: 0x1e293b, iconHex: 0xf8fafc, type: "darkness",  tier: 0, col: 2 },
+      { name: "Hop_8_Thep",     binHex: 0x38bdf8, badgeHex: 0x94a3b8, iconHex: 0x111827, type: "metal",     tier: 0, col: 3 }
+    ];
+
+    // Helper tạo lỗ khe Pegboard bo tròn (Slot Hole)
+    function makeSlotHole(cx, cy, w, h) {
+      const p = new THREE.Path();
+      const r = w / 2;
+      const hh = Math.max(0.1, h / 2 - r);
+      p.moveTo(cx - r, cy - hh);
+      p.lineTo(cx - r, cy + hh);
+      p.absarc(cx, cy + hh, r, Math.PI, 0, true);
+      p.lineTo(cx + r, cy - hh);
+      p.absarc(cx, cy - hh, r, 0, Math.PI, true);
+      return p;
+    }
+
+    function makeCircleHole(cx, cy, r) {
+      const p = new THREE.Path();
+      p.absarc(cx, cy, r, 0, Math.PI * 2, false);
+      return p;
+    }
+
+    // =========================================================================
+    // 1. DỰNG BẢNG ĐẦU RỒNG CHARIZARD PEGBOARD (TRÍCH XUẤT CAD 1:1 TỪ ẢNH MẪU)
+    // =========================================================================
+    const CAD_DATA = {"base_orange": [{"ext": [[76.3, 125.56], [77.7, 124.57], [78.74, 123.07], [80.08, 120.34], [81.05, 117.49], [82.12, 115.28], [82.78, 113.47], [83.9, 111.51], [84.81, 110.31], [87.85, 107.92], [95.94, 100.17], [98.56, 97.82], [102.23, 95.43], [104.73, 93.54], [108.92, 91.56], [110.89, 90.09], [116.55, 86.47], [117.75, 85.5], [118.35, 84.86], [120.66, 81.62], [123.5, 77.0], [124.57, 74.88], [125.89, 71.68], [127.89, 68.01], [129.93, 63.66], [134.8, 55.73], [139.43, 47.22], [140.7, 44.17], [141.81, 40.23], [142.83, 37.15], [143.55, 32.68], [143.86, 27.83], [143.85, 23.25], [143.67, 21.09], [143.58, 15.79], [143.19, 11.45], [142.73, -0.05], [142.44, -1.31], [141.92, -2.42], [141.36, -3.22], [140.64, -3.77], [139.4, -4.08], [137.99, -4.0], [136.79, -3.4], [136.46, -3.03], [136.34, -2.63], [136.1, 0.34], [136.12, 2.26], [136.82, 6.82], [136.98, 10.36], [136.9, 12.83], [136.49, 16.03], [136.11, 22.13], [135.69, 26.01], [135.08, 29.8], [133.69, 35.52], [133.45, 36.95], [132.56, 39.73], [129.97, 46.01], [126.75, 53.13], [125.26, 56.03], [122.92, 59.97], [120.16, 65.12], [117.57, 69.23], [116.32, 70.98], [114.03, 73.79], [111.6, 76.37], [108.52, 78.92], [98.18, 86.4], [87.72, 94.79], [86.85, 95.27], [85.92, 95.6], [85.04, 95.74], [84.4, 95.7], [83.12, 95.22], [82.09, 94.54], [81.14, 93.41], [80.15, 91.72], [78.51, 87.42], [74.13, 74.38], [72.48, 70.41], [71.01, 67.57], [70.69, 67.33], [69.63, 67.1], [65.33, 67.03], [63.54, 67.19], [62.97, 67.42], [62.57, 67.82], [62.4, 68.58], [62.33, 70.35], [62.68, 72.22], [63.06, 73.01], [64.65, 75.26], [65.91, 77.66], [66.95, 80.38], [68.62, 85.47], [70.91, 90.22], [71.48, 91.97], [72.21, 95.11], [73.24, 98.01], [73.8, 100.59], [74.19, 104.4], [74.21, 107.5], [74.08, 108.17], [73.79, 108.78], [72.55, 110.43], [72.1, 111.51], [71.64, 116.67], [71.25, 118.15], [71.06, 119.81], [71.02, 121.58], [71.23, 123.24], [71.52, 124.18], [71.98, 125.11], [72.35, 125.57], [72.99, 125.97], [73.71, 126.21], [74.44, 126.18]], "holes": []}, {"ext": [[-48.88, 153.43], [-47.36, 152.68], [-46.0, 151.74], [-44.68, 150.33], [-43.44, 148.43], [-41.82, 145.32], [-40.8, 142.85], [-38.93, 139.06], [-37.66, 135.65], [-35.83, 131.88], [-35.17, 130.14], [-33.78, 127.72], [-32.8, 125.37], [-31.5, 122.74], [-29.32, 118.84], [-28.59, 117.89], [-27.42, 116.94], [-25.76, 116.05], [-24.59, 115.84], [-22.24, 116.07], [-15.71, 117.95], [-9.59, 119.22], [-4.12, 119.78], [0.43, 119.87], [4.8, 119.74], [8.57, 119.41], [15.22, 118.05], [23.54, 115.49], [24.19, 115.41], [25.19, 115.75], [26.73, 116.57], [28.12, 117.65], [29.07, 118.84], [30.04, 120.46], [32.3, 124.81], [33.67, 128.0], [34.92, 130.14], [35.58, 131.88], [37.42, 135.65], [38.69, 139.06], [40.37, 142.44], [41.82, 145.82], [43.58, 149.11], [45.08, 151.21], [46.12, 152.13], [47.47, 152.92], [48.83, 153.41], [50.3, 153.59], [51.95, 153.45], [53.13, 153.15], [54.43, 152.48], [55.38, 151.6], [55.96, 150.41], [56.12, 144.92], [56.12, 125.75], [55.85, 117.69], [54.25, 107.56], [53.48, 105.44], [52.21, 103.4], [51.98, 102.4], [52.75, 100.31], [55.87, 93.61], [57.26, 90.1], [58.3, 86.8], [59.58, 81.79], [60.39, 76.34], [60.77, 70.25], [60.89, 55.99], [61.18, 50.44], [62.02, 48.02], [65.21, 40.88], [65.81, 38.11], [65.94, 36.01], [65.89, 33.11], [65.61, 30.13], [65.09, 27.53], [64.42, 25.57], [63.04, 22.68], [60.92, 19.06], [58.59, 15.57], [57.2, 13.84], [55.43, 12.73], [51.81, 10.81], [44.7, 7.47], [40.0, 5.62], [29.59, 2.09], [20.48, -0.12], [13.01, -1.5], [6.31, -2.16], [-0.31, -2.4], [-1.72, -2.26], [-7.79, -2.06], [-14.57, -1.3], [-22.48, 0.28], [-30.74, 2.34], [-41.17, 5.96], [-47.46, 8.58], [-56.11, 12.92], [-57.28, 13.78], [-58.3, 14.96], [-60.3, 17.77], [-62.88, 21.77], [-64.04, 23.87], [-64.64, 25.3], [-65.49, 28.15], [-65.95, 30.84], [-66.16, 33.91], [-66.14, 37.16], [-65.86, 39.26], [-65.36, 41.16], [-62.27, 48.02], [-61.42, 50.44], [-61.13, 55.99], [-61.02, 70.25], [-60.64, 76.34], [-59.82, 81.79], [-58.54, 86.8], [-57.5, 90.1], [-56.12, 93.61], [-53.0, 100.31], [-52.23, 102.4], [-52.46, 103.4], [-53.72, 105.44], [-54.5, 107.56], [-56.09, 117.69], [-56.33, 123.12], [-56.42, 132.22], [-56.37, 144.92], [-56.2, 150.41], [-55.89, 151.32], [-55.39, 152.05], [-54.72, 152.62], [-53.72, 153.16], [-52.53, 153.51], [-51.17, 153.66], [-49.78, 153.62]], "holes": []}, {"ext": [[-74.93, 126.04], [-73.94, 126.1], [-73.39, 125.97], [-72.74, 125.53], [-72.23, 125.0], [-71.86, 124.4], [-71.54, 123.49], [-71.27, 121.58], [-71.37, 119.04], [-71.88, 116.67], [-72.35, 111.51], [-72.8, 110.43], [-74.04, 108.78], [-74.33, 108.17], [-74.45, 107.5], [-74.37, 103.53], [-73.84, 99.41], [-73.25, 97.26], [-72.45, 95.11], [-71.37, 90.79], [-68.87, 85.47], [-66.41, 78.26], [-65.15, 75.69], [-63.3, 73.01], [-62.92, 72.22], [-62.58, 70.35], [-62.61, 68.94], [-62.82, 67.82], [-63.21, 67.42], [-63.79, 67.19], [-65.58, 67.03], [-69.88, 67.1], [-70.66, 67.24], [-71.26, 67.57], [-72.73, 70.41], [-74.38, 74.38], [-79.21, 88.76], [-80.58, 92.2], [-81.42, 93.52], [-82.38, 94.56], [-83.57, 95.32], [-84.9, 95.8], [-85.45, 95.82], [-86.32, 95.55], [-87.26, 95.14], [-88.31, 94.48], [-98.42, 86.4], [-108.76, 78.92], [-111.85, 76.37], [-114.27, 73.79], [-116.57, 70.98], [-117.82, 69.23], [-120.4, 65.12], [-123.17, 59.97], [-125.5, 56.03], [-126.99, 53.13], [-130.22, 46.01], [-132.81, 39.73], [-133.7, 36.95], [-133.94, 35.52], [-135.32, 29.8], [-135.93, 26.01], [-136.36, 22.13], [-136.74, 16.03], [-137.15, 12.83], [-137.22, 10.36], [-137.07, 6.82], [-136.37, 2.26], [-136.35, 0.34], [-136.59, -2.63], [-136.7, -3.03], [-137.04, -3.4], [-138.24, -4.0], [-139.64, -4.08], [-140.88, -3.77], [-141.61, -3.22], [-142.17, -2.42], [-142.69, -1.31], [-142.98, -0.05], [-143.44, 11.45], [-143.83, 15.79], [-143.92, 21.09], [-144.1, 23.25], [-144.11, 27.83], [-143.8, 32.68], [-143.08, 37.15], [-140.77, 44.71], [-139.36, 47.86], [-135.05, 55.73], [-130.14, 63.74], [-127.95, 68.38], [-126.1, 71.75], [-124.82, 74.88], [-123.74, 77.0], [-120.9, 81.62], [-118.59, 84.86], [-116.86, 86.43], [-111.69, 89.72], [-109.34, 91.44], [-108.1, 92.14], [-104.97, 93.54], [-102.48, 95.43], [-98.81, 97.82], [-96.19, 100.17], [-88.1, 107.92], [-85.06, 110.31], [-84.14, 111.51], [-83.02, 113.47], [-82.36, 115.28], [-81.3, 117.49], [-80.09, 120.99], [-78.91, 123.23], [-77.97, 124.43], [-77.12, 125.15], [-76.09, 125.69]], "holes": []}], "full_backing": [{"ext": [[-63.88, 20.3], [-64.39, 19.8], [-65.14, 19.88], [-66.16, 20.41], [-69.62, 22.63], [-71.1, 23.29], [-72.56, 23.76], [-75.1, 23.99], [-77.52, 23.69], [-78.74, 23.22], [-80.25, 22.38], [-82.86, 20.38], [-85.91, 17.23], [-88.28, 14.03], [-88.9, 13.56], [-89.61, 13.39], [-89.74, 12.84], [-90.68, 13.13], [-92.05, 13.99], [-91.98, 14.61], [-95.82, 17.26], [-98.43, 18.68], [-101.0, 19.78], [-103.44, 20.51], [-105.82, 20.92], [-108.77, 21.02], [-111.11, 20.72], [-112.98, 20.06], [-115.25, 19.01], [-117.9, 17.51], [-120.32, 15.95], [-124.07, 13.2], [-128.33, 9.74], [-133.78, 4.77], [-135.26, 3.7], [-135.19, 3.1], [-135.86, 3.0], [-136.44, 3.08], [-136.34, 1.0], [-136.49, -1.93], [-136.7, -3.03], [-137.16, -3.5], [-138.01, -3.94], [-138.74, -4.08], [-139.98, -4.05], [-140.88, -3.77], [-141.61, -3.22], [-142.0, -2.69], [-142.58, -1.59], [-142.86, -0.75], [-143.13, 2.09], [-143.39, 10.54], [-143.8, 15.19], [-143.92, 21.09], [-144.08, 22.7], [-144.11, 27.83], [-143.89, 31.76], [-143.45, 35.22], [-142.83, 38.07], [-142.19, 39.78], [-140.57, 45.23], [-138.55, 49.4], [-134.46, 56.74], [-130.14, 63.74], [-127.95, 68.38], [-126.1, 71.75], [-124.82, 74.88], [-123.74, 77.0], [-120.9, 81.62], [-118.59, 84.86], [-116.86, 86.43], [-111.69, 89.72], [-109.34, 91.44], [-108.1, 92.14], [-104.97, 93.54], [-102.48, 95.43], [-98.81, 97.82], [-96.19, 100.17], [-88.1, 107.92], [-85.06, 110.31], [-84.14, 111.51], [-83.02, 113.47], [-82.36, 115.28], [-81.3, 117.49], [-80.09, 120.99], [-78.91, 123.23], [-77.97, 124.43], [-77.12, 125.15], [-76.09, 125.69], [-74.93, 126.04], [-73.94, 126.1], [-73.39, 125.97], [-72.74, 125.53], [-72.23, 125.0], [-71.86, 124.4], [-71.54, 123.49], [-71.27, 121.58], [-71.37, 119.04], [-71.88, 116.67], [-72.35, 111.51], [-72.8, 110.43], [-74.04, 108.78], [-74.33, 108.17], [-74.45, 107.5], [-74.37, 103.53], [-73.84, 99.41], [-73.25, 97.26], [-72.45, 95.11], [-71.37, 90.79], [-68.87, 85.47], [-66.41, 78.26], [-65.15, 75.69], [-63.3, 73.01], [-62.69, 71.39], [-62.56, 74.84], [-62.35, 76.17], [-62.29, 77.7], [-62.08, 78.47], [-61.46, 82.67], [-60.34, 87.52], [-59.24, 91.01], [-58.27, 93.47], [-55.01, 100.46], [-54.2, 102.53], [-54.55, 103.61], [-55.92, 105.77], [-56.54, 107.03], [-56.83, 108.21], [-56.95, 109.56], [-57.12, 109.98], [-57.2, 111.26], [-57.38, 111.81], [-57.36, 112.92], [-56.96, 113.87], [-56.91, 114.32], [-57.12, 114.93], [-57.18, 116.28], [-57.43, 117.62], [-58.15, 125.41], [-58.59, 127.26], [-58.87, 129.55], [-59.14, 136.03], [-59.55, 139.9], [-59.32, 144.98], [-58.39, 148.18], [-57.43, 150.01], [-56.57, 151.07], [-54.9, 152.49], [-53.94, 153.07], [-52.78, 153.45], [-51.17, 153.66], [-49.5, 153.59], [-48.56, 153.37], [-47.56, 152.95], [-45.9, 151.79], [-44.2, 150.02], [-43.93, 149.25], [-41.82, 145.32], [-40.8, 142.85], [-38.93, 139.06], [-37.66, 135.65], [-35.98, 132.22], [-35.0, 129.81], [-33.91, 128.0], [-32.54, 124.81], [-29.94, 119.85], [-28.81, 118.13], [-27.76, 117.17], [-25.76, 116.05], [-24.59, 115.84], [-22.24, 116.07], [-15.71, 117.95], [-9.59, 119.22], [-4.12, 119.78], [0.43, 119.87], [4.8, 119.74], [8.57, 119.41], [15.22, 118.05], [23.54, 115.49], [24.19, 115.41], [25.19, 115.75], [26.73, 116.57], [28.12, 117.65], [29.07, 118.84], [30.42, 121.15], [32.3, 124.81], [33.67, 128.0], [34.93, 130.16], [35.58, 131.88], [37.42, 135.65], [38.69, 139.06], [40.56, 142.85], [41.5, 145.18], [44.27, 150.59], [45.24, 151.56], [46.52, 152.48], [47.89, 153.21], [49.14, 153.55], [50.85, 153.62], [52.29, 153.41], [53.77, 152.9], [54.88, 152.28], [55.96, 151.46], [56.86, 150.52], [57.56, 149.48], [58.29, 147.86], [59.07, 144.98], [59.31, 140.18], [58.9, 136.03], [58.59, 129.16], [58.34, 127.26], [57.9, 125.41], [57.19, 117.62], [56.93, 116.28], [56.87, 114.93], [56.67, 114.32], [57.06, 112.9], [56.93, 110.36], [56.3, 107.03], [55.67, 105.77], [54.3, 103.61], [53.95, 102.53], [54.76, 100.46], [58.02, 93.47], [58.99, 91.01], [60.1, 87.52], [61.21, 82.67], [61.83, 78.47], [62.05, 77.7], [62.11, 76.17], [62.31, 74.84], [62.45, 71.39], [63.06, 73.01], [64.91, 75.69], [66.16, 78.26], [68.62, 85.47], [71.12, 90.79], [72.21, 95.11], [73.01, 97.26], [73.59, 99.41], [74.12, 103.53], [74.21, 107.5], [74.08, 108.17], [73.79, 108.78], [72.55, 110.43], [72.1, 111.51], [71.64, 116.67], [71.13, 119.04], [71.02, 121.58], [71.36, 123.73], [72.17, 125.37], [72.7, 125.82], [73.51, 126.17], [74.72, 126.13], [76.0, 125.7], [76.84, 125.26], [77.7, 124.57], [78.3, 123.78], [79.89, 120.78], [81.05, 117.49], [82.12, 115.28], [82.78, 113.47], [83.9, 111.51], [84.81, 110.31], [87.85, 107.92], [98.28, 98.04], [102.23, 95.43], [104.37, 93.76], [105.52, 93.12], [108.59, 91.76], [111.4, 89.75], [116.02, 86.84], [118.02, 85.23], [119.59, 83.19], [121.9, 79.68], [123.5, 77.0], [124.57, 74.88], [125.89, 71.68], [127.89, 68.01], [129.93, 63.66], [135.41, 54.67], [139.92, 46.21], [140.7, 44.17], [141.81, 40.23], [142.83, 37.15], [143.55, 32.68], [143.83, 28.85], [143.85, 23.25], [143.67, 21.09], [143.58, 15.79], [143.19, 11.45], [142.88, 2.09], [142.68, -0.48], [142.21, -1.86], [141.36, -3.22], [140.35, -3.9], [139.08, -4.1], [138.23, -4.05], [137.56, -3.86], [136.92, -3.5], [136.46, -3.03], [136.25, -1.93], [136.1, 0.34], [136.2, 3.08], [135.62, 3.0], [134.94, 3.1], [135.01, 3.7], [133.54, 4.77], [128.09, 9.74], [123.82, 13.2], [119.44, 16.38], [116.55, 18.17], [113.6, 19.69], [111.23, 20.63], [109.56, 20.94], [107.36, 21.03], [104.98, 20.84], [102.59, 20.36], [100.12, 19.54], [97.52, 18.35], [94.94, 16.87], [91.96, 14.77], [92.03, 14.15], [90.51, 13.17], [89.67, 12.86], [89.6, 13.4], [88.75, 13.5], [88.17, 13.9], [86.06, 16.77], [84.04, 19.01], [81.84, 21.09], [80.24, 22.3], [78.48, 23.18], [76.46, 23.81], [74.44, 23.99], [72.31, 23.76], [70.85, 23.29], [69.37, 22.63], [65.92, 20.41], [64.89, 19.88], [64.53, 19.77], [64.09, 19.82], [63.62, 20.36], [60.45, 15.71], [58.98, 14.08], [57.62, 13.04], [55.27, 11.77], [51.28, 9.35], [50.03, 8.82], [48.97, 8.13], [45.03, 6.06], [35.3, 1.7], [26.88, -1.4], [24.31, -2.05], [22.13, -2.78], [19.99, -3.3], [18.47, -3.52], [16.34, -4.2], [13.37, -4.67], [12.71, -4.89], [11.54, -4.95], [10.99, -5.14], [9.82, -5.2], [8.96, -5.4], [5.39, -5.65], [4.07, -5.86], [0.45, -5.91], [-4.31, -5.86], [-5.64, -5.65], [-9.21, -5.4], [-10.06, -5.2], [-11.23, -5.14], [-11.79, -4.95], [-12.96, -4.89], [-13.61, -4.67], [-16.58, -4.2], [-18.72, -3.52], [-21.43, -3.02], [-24.66, -2.02], [-27.1, -1.43], [-29.26, -0.7], [-31.3, 0.19], [-32.52, 0.55], [-33.33, 0.95], [-35.24, 1.55], [-36.43, 2.15], [-38.26, 2.82], [-41.42, 4.4], [-43.14, 5.03], [-46.02, 6.44], [-49.22, 8.13], [-50.27, 8.82], [-51.53, 9.35], [-55.52, 11.77], [-59.39, 13.89], [-59.79, 14.21], [-60.44, 15.09]], "holes": [[[136.25, 20.31], [135.25, 28.89], [133.45, 36.95], [132.56, 39.73], [131.08, 43.42], [127.95, 50.56], [125.26, 56.03], [122.92, 59.97], [119.61, 66.06], [118.6, 67.46], [117.03, 70.02], [114.69, 73.02], [116.33, 70.41], [117.7, 68.56], [120.13, 64.15], [123.11, 59.18], [127.85, 50.0], [130.77, 43.52], [132.79, 37.99], [134.44, 32.26], [135.48, 26.62]], [[112.3, 75.67], [110.28, 77.53], [109.82, 77.91]], [[103.64, 82.39], [100.33, 84.78], [105.45, 81.14]], [[95.91, 88.19], [96.57, 87.61], [97.12, 87.23]], [[85.26, 95.73], [84.18, 95.65], [83.12, 95.22], [82.09, 94.54], [81.32, 93.66], [82.24, 94.28], [83.34, 94.82], [84.97, 95.44], [85.89, 95.61]], [[78.03, 85.97], [76.22, 80.36], [75.43, 78.03], [76.38, 80.61], [77.21, 83.36], [77.8, 84.65]], [[56.14, 143.47], [56.16, 139.47], [56.17, 138.55]], [[-56.41, 138.55], [-56.39, 142.42], [-56.38, 143.47]], [[-75.68, 78.03], [-76.46, 80.36], [-78.47, 86.57], [-78.01, 84.57], [-77.46, 83.36], [-76.62, 80.61]], [[-81.15, 93.14], [-81.81, 94.01], [-82.57, 94.7], [-83.36, 95.21], [-84.39, 95.66], [-85.45, 95.82], [-86.95, 95.28], [-85.53, 95.38], [-83.98, 95.02], [-82.48, 94.28]], [[-97.08, 87.46], [-97.7, 86.97], [-96.21, 88.15]], [[-100.78, 84.63], [-102.51, 83.37], [-103.89, 82.39], [-105.27, 81.44], [-106.55, 80.54], [-107.71, 79.7], [-108.76, 78.92], [-110.53, 77.53], [-112.34, 75.88], [-114.75, 73.24], [-117.28, 70.02], [-118.85, 67.46], [-119.85, 66.06], [-123.17, 59.97], [-125.5, 56.03], [-127.57, 51.91], [-130.22, 46.01], [-132.53, 40.47], [-133.51, 37.63], [-135.49, 28.89], [-136.05, 24.99], [-136.5, 20.31], [-135.55, 27.68], [-134.52, 32.93], [-133.18, 37.42], [-131.26, 42.88], [-129.81, 46.41], [-123.93, 58.17], [-121.01, 63.07], [-118.1, 68.34], [-115.98, 71.53], [-114.16, 73.85], [-112.28, 75.88], [-109.4, 78.4], [-106.63, 80.48], [-102.7, 83.22], [-101.35, 84.2]]]}], "teal": [{"ext": [[61.98, 52.38], [61.75, 58.16], [61.89, 63.86], [62.04, 66.04], [62.31, 67.05], [62.78, 67.52], [63.41, 67.8], [69.7, 67.78], [71.29, 67.95], [71.8, 68.15], [72.55, 69.45], [73.36, 71.22], [76.33, 78.72], [77.78, 83.16], [78.37, 84.47], [78.83, 86.95], [79.51, 89.41], [80.58, 91.84], [81.21, 92.7], [82.03, 93.44], [83.22, 94.1], [85.14, 94.87], [85.76, 95.01], [86.29, 94.94], [87.98, 94.07], [90.23, 92.16], [93.04, 90.03], [96.2, 87.14], [97.7, 86.16], [100.59, 83.83], [109.26, 77.58], [113.25, 73.92], [117.19, 68.25], [119.61, 63.86], [121.57, 60.68], [123.2, 57.76], [127.31, 49.72], [130.21, 43.29], [132.22, 37.8], [133.85, 32.14], [134.75, 27.44], [135.58, 20.77], [136.1, 17.94], [136.2, 15.3], [136.53, 12.46], [136.62, 10.43], [136.62, 5.58], [136.43, 3.97], [136.06, 3.67], [135.56, 3.6], [134.92, 3.73], [134.35, 4.1], [126.43, 11.13], [123.0, 13.83], [119.44, 16.38], [115.0, 19.01], [112.74, 20.06], [110.87, 20.72], [108.53, 21.02], [106.17, 20.97], [103.79, 20.64], [101.38, 19.99], [99.49, 19.27], [96.86, 18.0], [94.31, 16.46], [90.58, 13.84], [89.49, 13.39], [88.84, 13.47], [88.26, 13.8], [85.33, 17.62], [83.55, 19.49], [81.48, 21.4], [79.58, 22.67], [78.09, 23.33], [76.86, 23.72], [75.65, 23.93], [74.44, 23.99], [72.02, 23.69], [70.55, 23.17], [69.07, 22.47], [65.13, 19.98], [64.46, 19.77], [63.93, 19.91], [63.62, 20.36], [63.63, 21.08], [65.53, 25.9], [66.51, 29.68], [66.81, 32.47], [66.83, 35.98], [66.46, 38.97], [65.69, 41.95], [64.74, 44.6], [63.01, 48.38], [62.27, 50.58]], "holes": []}, {"ext": [[40.52, 58.32], [42.18, 57.72], [43.39, 57.6], [43.53, 57.14], [43.55, 51.23], [43.32, 49.6], [42.74, 48.14], [42.62, 47.39], [42.74, 46.52], [43.17, 46.13], [37.79, 43.31], [35.38, 43.0], [33.38, 42.41], [29.84, 41.72], [27.87, 41.91], [26.12, 42.34], [24.98, 42.94], [23.94, 43.81], [23.4, 44.58], [22.91, 45.86], [22.68, 47.01], [22.71, 47.95], [23.01, 49.05], [23.8, 50.67], [24.22, 51.93], [25.43, 53.45], [25.73, 53.63], [26.35, 53.7], [27.28, 53.67], [27.69, 53.53], [28.44, 52.8], [29.36, 50.9], [30.29, 49.78], [31.37, 48.92], [32.34, 48.92], [33.52, 49.67], [34.71, 50.94], [35.44, 53.51], [35.8, 55.74], [36.48, 56.91], [37.23, 57.63], [38.09, 58.11], [39.26, 58.37]], "holes": []}, {"ext": [[-39.13, 58.37], [-38.51, 58.25], [-37.99, 57.93], [-37.02, 57.13], [-36.33, 56.36], [-36.02, 55.62], [-35.5, 52.87], [-34.78, 50.85], [-34.04, 49.81], [-32.81, 49.0], [-32.24, 48.86], [-31.72, 48.92], [-30.74, 49.59], [-29.61, 50.9], [-28.59, 52.93], [-27.87, 53.57], [-27.12, 53.7], [-26.07, 53.65], [-25.19, 53.03], [-24.65, 52.3], [-24.07, 50.72], [-23.4, 49.4], [-22.93, 47.76], [-22.95, 46.81], [-23.24, 45.59], [-23.65, 44.58], [-24.19, 43.81], [-25.23, 42.94], [-26.36, 42.34], [-28.12, 41.91], [-30.08, 41.72], [-33.63, 42.41], [-35.62, 43.0], [-38.04, 43.31], [-43.42, 46.13], [-42.98, 46.52], [-42.87, 47.39], [-42.98, 48.13], [-43.54, 49.57], [-43.8, 51.23], [-43.83, 56.22], [-43.64, 57.6], [-42.41, 57.72], [-40.54, 58.32]], "holes": []}, {"ext": [[-83.82, 94.32], [-82.55, 93.6], [-81.71, 92.86], [-80.96, 91.88], [-80.3, 90.64], [-79.46, 88.28], [-78.66, 84.64], [-77.93, 82.89], [-76.58, 78.72], [-73.6, 71.22], [-72.8, 69.45], [-72.05, 68.15], [-71.53, 67.95], [-69.95, 67.78], [-63.66, 67.8], [-62.9, 67.43], [-62.41, 66.76], [-62.22, 65.09], [-62.13, 58.89], [-61.99, 57.36], [-62.07, 54.39], [-62.31, 51.71], [-62.91, 49.29], [-64.99, 44.6], [-66.16, 41.22], [-66.84, 38.22], [-67.1, 35.23], [-67.02, 31.9], [-66.68, 29.26], [-65.61, 25.39], [-63.96, 21.38], [-63.82, 20.7], [-63.94, 20.18], [-64.45, 19.79], [-64.84, 19.78], [-65.34, 19.96], [-69.32, 22.47], [-70.8, 23.17], [-72.26, 23.69], [-73.55, 23.92], [-75.1, 23.99], [-77.52, 23.69], [-78.74, 23.22], [-79.84, 22.62], [-82.4, 20.78], [-85.55, 17.65], [-88.31, 14.0], [-89.01, 13.51], [-89.74, 13.39], [-90.82, 13.84], [-94.56, 16.46], [-97.11, 18.0], [-99.73, 19.27], [-101.62, 19.99], [-104.03, 20.64], [-106.42, 20.97], [-108.77, 21.02], [-111.11, 20.72], [-112.98, 20.06], [-115.25, 19.01], [-119.68, 16.38], [-123.25, 13.83], [-126.67, 11.13], [-134.57, 4.12], [-135.43, 3.66], [-136.02, 3.6], [-136.41, 3.73], [-136.71, 4.02], [-136.81, 4.42], [-136.89, 8.74], [-136.81, 11.86], [-136.44, 15.3], [-136.35, 17.94], [-135.83, 20.77], [-135.07, 26.91], [-133.58, 34.13], [-131.19, 41.37], [-128.78, 47.2], [-123.8, 57.16], [-120.17, 63.33], [-118.39, 66.72], [-116.05, 70.39], [-113.72, 73.45], [-111.87, 75.44], [-109.02, 77.93], [-100.99, 83.72], [-98.69, 85.61], [-96.59, 87.03], [-93.28, 90.03], [-88.16, 94.08], [-87.32, 94.54], [-86.32, 94.78], [-85.24, 94.74]], "holes": []}], "white": [{"ext": [[42.49, 75.38], [43.22, 75.2], [44.38, 74.11], [45.49, 72.59], [46.25, 71.14], [46.43, 70.34], [47.51, 67.8], [48.07, 65.39], [48.43, 64.39], [48.8, 61.58], [48.99, 60.98], [49.23, 58.5], [49.23, 52.61], [48.99, 49.91], [48.73, 49.08], [48.09, 48.19], [47.33, 47.57], [45.74, 46.96], [44.28, 46.22], [43.67, 46.07], [42.9, 46.29], [42.63, 47.04], [42.7, 48.02], [43.3, 49.52], [43.53, 51.01], [43.61, 54.46], [43.57, 56.62], [43.34, 58.88], [43.1, 59.7], [42.85, 61.42], [42.64, 61.97], [42.58, 62.77], [41.52, 65.66], [40.6, 67.45], [40.33, 68.27], [39.52, 69.57], [38.0, 71.46], [37.69, 72.23], [37.92, 73.1], [38.7, 73.86], [41.04, 75.2], [41.68, 75.37]], "holes": []}, {"ext": [[38.03, 68.24], [39.27, 67.09], [39.8, 65.94], [39.87, 63.28], [39.43, 62.07], [38.08, 60.34], [37.36, 59.94], [35.32, 59.94], [33.44, 60.71], [33.09, 61.06], [32.6, 62.07], [32.29, 63.6], [32.33, 65.23], [32.94, 67.07], [33.46, 67.7], [34.15, 68.24], [35.82, 68.95], [36.66, 68.87]], "holes": []}, {"ext": [[23.78, 19.93], [24.28, 19.82], [24.39, 19.15], [24.16, 18.51], [23.74, 17.86], [23.21, 17.21], [22.61, 16.78], [22.23, 16.77], [21.68, 17.04], [21.1, 17.6], [20.75, 18.22], [20.71, 18.82], [20.93, 19.33], [21.4, 19.71], [21.97, 19.89]], "holes": []}, {"ext": [[-22.46, 19.92], [-21.81, 19.78], [-21.37, 19.54], [-21.03, 19.09], [-20.94, 18.52], [-21.13, 17.91], [-21.63, 17.29], [-22.21, 16.87], [-22.73, 16.75], [-23.4, 17.1], [-24.39, 18.28], [-24.6, 18.74], [-24.62, 19.49], [-24.53, 19.82], [-24.33, 19.9]], "holes": []}, {"ext": [[-34.44, 68.24], [-33.71, 67.7], [-33.18, 67.07], [-32.6, 65.33], [-32.53, 63.6], [-32.84, 62.07], [-33.54, 60.82], [-35.27, 60.03], [-36.72, 59.87], [-37.88, 60.1], [-38.54, 60.55], [-39.23, 61.32], [-39.82, 62.27], [-40.08, 63.03], [-40.13, 65.2], [-39.88, 66.47], [-39.4, 67.24], [-38.65, 67.99], [-37.79, 68.57], [-36.98, 68.91], [-36.15, 68.91]], "holes": []}, {"ext": [[-41.69, 75.3], [-41.26, 75.22], [-38.63, 73.6], [-38.09, 72.96], [-37.94, 72.23], [-38.25, 71.46], [-39.76, 69.57], [-40.57, 68.27], [-40.77, 67.62], [-42.3, 64.37], [-42.82, 62.76], [-43.58, 58.88], [-43.81, 56.62], [-43.85, 54.46], [-43.77, 51.01], [-43.54, 49.57], [-42.94, 47.95], [-42.88, 47.04], [-43.14, 46.29], [-43.91, 46.07], [-44.52, 46.22], [-45.99, 46.96], [-47.57, 47.57], [-48.34, 48.19], [-48.98, 49.08], [-49.23, 49.91], [-49.48, 52.61], [-49.46, 58.85], [-48.68, 64.39], [-48.32, 65.39], [-47.76, 67.8], [-46.76, 70.14], [-46.38, 71.36], [-45.22, 73.2], [-44.04, 74.71], [-43.13, 75.15]], "holes": []}], "black": [{"ext": [[-82.88, 94.52], [-81.89, 93.85], [-81.22, 93.22], [-80.43, 92.15], [-79.75, 90.88], [-78.88, 88.43], [-78.08, 84.81], [-77.37, 83.09], [-76.35, 79.84], [-73.53, 72.58], [-72.26, 69.71], [-71.63, 68.6], [-69.92, 68.38], [-63.87, 68.42], [-62.82, 68.1], [-62.56, 74.84], [-62.35, 76.17], [-62.29, 77.7], [-62.08, 78.47], [-61.46, 82.67], [-60.34, 87.52], [-59.24, 91.01], [-58.27, 93.47], [-55.01, 100.46], [-54.2, 102.53], [-54.55, 103.61], [-55.92, 105.77], [-56.54, 107.03], [-56.83, 108.21], [-56.95, 109.56], [-57.12, 109.98], [-57.2, 111.26], [-57.38, 111.81], [-57.36, 112.92], [-56.96, 113.87], [-56.91, 114.32], [-57.12, 114.93], [-57.18, 116.28], [-57.43, 117.62], [-58.15, 125.41], [-58.59, 127.26], [-58.83, 129.16], [-59.14, 136.03], [-59.34, 137.17], [-59.56, 140.55], [-59.27, 145.32], [-58.61, 147.62], [-58.24, 148.5], [-57.43, 150.01], [-56.57, 151.07], [-55.51, 151.99], [-53.88, 152.94], [-52.63, 153.37], [-50.77, 153.63], [-48.56, 153.37], [-47.56, 152.95], [-46.46, 152.24], [-45.35, 151.28], [-44.2, 150.02], [-43.54, 148.43], [-41.77, 145.22], [-40.62, 142.29], [-38.87, 138.87], [-37.1, 134.25], [-35.77, 131.74], [-34.82, 129.45], [-33.12, 126.35], [-32.35, 124.01], [-31.81, 120.78], [-31.03, 119.6], [-30.22, 117.95], [-29.59, 116.98], [-28.79, 116.14], [-27.63, 115.41], [-26.54, 114.96], [-25.36, 114.67], [-24.11, 114.56], [-22.62, 114.61], [-19.62, 115.33], [-17.52, 116.27], [-14.35, 117.19], [-11.9, 117.55], [-11.46, 117.72], [-9.87, 117.83], [-7.81, 118.26], [-3.98, 118.47], [3.73, 118.47], [7.57, 118.26], [9.62, 117.83], [11.09, 117.74], [11.75, 117.54], [13.16, 117.4], [16.74, 116.45], [19.56, 115.28], [20.76, 115.04], [21.86, 114.67], [23.87, 114.56], [25.36, 114.67], [26.24, 114.88], [28.1, 115.84], [29.33, 117.15], [30.6, 119.16], [31.71, 121.68], [32.2, 124.39], [32.89, 126.37], [35.08, 130.47], [35.6, 131.89], [37.05, 134.67], [38.4, 138.36], [40.19, 141.92], [41.39, 144.94], [42.88, 147.6], [43.69, 149.3], [43.92, 150.05], [44.27, 150.59], [45.24, 151.56], [46.28, 152.33], [47.6, 153.08], [48.5, 153.41], [49.47, 153.59], [50.85, 153.62], [52.29, 153.41], [53.4, 153.06], [54.88, 152.28], [56.29, 151.16], [57.12, 150.19], [57.91, 148.77], [58.38, 147.61], [59.02, 145.32], [59.31, 140.55], [59.09, 137.17], [58.9, 136.03], [58.59, 129.16], [58.34, 127.26], [57.9, 125.41], [57.19, 117.62], [56.93, 116.28], [56.87, 114.93], [56.67, 114.32], [57.06, 112.9], [56.93, 110.36], [56.3, 107.03], [55.67, 105.77], [54.3, 103.61], [53.95, 102.53], [54.76, 100.46], [58.02, 93.47], [58.99, 91.01], [60.1, 87.52], [61.21, 82.67], [61.83, 78.47], [62.05, 77.7], [62.11, 76.17], [62.31, 74.84], [62.58, 68.1], [63.62, 68.42], [69.68, 68.38], [71.38, 68.6], [72.01, 69.71], [73.28, 72.58], [76.11, 79.84], [77.12, 83.09], [77.8, 84.65], [78.56, 88.33], [79.2, 90.33], [79.75, 91.59], [80.58, 92.89], [81.64, 93.9], [83.31, 94.8], [85.4, 95.55], [86.08, 95.6], [86.67, 95.45], [88.55, 94.4], [90.31, 92.86], [93.83, 90.15], [96.57, 87.61], [98.06, 86.64], [100.95, 84.31], [107.29, 79.84], [110.3, 77.51], [113.93, 74.05], [117.95, 68.15], [120.13, 64.15], [123.1, 59.2], [126.98, 51.76], [130.12, 45.05], [131.88, 40.64], [133.55, 35.57], [134.66, 31.29], [135.34, 27.53], [136.25, 20.34], [136.66, 18.34], [137.22, 10.46], [137.22, 5.57], [137.04, 3.86], [136.74, 3.41], [136.29, 3.12], [135.69, 3.0], [134.94, 3.1], [135.51, 6.38], [135.68, 8.22], [135.62, 13.16], [135.29, 15.4], [134.94, 21.13], [134.31, 26.82], [133.67, 30.42], [132.06, 37.27], [131.12, 40.02], [129.93, 42.94], [125.62, 52.58], [124.17, 55.42], [121.83, 59.36], [119.07, 64.51], [116.52, 68.55], [114.91, 70.75], [112.62, 73.5], [110.17, 75.98], [106.73, 78.69], [97.42, 85.41], [87.49, 93.41], [86.34, 94.13], [85.0, 94.49], [84.35, 94.4], [83.7, 94.11], [83.0, 93.67], [82.53, 93.19], [81.53, 91.7], [80.25, 88.6], [83.14, 73.28], [85.85, 57.52], [88.35, 41.46], [90.64, 25.1], [92.03, 14.15], [90.19, 13.01], [89.67, 12.86], [87.42, 30.25], [84.66, 49.15], [81.61, 67.63], [78.64, 83.82], [76.84, 78.27], [74.84, 72.76], [72.98, 68.52], [71.97, 66.76], [71.09, 66.15], [69.19, 65.81], [64.42, 65.82], [62.75, 66.13], [63.02, 64.29], [63.06, 61.78], [62.95, 60.11], [62.62, 58.07], [62.58, 56.21], [63.02, 52.98], [63.18, 50.23], [63.72, 48.59], [65.97, 43.74], [67.04, 40.16], [67.71, 36.22], [67.73, 33.94], [66.98, 28.41], [66.39, 26.1], [65.72, 24.31], [64.84, 22.48], [63.35, 19.92], [61.48, 17.12], [59.95, 15.1], [58.98, 14.08], [57.62, 13.04], [55.27, 11.77], [51.28, 9.35], [50.03, 8.82], [48.97, 8.13], [45.03, 6.06], [35.3, 1.7], [27.44, -1.21], [21.19, -3.02], [18.47, -3.52], [16.34, -4.2], [13.37, -4.67], [12.71, -4.89], [11.54, -4.95], [10.99, -5.14], [9.82, -5.2], [8.96, -5.4], [5.39, -5.65], [4.37, -5.83], [0.45, -5.91], [-4.62, -5.83], [-5.64, -5.65], [-9.21, -5.4], [-10.06, -5.2], [-11.23, -5.14], [-11.79, -4.95], [-12.96, -4.89], [-13.61, -4.67], [-16.58, -4.2], [-18.72, -3.52], [-21.43, -3.02], [-28.05, -1.13], [-31.3, 0.19], [-32.52, 0.55], [-33.33, 0.95], [-35.24, 1.55], [-36.43, 2.15], [-38.6, 2.97], [-41.73, 4.53], [-44.04, 5.44], [-48.77, 7.88], [-50.27, 8.82], [-51.53, 9.35], [-56.02, 12.06], [-58.9, 13.6], [-59.79, 14.21], [-64.2, 20.84], [-65.44, 22.97], [-65.98, 24.16], [-66.65, 26.13], [-67.23, 28.41], [-67.97, 33.94], [-67.96, 36.22], [-67.28, 40.16], [-66.39, 43.21], [-63.99, 48.52], [-63.43, 50.23], [-63.27, 52.98], [-62.83, 56.21], [-62.87, 58.07], [-63.2, 60.11], [-63.31, 61.78], [-63.27, 64.29], [-63.0, 66.13], [-64.66, 65.82], [-69.43, 65.81], [-71.33, 66.15], [-72.22, 66.76], [-73.23, 68.52], [-75.09, 72.76], [-76.55, 76.71], [-78.73, 83.34], [-81.61, 67.63], [-84.66, 49.15], [-87.42, 30.25], [-89.67, 12.84], [-90.43, 13.01], [-92.05, 13.99], [-90.27, 27.85], [-87.95, 44.16], [-85.85, 57.52], [-83.14, 73.28], [-80.34, 88.18], [-81.45, 91.13], [-82.42, 92.78], [-83.03, 93.47], [-83.63, 93.92], [-85.23, 94.59], [-86.68, 94.03], [-88.27, 92.96], [-97.67, 85.41], [-106.97, 78.69], [-110.42, 75.98], [-112.87, 73.5], [-115.16, 70.75], [-116.77, 68.55], [-119.31, 64.51], [-122.08, 59.36], [-124.41, 55.42], [-126.44, 51.38], [-130.63, 41.84], [-132.41, 36.93], [-133.92, 30.42], [-134.56, 26.82], [-135.19, 21.13], [-135.54, 15.4], [-135.9, 12.74], [-135.97, 9.61], [-135.89, 7.57], [-135.19, 3.1], [-136.09, 3.01], [-136.7, 3.2], [-137.1, 3.54], [-137.33, 3.98], [-137.48, 6.19], [-137.44, 11.21], [-137.04, 15.34], [-136.95, 17.96], [-136.42, 20.86], [-135.66, 27.01], [-134.16, 34.29], [-131.75, 41.58], [-129.32, 47.45], [-124.33, 57.44], [-120.69, 63.62], [-118.9, 67.04], [-117.11, 69.88], [-115.37, 72.35], [-113.54, 74.56], [-111.64, 76.49], [-107.61, 79.77], [-101.97, 83.75], [-99.3, 85.9], [-96.97, 87.5], [-93.67, 90.49], [-90.56, 92.86], [-89.01, 94.22], [-87.53, 95.1], [-86.05, 95.4], [-84.37, 95.15]], "holes": [[[-55.99, 147.45], [-56.19, 146.51], [-56.37, 143.97], [-56.34, 135.11], [-55.69, 129.81], [-55.45, 128.67], [-55.2, 124.91], [-54.96, 123.67], [-54.89, 122.3], [-54.49, 120.4], [-54.41, 119.09], [-54.24, 118.6], [-53.92, 114.71], [-53.72, 114.12], [-53.37, 111.73], [-52.79, 109.68], [-52.08, 106.16], [-51.72, 105.51], [-51.18, 104.89], [-49.71, 103.95], [-49.52, 103.41], [-49.92, 102.33], [-51.16, 100.05], [-52.21, 97.45], [-54.37, 93.21], [-55.12, 90.98], [-56.06, 88.72], [-57.33, 83.52], [-57.89, 80.13], [-58.1, 79.48], [-58.22, 78.01], [-58.56, 76.67], [-58.66, 74.93], [-58.82, 74.15], [-59.13, 63.08], [-59.09, 58.31], [-58.88, 56.6], [-59.11, 55.46], [-59.48, 50.35], [-59.83, 49.03], [-61.43, 45.8], [-63.61, 40.32], [-64.15, 37.86], [-64.3, 35.03], [-64.22, 31.31], [-63.64, 28.23], [-62.63, 25.18], [-61.75, 23.22], [-60.51, 21.13], [-56.09, 14.73], [-55.15, 13.87], [-54.06, 13.42], [-51.89, 12.15], [-49.95, 11.48], [-47.61, 10.31], [-46.01, 9.75], [-42.81, 8.25], [-38.17, 6.58], [-35.05, 5.27], [-33.26, 4.8], [-31.0, 4.0], [-27.5, 3.11], [-25.58, 2.39], [-19.31, 1.06], [-18.35, 0.76], [-13.07, 0.01], [-10.29, -0.58], [-1.0, -1.15], [6.17, -0.89], [9.9, -0.59], [12.82, 0.01], [18.1, 0.76], [19.06, 1.06], [24.85, 2.26], [27.25, 3.11], [30.76, 4.0], [33.01, 4.8], [34.81, 5.27], [37.92, 6.58], [42.56, 8.25], [45.76, 9.75], [47.36, 10.31], [49.7, 11.48], [51.46, 12.06], [55.18, 14.07], [56.42, 15.48], [59.34, 19.71], [61.26, 22.79], [62.21, 24.77], [63.02, 26.96], [63.56, 28.98], [64.0, 31.54], [64.05, 35.03], [63.97, 37.92], [63.58, 39.62], [61.57, 44.88], [59.59, 49.03], [59.17, 50.57], [59.1, 51.78], [58.92, 52.54], [58.84, 55.62], [58.63, 56.6], [58.8, 57.59], [58.82, 60.04], [58.56, 74.22], [58.31, 76.67], [57.97, 78.01], [57.86, 79.48], [57.64, 80.13], [57.09, 83.52], [55.82, 88.72], [54.88, 90.98], [54.1, 93.25], [52.39, 96.62], [51.05, 99.83], [49.47, 102.76], [49.27, 103.41], [49.47, 103.95], [50.54, 104.57], [51.28, 105.26], [51.71, 105.88], [51.95, 106.58], [52.49, 109.46], [53.41, 113.21], [53.72, 115.19], [53.97, 118.39], [54.46, 121.2], [54.71, 123.66], [54.9, 124.31], [54.96, 125.85], [55.16, 126.79], [55.23, 128.83], [55.62, 130.92], [56.09, 135.11], [56.17, 141.52], [56.08, 144.96], [55.85, 147.05], [55.62, 147.7], [54.89, 148.81], [53.8, 149.87], [52.67, 150.53], [51.28, 150.76], [49.64, 150.73], [48.84, 150.56], [48.26, 150.15], [47.18, 149.04], [46.44, 148.02], [44.41, 144.15], [43.75, 143.17], [42.71, 140.04], [41.45, 137.46], [40.79, 135.69], [39.09, 132.42], [37.39, 128.01], [35.64, 124.95], [33.72, 121.0], [33.21, 119.31], [32.32, 117.19], [32.32, 115.99], [32.72, 115.01], [32.71, 114.55], [31.9, 114.29], [29.3, 114.01], [28.05, 113.58], [26.01, 113.2], [24.31, 112.47], [22.53, 111.93], [19.66, 110.44], [18.97, 110.21], [18.83, 110.31], [18.9, 110.55], [19.68, 111.73], [19.86, 112.59], [19.63, 113.27], [18.9, 113.88], [17.16, 114.61], [13.13, 115.59], [11.34, 116.21], [8.78, 116.73], [6.58, 117.01], [1.72, 117.25], [0.3, 117.45], [-1.88, 117.41], [-7.22, 116.98], [-11.59, 116.21], [-13.38, 115.59], [-17.4, 114.61], [-19.68, 113.6], [-20.06, 112.9], [-20.12, 112.12], [-19.9, 111.6], [-19.06, 110.41], [-19.03, 110.07], [-22.77, 111.93], [-24.56, 112.47], [-26.26, 113.2], [-28.3, 113.58], [-29.55, 114.01], [-32.15, 114.29], [-32.84, 114.47], [-33.01, 114.64], [-33.01, 114.82], [-32.57, 115.99], [-32.57, 117.19], [-33.45, 119.31], [-33.97, 121.0], [-35.88, 124.95], [-37.64, 128.01], [-39.3, 132.34], [-40.85, 135.32], [-41.66, 137.38], [-42.95, 140.04], [-43.99, 143.17], [-44.66, 144.15], [-46.19, 147.19], [-46.93, 148.39], [-47.9, 149.56], [-48.96, 150.5], [-49.89, 150.73], [-51.55, 150.74], [-52.66, 150.43], [-53.77, 149.8], [-55.31, 148.46]]]}, {"ext": [[-50.47, 28.84], [-48.06, 27.07], [-46.76, 26.33], [-44.98, 25.61], [-43.39, 25.23], [-38.86, 24.83], [-36.32, 24.47], [-29.97, 24.35], [-28.67, 24.17], [-26.58, 24.11], [-22.35, 23.34], [-21.18, 22.93], [-19.62, 22.07], [-17.68, 21.28], [-15.48, 20.15], [-13.41, 18.87], [-11.51, 18.12], [-10.05, 17.3], [-8.88, 16.92], [-6.85, 15.84], [-3.43, 14.77], [-1.86, 14.58], [0.26, 14.54], [3.19, 14.77], [6.61, 15.84], [8.63, 16.92], [9.8, 17.3], [11.26, 18.12], [12.95, 18.76], [15.47, 20.22], [21.84, 23.3], [26.33, 24.11], [28.42, 24.17], [29.73, 24.35], [36.08, 24.47], [43.7, 25.34], [45.69, 25.96], [47.53, 26.88], [50.07, 28.71], [52.36, 30.76], [52.67, 30.73], [52.87, 30.27], [52.67, 29.69], [51.28, 27.3], [50.03, 25.75], [48.33, 24.59], [45.94, 23.53], [43.79, 22.88], [43.09, 22.78], [32.85, 22.58], [31.57, 22.35], [30.24, 21.75], [27.92, 21.1], [27.49, 20.81], [27.04, 20.22], [25.59, 16.94], [25.09, 16.06], [24.34, 15.27], [23.65, 14.92], [22.51, 14.78], [21.52, 14.99], [20.42, 15.51], [17.8, 17.21], [17.28, 17.41], [16.55, 17.49], [15.55, 17.2], [13.85, 16.34], [12.87, 15.98], [11.61, 15.25], [9.61, 14.44], [7.0, 14.03], [2.69, 13.82], [-4.56, 13.87], [-9.17, 14.28], [-11.19, 14.96], [-15.8, 17.2], [-16.8, 17.49], [-17.53, 17.41], [-18.05, 17.21], [-20.67, 15.51], [-21.76, 14.99], [-22.76, 14.78], [-23.9, 14.92], [-24.59, 15.27], [-25.33, 16.06], [-25.84, 16.94], [-27.28, 20.22], [-27.74, 20.81], [-28.17, 21.1], [-30.49, 21.75], [-31.82, 22.35], [-33.1, 22.58], [-43.34, 22.78], [-44.04, 22.88], [-46.69, 23.68], [-48.73, 24.58], [-50.22, 25.69], [-51.25, 26.97], [-52.4, 28.77], [-53.04, 30.04], [-53.04, 30.55], [-52.73, 30.7], [-52.31, 30.51]], "holes": [[[20.69, 18.52], [20.89, 17.91], [21.39, 17.29], [22.1, 16.81], [22.61, 16.78], [23.21, 17.21], [24.11, 18.42], [24.37, 19.02], [24.33, 19.72], [24.11, 19.99], [23.71, 20.16], [23.07, 20.2], [22.49, 20.09], [21.13, 19.54], [20.79, 19.09]], [[-20.94, 18.68], [-21.26, 19.44], [-22.34, 20.09], [-23.96, 20.16], [-24.36, 19.99], [-24.6, 19.66], [-24.62, 18.93], [-24.45, 18.37], [-23.55, 17.24], [-22.85, 16.78], [-22.35, 16.81], [-21.63, 17.29], [-21.13, 17.91]]]}, {"ext": [[46.46, 78.21], [46.55, 77.75], [45.73, 76.68], [45.59, 76.31], [45.62, 75.9], [48.0, 71.78], [48.88, 69.75], [49.78, 66.68], [50.62, 64.58], [51.41, 59.95], [51.67, 57.06], [51.51, 52.43], [51.17, 49.81], [50.51, 48.23], [49.89, 47.43], [48.79, 46.49], [47.76, 45.86], [45.94, 45.05], [41.26, 43.53], [37.45, 43.01], [34.6, 41.96], [31.21, 41.65], [26.92, 41.68], [25.01, 41.85], [23.77, 42.39], [22.57, 43.52], [22.23, 44.21], [22.02, 45.05], [21.95, 47.86], [22.29, 50.32], [22.87, 52.44], [23.54, 54.04], [23.74, 55.01], [24.48, 56.67], [24.98, 58.27], [27.15, 62.99], [28.68, 65.8], [30.17, 67.73], [33.07, 70.6], [34.61, 72.66], [36.09, 74.04], [37.62, 74.92], [39.51, 76.28], [41.07, 77.1], [44.26, 78.25], [45.59, 78.34]], "holes": [[[43.61, 54.5], [42.93, 54.48], [42.56, 54.75], [41.45, 56.56], [40.79, 57.17], [39.79, 57.4], [38.4, 57.26], [37.49, 56.33], [37.03, 55.55], [36.02, 51.88], [35.09, 49.83], [34.46, 49.09], [33.78, 48.56], [33.01, 48.21], [32.32, 48.08], [30.85, 48.06], [30.2, 48.23], [28.72, 49.74], [27.38, 52.2], [26.76, 52.64], [26.1, 52.54], [25.45, 52.06], [25.13, 51.55], [24.44, 49.93], [24.09, 48.78], [23.91, 46.69], [24.01, 45.66], [24.24, 44.98], [24.62, 44.37], [25.03, 43.99], [26.41, 43.26], [28.84, 42.8], [30.81, 42.93], [34.2, 43.66], [36.47, 43.9], [37.25, 44.11], [38.7, 44.74], [40.9, 45.94], [42.62, 46.6], [43.22, 46.12], [44.11, 46.16], [47.33, 47.57], [48.09, 48.19], [48.63, 48.88], [48.97, 49.8], [49.05, 51.45], [49.22, 52.26], [49.26, 57.46], [49.0, 60.85], [48.8, 61.58], [48.43, 64.39], [48.07, 65.39], [47.4, 68.13], [46.43, 70.34], [46.18, 71.31], [45.67, 72.28], [44.56, 73.89], [43.42, 75.04], [42.9, 75.33], [41.9, 75.39], [40.82, 75.1], [38.59, 73.78], [37.92, 73.1], [37.69, 72.23], [38.0, 71.46], [39.52, 69.57], [40.33, 68.27], [40.6, 67.45], [41.52, 65.66], [42.56, 62.83], [42.64, 61.97], [42.85, 61.42], [43.1, 59.7], [43.34, 58.88], [43.58, 56.22]], [[37.43, 68.57], [36.05, 68.98], [35.17, 68.74], [34.15, 68.24], [33.46, 67.7], [32.94, 67.07], [32.35, 65.33], [32.34, 63.05], [32.52, 62.3], [32.94, 61.32], [33.44, 60.71], [35.16, 59.98], [36.73, 59.87], [37.77, 60.08], [39.18, 61.69], [39.6, 62.35], [39.83, 63.03], [39.89, 65.2], [39.63, 66.47], [38.73, 67.7]]]}, {"ext": [[24.19, 75.98], [21.39, 70.19], [20.37, 66.86], [19.82, 66.04], [19.15, 65.86], [18.99, 66.35], [19.01, 68.07], [19.19, 68.66], [19.33, 70.07], [19.72, 71.27], [21.23, 74.22], [22.47, 76.18], [23.53, 77.34], [24.67, 78.1], [24.69, 77.52]], "holes": []}, {"ext": [[4.82, 46.92], [7.72, 46.51], [10.72, 45.73], [12.7, 45.46], [14.29, 45.04], [16.85, 44.04], [17.62, 43.38], [17.72, 42.92], [17.41, 42.66], [16.47, 42.67], [14.2, 43.59], [10.87, 44.31], [8.59, 44.38], [7.96, 44.55], [6.24, 44.62], [5.36, 44.8], [2.53, 44.86], [1.42, 45.05], [0.11, 45.08], [-5.6, 44.8], [-6.48, 44.62], [-8.21, 44.55], [-8.84, 44.38], [-11.12, 44.31], [-14.44, 43.59], [-16.71, 42.67], [-17.66, 42.66], [-17.85, 42.73], [-17.97, 42.97], [-17.92, 43.35], [-17.45, 43.87], [-15.41, 44.76], [-13.71, 45.16], [-12.83, 45.5], [-11.26, 45.67], [-7.36, 46.63], [-5.34, 46.89], [-2.29, 47.03], [2.61, 47.04]], "holes": []}, {"ext": [[16.29, 33.58], [16.15, 33.17], [15.79, 32.77], [13.9, 31.34], [12.71, 30.72], [12.26, 30.69], [12.04, 30.83], [11.96, 31.37], [12.33, 32.38], [12.75, 32.95], [13.49, 33.57], [14.14, 33.88], [15.04, 34.0], [15.79, 33.93]], "holes": []}, {"ext": [[-14.1, 33.78], [-13.24, 33.19], [-12.58, 32.38], [-12.22, 31.37], [-12.27, 31.0], [-12.49, 30.76], [-13.36, 31.02], [-14.54, 31.73], [-16.09, 32.91], [-16.53, 33.46], [-16.39, 33.76], [-15.88, 33.96], [-14.89, 33.98]], "holes": []}, {"ext": [[-22.11, 75.29], [-19.97, 71.27], [-19.58, 70.07], [-19.22, 67.52], [-19.25, 66.2], [-19.44, 65.85], [-20.06, 66.04], [-20.62, 66.86], [-21.89, 70.83], [-24.81, 76.85], [-25.13, 77.68], [-25.06, 77.96], [-24.81, 77.99], [-24.48, 77.84], [-23.19, 76.78]], "holes": []}, {"ext": [[-43.99, 78.11], [-40.35, 76.63], [-38.99, 75.8], [-37.87, 74.92], [-36.34, 74.04], [-35.6, 73.44], [-34.28, 71.97], [-33.51, 70.81], [-31.05, 68.41], [-29.55, 66.72], [-27.82, 63.81], [-25.46, 58.81], [-24.73, 56.67], [-24.05, 55.18], [-23.83, 54.18], [-22.74, 51.2], [-22.25, 48.55], [-22.17, 46.04], [-22.48, 44.21], [-23.04, 43.24], [-23.77, 42.57], [-24.51, 42.11], [-25.25, 41.85], [-27.16, 41.68], [-33.04, 41.73], [-35.29, 42.07], [-37.92, 43.06], [-41.56, 43.52], [-43.19, 44.15], [-46.05, 45.0], [-48.01, 45.86], [-49.89, 47.18], [-50.93, 48.53], [-51.32, 49.47], [-51.67, 51.09], [-51.78, 53.05], [-51.94, 53.82], [-51.98, 55.82], [-51.69, 59.72], [-50.87, 64.58], [-50.03, 66.68], [-49.37, 69.03], [-48.65, 70.95], [-45.86, 75.9], [-45.92, 76.56], [-46.63, 77.52], [-46.67, 78.02], [-46.24, 78.27], [-45.04, 78.33]], "holes": [[[-42.95, 46.62], [-41.15, 45.94], [-38.43, 44.49], [-37.09, 43.98], [-34.44, 43.66], [-31.06, 42.93], [-29.54, 42.79], [-28.66, 42.84], [-26.92, 43.18], [-25.4, 43.9], [-24.87, 44.37], [-24.42, 45.13], [-24.15, 46.69], [-24.26, 48.41], [-24.68, 49.93], [-25.6, 51.93], [-26.39, 52.61], [-27.02, 52.58], [-27.62, 52.2], [-28.96, 49.74], [-30.44, 48.23], [-31.1, 48.06], [-32.56, 48.08], [-33.26, 48.21], [-34.03, 48.56], [-34.71, 49.09], [-35.34, 49.83], [-36.26, 51.88], [-37.28, 55.55], [-37.74, 56.33], [-38.65, 57.26], [-40.03, 57.4], [-41.04, 57.17], [-41.7, 56.56], [-42.93, 54.63], [-43.3, 54.45], [-43.85, 54.5], [-43.8, 56.93], [-43.63, 57.65], [-43.57, 59.0], [-43.4, 59.45], [-43.28, 60.68], [-42.91, 61.88], [-42.82, 62.76], [-42.33, 64.29], [-40.77, 67.62], [-40.57, 68.27], [-39.76, 69.57], [-38.25, 71.46], [-37.94, 72.23], [-38.09, 72.96], [-38.63, 73.6], [-41.26, 75.22], [-41.69, 75.3], [-43.13, 75.15], [-44.04, 74.71], [-45.22, 73.2], [-46.47, 71.16], [-46.68, 70.34], [-47.76, 67.8], [-48.32, 65.39], [-48.73, 64.18], [-49.04, 61.58], [-49.23, 60.98], [-49.5, 58.03], [-49.46, 52.26], [-49.3, 51.45], [-49.22, 49.8], [-48.87, 48.88], [-48.34, 48.19], [-47.57, 47.57], [-45.99, 46.96], [-44.52, 46.22], [-43.68, 46.08], [-43.21, 46.23]], [[-35.11, 68.57], [-36.54, 68.98], [-37.6, 68.66], [-38.49, 68.12], [-39.13, 67.55], [-39.72, 66.78], [-40.0, 66.14], [-40.13, 65.2], [-40.15, 63.69], [-39.86, 62.38], [-38.83, 60.84], [-38.23, 60.3], [-37.68, 60.02], [-36.72, 59.87], [-35.75, 59.91], [-33.86, 60.61], [-33.34, 61.06], [-32.76, 62.3], [-32.55, 63.32], [-32.53, 64.72], [-33.01, 66.72], [-33.29, 67.23], [-33.87, 67.85]]]}], "stem": [{"ext": [[-24.0, -70.0], [-42.0, -70.0], [-42.0, -56.0], [-54.0, -56.0], [-54.0, 36.0], [54.0, 36.0], [54.0, -56.0], [42.0, -56.0], [42.0, -70.0], [24.0, -70.0], [24.0, -56.0], [-24.0, -56.0]], "holes": []}], "slot_centers": [], "badges": []};
+
+    function addCadRingLayer(grp, ringsList, zStart, depth, mat, bevel = false) {
+      if (!ringsList || !ringsList.length) return;
+      ringsList.forEach(item => {
+        if (!item.ext || item.ext.length < 3) return;
+        const sh = new THREE.Shape();
+        sh.moveTo(item.ext[0][0], item.ext[0][1]);
+        for (let i = 1; i < item.ext.length; i++) {
+          sh.lineTo(item.ext[i][0], item.ext[i][1]);
+        }
+        sh.closePath();
+        if (item.holes && item.holes.length) {
+          item.holes.forEach(hPts => {
+            if (hPts.length >= 3) {
+              const hp = new THREE.Path();
+              hp.moveTo(hPts[0][0], hPts[0][1]);
+              for (let j = 1; j < hPts.length; j++) {
+                hp.lineTo(hPts[j][0], hPts[j][1]);
+              }
+              hp.closePath();
+              sh.holes.push(hp);
+            }
+          });
+        }
+        const geom = new THREE.ExtrudeGeometry(sh, {
+          depth: depth,
+          bevelEnabled: bevel,
+          bevelThickness: bevel ? 0.25 : 0,
+          bevelSize: bevel ? 0.2 : 0,
+          bevelSegments: 2
+        });
+        const mesh = new THREE.Mesh(geom, mat);
+        mesh.position.set(0, 0, zStart);
+        grp.add(mesh);
+      });
+    }
+
+    function renderCadSvgBlueprint() {
+      const svgGrp = document.getElementById("svg-dragon-cad-group");
+      if (!svgGrp || svgGrp.childNodes.length > 0) return;
+      const layers = [
+        { rings: CAD_DATA.stem, fill: "#c084fc", stroke: "#9333ea", sw: 0.6 },
+        { rings: CAD_DATA.base_orange, fill: "#fb6913", stroke: "#1e1b18", sw: 0.4 },
+        { rings: CAD_DATA.teal, fill: "#0e9aa7", stroke: "none", sw: 0 },
+        { rings: CAD_DATA.white, fill: "#ffffff", stroke: "none", sw: 0 },
+        { rings: CAD_DATA.black, fill: "#1e1b18", stroke: "none", sw: 0 }
+      ];
+      layers.forEach(layer => {
+        if (!layer.rings) return;
+        let dStr = "";
+        layer.rings.forEach(item => {
+          if (!item.ext || item.ext.length < 3) return;
+          dStr += "M " + item.ext.map(p => p[0] + "," + p[1]).join(" L ") + " Z ";
+          if (item.holes) {
+            item.holes.forEach(h => {
+              if (h.length >= 3) {
+                dStr += "M " + h.map(p => p[0] + "," + p[1]).join(" L ") + " Z ";
+              }
+            });
+          }
+        });
+        if (dStr) {
+          const pathEl = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          pathEl.setAttribute("d", dStr);
+          pathEl.setAttribute("fill", layer.fill);
+          pathEl.setAttribute("fill-rule", "evenodd");
+          if (layer.stroke !== "none") {
+            pathEl.setAttribute("stroke", layer.stroke);
+            pathEl.setAttribute("stroke-width", String(layer.sw));
+          }
+          svgGrp.appendChild(pathEl);
+        }
+      });
+    }
+
+    function createCharizardTopperGroup() {
+      const grp = new THREE.Group();
+      renderCadSvgBlueprint();
+      // A. Tấm trụ lưng Tím Lavender liền khối (không đục lỗ theo yêu cầu khách Ali_ilA) + 2 chân ngàm cắm xuống khay trên
+      addCadRingLayer(grp, CAD_DATA.stem, -2.0, 3.6, matPegPurple, false);
+      // B. Lớp 1 (Z = 0 -> 4.0mm): Phần thân & đầu Rồng Cam (#FB6913)
+      addCadRingLayer(grp, CAD_DATA.base_orange, 0.0, 4.0, matDragonOrg, false);
+      // C. Lớp 2 (Z = 0 -> 4.0mm): Màng cánh trong & Tròng mắt Xanh Cổ Vịt (#0E9AA7) phẳng khít với lớp Cam, không lộ viền cam thừa!
+      addCadRingLayer(grp, CAD_DATA.teal, 0.0, 4.02, matDragonTeal, false);
+      // D. Lớp 3 (Z = 4.0 -> 4.8mm): Tròng mắt trắng, Điểm sáng mắt & 2 Nanh rồng (#FFFFFF)
+      addCadRingLayer(grp, CAD_DATA.white, 4.0, 0.8, matDragonWhite, false);
+      // E. Lớp 4 (Z = 4.8 -> 5.6mm): Toàn bộ viền Outline Đen chuẩn sắc nét, Đồng tử, Chân mày, Sống mũi, Miệng & Gân cánh (#1E1B18)
+      addCadRingLayer(grp, CAD_DATA.black, 4.8, 0.8, matDragonBlack, false);
+      return grp;
+    }
+
+    // =========================================================================
+    // 2. BỘ CHARM CẮM LỖ PEGBOARD (POKÉBALL x2, NGỌN LỬA, CỎ 4 LÁ)
+    // =========================================================================
+    function createPegCharm(kind) {
+      const g = new THREE.Group();
+      // Chân cắm sau lưng Charm (vừa khít khe 4x12mm)
+      const pin = new THREE.Mesh(new THREE.BoxGeometry(3.6, 10.5, 6.0), matTrayWhite);
+      pin.position.set(0, 0, -3.0);
+      g.add(pin);
+
+      if (kind === "pokeball") {
+        const base = new THREE.Mesh(new THREE.CylinderGeometry(11, 11, 2.0, 28), matDragonWhite);
+        base.rotation.x = Math.PI / 2;
+        g.add(base);
+        // Nửa trên đỏ
+        const topShape = new THREE.Shape();
+        topShape.absarc(0, 0, 11, 0, Math.PI, false);
+        topShape.closePath();
+        const topRed = new THREE.Mesh(new THREE.ExtrudeGeometry(topShape, { depth: 1.0, bevelEnabled: false }), matDragonRed);
+        topRed.position.set(0, 0, 1.0);
+        g.add(topRed);
+        // Đai đen & tâm trắng
+        const band = new THREE.Mesh(new THREE.BoxGeometry(22, 2.6, 1.2), matDragonBlack);
+        band.position.set(0, 0, 1.4);
+        g.add(band);
+        const btn = new THREE.Mesh(new THREE.CylinderGeometry(3.6, 3.6, 1.6, 20), matDragonWhite);
+        btn.rotation.x = Math.PI / 2;
+        btn.position.set(0, 0, 1.5);
+        g.add(btn);
+      } else if (kind === "fire") {
+        const fShape = new THREE.Shape();
+        fShape.moveTo(0, -10);
+        fShape.bezierCurveTo(10, -10, 13, 0, 6, 10);
+        fShape.lineTo(2, 16);
+        fShape.lineTo(-2, 8);
+        fShape.lineTo(-6, 13);
+        fShape.bezierCurveTo(-13, 2, -10, -10, 0, -10);
+        const fRed = new THREE.Mesh(new THREE.ExtrudeGeometry(fShape, { depth: 2.2, bevelEnabled: true, bevelSize: 0.3, bevelThickness: 0.3 }), matDragonRed);
+        g.add(fRed);
+        const core = new THREE.Mesh(new THREE.CylinderGeometry(4.5, 4.5, 1.0, 16), matDragonYel);
+        core.rotation.x = Math.PI / 2;
+        core.position.set(0, -3, 2.4);
+        g.add(core);
+      } else if (kind === "leaf") {
+        [-5, 5].forEach(lx => {
+          [-5, 5].forEach(ly => {
+            const leaf = new THREE.Mesh(new THREE.CylinderGeometry(5.2, 5.2, 2.2, 20), matLeafGreen);
+            leaf.rotation.x = Math.PI / 2;
+            leaf.position.set(lx, ly, 0);
+            g.add(leaf);
+          });
+        });
+      }
+      return g;
+    }
+
+    // =========================================================================
+    // 3. KHAY ĐỠ TẦNG KHOÉT THỦNG LỖ CHỐT XOAY Ø6.4MM & VÁCH ĐỊNH VỊ 4 HỘP
+    // =========================================================================
+    function createCollapsibleTray(isTopTier, totalW) {
+      const grp = new THREE.Group();
+      const depth = 50;
+      const rearH = 30;
+      const frontH = 11;
+      const wallT = 3.8;
+
+      // Mặt cắt bên hông khay (khoét thủng thật 2 lỗ chốt xoay Ø6.4mm)
+      const sideShape = new THREE.Shape();
+      sideShape.moveTo(-depth / 2, 0);
+      sideShape.lineTo(depth / 2, 0);
+      sideShape.lineTo(depth / 2, frontH);
+      sideShape.bezierCurveTo(depth / 4, frontH, -depth / 6, rearH, -depth / 2, rearH);
+      sideShape.closePath();
+
+      // Khoét thủng thật 2 lỗ trục bản lề Ø6.4mm (bán kính 3.2mm)
+      sideShape.holes.push(makeCircleHole(-15, 11, 3.2));
+      sideShape.holes.push(makeCircleHole(15, 8, 3.2));
+
+      const sideGeom = new THREE.ExtrudeGeometry(sideShape, { depth: wallT, bevelEnabled: false });
+
+      // 2 Thành hông trái & phải (xoay mặt cắt về trục Z)
+      [-1, 1].forEach(dir => {
+        const sMesh = new THREE.Mesh(sideGeom, matTrayWhite);
+        sMesh.rotation.y = Math.PI / 2;
+        sMesh.position.set(dir * (totalW / 2) - (dir > 0 ? wallT : 0), 0, 0);
+        grp.add(sMesh);
+      });
+
+      // Đáy khay & Thành lưng sau & Thành chắn mũi trước
+      const bottomMesh = new THREE.Mesh(new THREE.BoxGeometry(totalW, 3.5, depth), matTrayWhite);
+      bottomMesh.position.set(0, 1.75, 0);
+      grp.add(bottomMesh);
+
+      const backMesh = new THREE.Mesh(new THREE.BoxGeometry(totalW, rearH, 3.5), matTrayWhite);
+      backMesh.position.set(0, rearH / 2, -depth / 2 + 1.75);
+      grp.add(backMesh);
+
+      const frontLip = new THREE.Mesh(new THREE.BoxGeometry(totalW, frontH, 3.2), matTrayWhite);
+      frontLip.position.set(0, frontH / 2, depth / 2 - 1.6);
+      grp.add(frontLip);
+
+      // 3 Vách chia định vị 4 hộp rời
+      const innerW = totalW - wallT * 2;
+      const slotW = innerW / 4;
+      for (let i = 1; i <= 3; i++) {
+        const divX = -innerW / 2 + i * slotW;
+        const divMesh = new THREE.Mesh(new THREE.BoxGeometry(2.4, 13, depth - 5), matTrayWhite);
+        divMesh.position.set(divX, 8, 0);
+        grp.add(divMesh);
+      }
+
+      // Nếu là tầng trên: Tích hợp 2 ống ngàm sau lưng để cắm Đầu Rồng Charizard tháo rời
+      if (isTopTier) {
+        [-32, 32].forEach(px => {
+          const socketOuter = new THREE.Mesh(new THREE.BoxGeometry(20, 20, 9), matTrayWhite);
+          socketOuter.position.set(px, rearH - 8, -depth / 2 - 3.5);
+          grp.add(socketOuter);
+        });
+      }
+
+      return grp;
+    }
+
+    // =========================================================================
+    // 4. HỘP ĐỰNG BÀI RỜI GỌN VỪA THẺ BÀI (×8) & THẺ BÀI POKÉMON TCG HOLOGRAM 8 HỆ
+    // =========================================================================
+    const POKEMON_CARD_THEMES = {
+      fire:      { title: "CHARIZARD EX", hp: "330 HP", bg1: "#dc2626", bg2: "#f97316", acc: "#fde047", sym: "🔥" },
+      water:     { title: "BLASTOISE EX", hp: "330 HP", bg1: "#0284c7", bg2: "#38bdf8", acc: "#e0f2fe", sym: "💧" },
+      grass:     { title: "VENUSAUR EX",  hp: "340 HP", bg1: "#15803d", bg2: "#4ade80", acc: "#dcfce7", sym: "🌿" },
+      lightning: { title: "PIKACHU VMAX", hp: "310 HP", bg1: "#ca8a04", bg2: "#facc15", acc: "#fef9c3", sym: "⚡" },
+      psychic:   { title: "MEWTWO VSTAR", hp: "280 HP", bg1: "#7e22ce", bg2: "#c084fc", acc: "#f3e8ff", sym: "🔮" },
+      fighting:  { title: "LUCARIO EX",   hp: "260 HP", bg1: "#b45309", bg2: "#fb923c", acc: "#ffedd5", sym: "🥊" },
+      darkness:  { title: "GENGAR VMAX",  hp: "320 HP", bg1: "#1e1b4b", bg2: "#6366f1", acc: "#e0e7ff", sym: "🌑" },
+      metal:     { title: "METAGROSS EX", hp: "340 HP", bg1: "#334155", bg2: "#94a3b8", acc: "#f1f5f9", sym: "⚙️" }
+    };
+    const cardTexCache = {};
+
+    function getPokemonCardMaterial(typeKey) {
+      if (cardTexCache[typeKey]) return cardTexCache[typeKey];
+      const info = POKEMON_CARD_THEMES[typeKey] || POKEMON_CARD_THEMES.fire;
+      const cvs = document.createElement("canvas");
+      cvs.width = 256;
+      cvs.height = 360;
+      const ctx = cvs.getContext("2d");
+
+      // Viền Vàng Hologram chuẩn thẻ bài Pokémon TCG
+      const borderGrad = ctx.createLinearGradient(0, 0, 256, 360);
+      borderGrad.addColorStop(0, "#facc15");
+      borderGrad.addColorStop(0.5, "#fef08a");
+      borderGrad.addColorStop(1, "#ca8a04");
+      ctx.fillStyle = borderGrad;
+      ctx.fillRect(0, 0, 256, 360);
+
+      // Nền thẻ theo hệ nguyên tố
+      const bgGrad = ctx.createLinearGradient(14, 14, 242, 346);
+      bgGrad.addColorStop(0, info.bg1);
+      bgGrad.addColorStop(1, info.bg2);
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(12, 12, 232, 336);
+
+      // Thanh tiêu đề Pokémon TCG
+      ctx.fillStyle = "rgba(15, 23, 42, 0.82)";
+      ctx.fillRect(20, 20, 216, 34);
+      ctx.fillStyle = "#fde047";
+      ctx.font = "900 16px Segoe UI, sans-serif";
+      ctx.fillText(info.title, 28, 43);
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "800 13px Segoe UI, sans-serif";
+      ctx.fillText(info.hp, 182, 42);
+
+      // Khung Art Hologram ở giữa thẻ
+      const artGrad = ctx.createRadialGradient(128, 138, 12, 128, 138, 95);
+      artGrad.addColorStop(0, info.acc);
+      artGrad.addColorStop(0.55, info.bg2);
+      artGrad.addColorStop(1, "#0f172a");
+      ctx.fillStyle = artGrad;
+      ctx.fillRect(24, 62, 208, 148);
+      ctx.strokeStyle = "#fde047";
+      ctx.lineWidth = 4;
+      ctx.strokeRect(24, 62, 208, 148);
+
+      // Vòng tròn Năng lượng & Pokéball cách điệu trên mặt thẻ bài
+      ctx.beginPath();
+      ctx.arc(128, 136, 46, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255,255,255,0.22)";
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#ffffff";
+      ctx.stroke();
+
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "900 22px Segoe UI, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("POKÉMON TCG", 128, 242);
+      ctx.fillStyle = "#fde047";
+      ctx.font = "800 15px Segoe UI, sans-serif";
+      ctx.fillText("SLEEVED DECK • 60 CARDS", 128, 268);
+
+      // Thanh kỹ năng bên dưới
+      ctx.fillStyle = "rgba(15, 23, 42, 0.72)";
+      ctx.fillRect(24, 284, 208, 44);
+      ctx.fillStyle = "#f8fafc";
+      ctx.font = "700 14px Segoe UI, sans-serif";
+      ctx.fillText("★ EX / VSTAR COLLECTOR", 128, 311);
+
+      const tex = new THREE.CanvasTexture(cvs);
+      const mat = new THREE.MeshStandardMaterial({
+        map: tex,
+        roughness: 0.22,
+        metalness: 0.25
+      });
+      cardTexCache[typeKey] = mat;
+      return mat;
+    }
+
+    function createCardBinAndBadge(cfg, binW, includeCards, includeBadge) {
+      const grp = new THREE.Group();
+      const binD = 42;
+      const binH = 52;
+      const wall = 2.2;
+      const binMat = makeMat(cfg.binHex, 0.35, 0.05, (cfg.col % 4) + 1, cfg.name);
+      grp.userData.binMat = binMat;
+
+      // Đáy hộp
+      const bot = new THREE.Mesh(new THREE.BoxGeometry(binW, 2.5, binD), binMat);
+      bot.position.set(0, 1.25, 0);
+      grp.add(bot);
+
+      // Thành sau & 2 thành bên
+      const back = new THREE.Mesh(new THREE.BoxGeometry(binW, binH, wall), binMat);
+      back.position.set(0, binH / 2, -binD / 2 + wall / 2);
+      grp.add(back);
+
+      [-1, 1].forEach(s => {
+        const side = new THREE.Mesh(new THREE.BoxGeometry(wall, binH, binD), binMat);
+        side.position.set(s * (binW / 2 - wall / 2), binH / 2, 0);
+        grp.add(side);
+      });
+
+      // Mặt trước cao 34mm (nhỏ gọn vừa khít thẻ bài Pokémon nhô lên)
+      const frontH = 34;
+      const frontShape = new THREE.Shape();
+      frontShape.moveTo(-binW / 2, 0);
+      frontShape.lineTo(binW / 2, 0);
+      frontShape.lineTo(binW / 2, frontH);
+      frontShape.lineTo(-binW / 2, frontH);
+      frontShape.closePath();
+
+      const frontGeom = new THREE.ExtrudeGeometry(frontShape, { depth: wall, bevelEnabled: false });
+      const frontMesh = new THREE.Mesh(frontGeom, binMat);
+      frontMesh.position.set(0, 0, binD / 2 - wall);
+      grp.add(frontMesh);
+
+      // Bộ thẻ bài Pokémon TCG Hologram theo đúng 8 hệ nguyên tố (có thể rút/nhô lên trình diễn!)
+      if (includeCards) {
+        const deckGrp = new THREE.Group();
+        const cardFaceMat = getPokemonCardMaterial(cfg.type);
+        const sleeveEdgeMat = makeMat(0xfde047, 0.28, 0.25, 3, "Pokemon_Gold_Sleeve");
+        const mats = [sleeveEdgeMat, sleeveEdgeMat, sleeveEdgeMat, sleeveEdgeMat, cardFaceMat, sleeveEdgeMat];
+
+        for (let c = 0; c < 3; c++) {
+          const packG = new THREE.BoxGeometry(binW - 6.0, 65, 4.0);
+          const packM = new THREE.Mesh(packG, mats);
+          packM.position.set(0, 35, -6 + c * 6.5);
+          packM.rotation.x = -0.10;
+          deckGrp.add(packM);
+        }
+        grp.add(deckGrp);
+        grp.userData.deckGrp = deckGrp;
+      }
+
+      if (includeBadge) {
+        const badge = createEnergyMedallion(cfg);
+        badge.position.set(0, 17, binD / 2 + 0.2);
+        grp.add(badge);
+      }
+
+      return grp;
+    }
+
+    function createEnergyMedallion(cfg) {
+      const g = new THREE.Group();
+      const baseMat = makeMat(cfg.badgeHex, 0.32, 0.1, 1, "Badge_Base_" + cfg.type);
+      const iconMat = makeMat(cfg.iconHex, 0.4, 0.1, 4, "Badge_Icon_" + cfg.type);
+
+      // Tầng 1 (Z = 0 -> 1.6mm): Đĩa tròn Ø21.6mm gọn đẹp theo hộp
+      const disc = new THREE.Mesh(new THREE.CylinderGeometry(10.8, 10.8, 1.6, 32), baseMat);
+      disc.rotation.x = Math.PI / 2;
+      disc.position.set(0, 0, 0.8);
+      g.add(disc);
+
+      // Tầng 2 (Z = 1.6 -> 2.8mm): Biểu tượng Hệ Nguyên Tố trích xuất CAD 1:1
+      const badgeIdx = (cfg.tier === 1 ? 0 : 4) + cfg.col;
+      if (CAD_DATA.badges && CAD_DATA.badges[badgeIdx] && CAD_DATA.badges[badgeIdx].symbol) {
+        addCadRingLayer(g, CAD_DATA.badges[badgeIdx].symbol, 1.6, 1.2, iconMat, false);
+      }
+      return g;
+    }
+
+    // =========================================================================
+    // 5. THANH TRUYỀN BẢN LỀ 4 KHÂU & CHÂN CHỐNG GẬP SAU + CHỐT SNAP-FIT
+    // =========================================================================
+    function createLinkageBar(lengthMm, thicknessMm, mat) {
+      const r = 9.0;
+      const halfL = lengthMm / 2;
+      const sh = new THREE.Shape();
+      sh.moveTo(-r, -halfL);
+      sh.lineTo(-r, halfL);
+      sh.absarc(0, halfL, r, Math.PI, 0, true);
+      sh.lineTo(r, -halfL);
+      sh.absarc(0, -halfL, r, 0, Math.PI, true);
+
+      // Khoét thủng thật 2 lỗ đầu thanh Ø6.4mm
+      sh.holes.push(makeCircleHole(0, -halfL, 3.2));
+      sh.holes.push(makeCircleHole(0, halfL, 3.2));
+
+      const geom = new THREE.ExtrudeGeometry(sh, { depth: thicknessMm, bevelEnabled: true, bevelThickness: 0.3, bevelSize: 0.3, bevelSegments: 2 });
+      const mesh = new THREE.Mesh(geom, mat);
+      mesh.rotation.y = Math.PI / 2;
+      return mesh;
+    }
+
+    function createSnapFitPin() {
+      const g = new THREE.Group();
+      const head = new THREE.Mesh(new THREE.CylinderGeometry(5.2, 5.2, 2.0, 20), matDragonYel);
+      head.rotation.z = Math.PI / 2;
+      head.position.set(-4, 0, 0);
+      g.add(head);
+      const shaft = new THREE.Mesh(new THREE.CylinderGeometry(2.95, 2.95, 12.0, 20), matDragonYel);
+      shaft.rotation.z = Math.PI / 2;
+      shaft.position.set(2, 0, 0);
+      g.add(shaft);
+      const lip = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 2.9, 2.0, 20), matDragonYel);
+      lip.rotation.z = Math.PI / 2;
+      lip.position.set(8.5, 0, 0);
+      g.add(lip);
+      return g;
+    }
+
+    // =========================================================================
+    // XÂY DỰNG CÁC NHÓM PART TRONG SCENE
+    // =========================================================================
+    const partGroups = {};
+    for (let i = 0; i <= 6; i++) {
+      partGroups[i] = new THREE.Group();
+      scene.add(partGroups[i]);
+    }
+
+    let dynRefs = {};
+    let customTopperBuilder = null;
+    let customTopperName = "";
+
+    function buildActiveTopperGroup() {
+      const grp = customTopperBuilder ? customTopperBuilder() : createCharizardTopperGroup();
+      const sSlider = document.getElementById("head-scale-slider");
+      const scalePct = sSlider ? Number(sSlider.value) : 100;
+      const sc = scalePct / 100;
+      grp.scale.set(sc, sc, 1.0);
+      return grp;
+    }
+
+    function rebuildAllGeometry() {
+      for (let i = 0; i <= 6; i++) {
+        while (partGroups[i].children.length > 0) {
+          partGroups[i].remove(partGroups[i].children[0]);
+        }
+      }
+
+      const isBooster = (currentSizePreset === "booster");
+      const totalW = isBooster ? 206 : 190;
+      const binW = isBooster ? 48 : 44;
+      const noCircles = document.getElementById("chk-no-circles") ? document.getElementById("chk-no-circles").checked : true;
+      const noPokeball = document.getElementById("chk-no-pokeball") ? document.getElementById("chk-no-pokeball").checked : true;
+
+      // --- GROUP 0: FULL ASSEMBLY (CÓ ĐỘNG HỌC GẬP MỞ & EXPLODED VIEW) ---
+      const trayBot = createCollapsibleTray(false, totalW);
+      const trayTop = createCollapsibleTray(true, totalW);
+      partGroups[0].add(trayBot);
+      partGroups[0].add(trayTop);
+
+      const binsBot = [];
+      const binsTop = [];
+      const innerW = totalW - 7.6;
+      const slotW = innerW / 4;
+
+      BIN_CONFIGS.forEach(cfg => {
+        const b = createCardBinAndBadge(cfg, binW, true, !noCircles);
+        const xPos = -innerW / 2 + (cfg.col + 0.5) * slotW;
+        Object.assign(b.userData, { xBase: xPos, col: cfg.col, tier: cfg.tier });
+        if (cfg.tier === 0) {
+          binsBot.push(b);
+          partGroups[0].add(b);
+        } else {
+          binsTop.push(b);
+          partGroups[0].add(b);
+        }
+      });
+
+      const dragonTopper = buildActiveTopperGroup();
+      partGroups[0].add(dragonTopper);
+
+      const charms = [];
+      if (!noPokeball) {
+        [
+          { kind: "pokeball", x: -72, y: 46 },
+          { kind: "pokeball", x: -24, y: 82 },
+          { kind: "fire",     x: 68,  y: 44 },
+          { kind: "clover",   x: -50, y: 78 }
+        ].forEach(c => {
+          const ch = createPegCharm(c.kind);
+          ch.userData = { x: c.x, y: c.y };
+          charms.push(ch);
+          partGroups[0].add(ch);
+        });
+      }
+
+      // 4 Thanh truyền 2 bên hông + 2 Chân chống gập sau
+      const linkBars = [];
+      [-1, 1].forEach(side => {
+        [-15, 15].forEach(zPivot => {
+          const bar = createLinkageBar(88, 4.5, matDragonYel);
+          bar.userData = { side, zPivot };
+          linkBars.push(bar);
+          partGroups[0].add(bar);
+        });
+      });
+
+      const rearLegs = [];
+      [-1, 1].forEach(side => {
+        const leg = createLinkageBar(100, 5.5, matPegPurple);
+        leg.userData = { side };
+        rearLegs.push(leg);
+        partGroups[0].add(leg);
+      });
+
+      // --- ĐẠO CỤ DECOR BÀN SƯU TẬP POKÉMON TCG (THẺ BÀI HOLOGRAM TRƯNG BÀY 2 BÊN & XẤP BÀI ĐẤU GIẢI) ---
+      const collectorProps = new THREE.Group();
+      const showProps = document.getElementById("chk-hl-props") ? document.getElementById("chk-hl-props").checked : true;
+      collectorProps.visible = showProps;
+
+      // 2 Kệ mini trưng bày thẻ bài Hologram 2 bên chân kệ (Trái: Charizard EX & Pikachu VMAX, Phải: Mewtwo VSTAR & Gengar VMAX)
+      const sleeveGold = makeMat(0xfde047, 0.25, 0.3, 3, "Sleeve_Gold");
+      [
+        { x: -138, z: 54, rotY: 0.38,  t1: "fire",    t2: "lightning" },
+        { x:  138, z: 54, rotY: -0.38, t1: "psychic", t2: "darkness"  }
+      ].forEach(st => {
+        const stGrp = new THREE.Group();
+        stGrp.position.set(st.x, 0, st.z);
+        stGrp.rotation.y = st.rotY;
+
+        // Đế trưng bày thẻ bài nhỏ gọn
+        const baseM = new THREE.Mesh(new THREE.BoxGeometry(56, 4, 24), matDragonBlack);
+        baseM.position.set(0, 2, 0);
+        stGrp.add(baseM);
+
+        // 2 Thẻ bài Hologram xếp xòe quạt trên đế
+        [
+          { type: st.t1, dx: -10, dz: -2, rz: 0.12 },
+          { type: st.t2, dx:  10, dz:  3, rz: -0.10 }
+        ].forEach(cd => {
+          const cMat = getPokemonCardMaterial(cd.type);
+          const mats = [sleeveGold, sleeveGold, sleeveGold, sleeveGold, cMat, sleeveGold];
+          const cardM = new THREE.Mesh(new THREE.BoxGeometry(44, 62, 1.8), mats);
+          cardM.position.set(cd.dx, 33, cd.dz);
+          cardM.rotation.x = -0.18;
+          cardM.rotation.z = cd.rz;
+          stGrp.add(cardM);
+        });
+        collectorProps.add(stGrp);
+      });
+
+      // Xấp thẻ bài Pokémon đặt nghiêng phía trước kệ (sẵn sàng rút bài đấu giải)
+      [
+        { x: -74, z: 82, rotY: 0.28,  type: "fire"  },
+        { x:  74, z: 82, rotY: -0.24, type: "water" }
+      ].forEach(fp => {
+        const cMat = getPokemonCardMaterial(fp.type);
+        const mats = [sleeveGold, sleeveGold, sleeveGold, sleeveGold, cMat, sleeveGold];
+        const flatPack = new THREE.Mesh(new THREE.BoxGeometry(44, 62, 5.5), mats);
+        flatPack.rotation.x = -Math.PI / 2;
+        flatPack.rotation.z = fp.rotY;
+        flatPack.position.set(fp.x, 3.0, fp.z);
+        collectorProps.add(flatPack);
+      });
+      partGroups[0].add(collectorProps);
+
+      dynRefs = { trayBot, trayTop, binsBot, binsTop, dragonTopper, charms, linkBars, rearLegs, collectorProps, totalW };
+
+      // --- GROUP 1: RIÊNG ĐẦU RỒNG CHARIZARD (NẰM PHẲNG TRÊN BÀN IN Z-STACK) ---
+      const dSolo = buildActiveTopperGroup();
+      dSolo.rotation.x = -Math.PI / 2;
+      dSolo.position.set(0, 4, 25);
+      partGroups[1].add(dSolo);
+
+      // --- GROUP 2: 2 KHAY ĐỠ TẦNG ---
+      const t1 = createCollapsibleTray(false, totalW);
+      t1.position.set(0, 0, 38);
+      const t2 = createCollapsibleTray(true, totalW);
+      t2.position.set(0, 0, -38);
+      partGroups[2].add(t1, t2);
+
+      // --- GROUP 3: BỘ 8 HỘP ĐỰNG BÀI RỜI TRƠN PHẲNG (KHÔNG HÌNH TRÒN) ---
+      BIN_CONFIGS.forEach((cfg, idx) => {
+        const bOnly = createCardBinAndBadge(cfg, binW, false, !noCircles);
+        const r = Math.floor(idx / 4);
+        const c = idx % 4;
+        bOnly.position.set((c - 1.5) * (binW + 8), 0, (r - 0.5) * 60);
+        partGroups[3].add(bOnly);
+      });
+
+      // --- GROUP 4: 4 THANH TRUYỀN + 2 CHÂN CHỐNG (ĐẶT PHẲNG SÁT BÀN IN) ---
+      for (let i = 0; i < 4; i++) {
+        const lb = createLinkageBar(88, 4.5, matDragonYel);
+        lb.rotation.set(0, 0, Math.PI / 2);
+        lb.position.set((i - 1.5) * 24, 5, -18);
+        partGroups[4].add(lb);
+      }
+      for (let i = 0; i < 2; i++) {
+        const rl = createLinkageBar(100, 5.5, matPegPurple);
+        rl.rotation.set(0, 0, Math.PI / 2);
+        rl.position.set((i - 0.5) * 30, 6, 38);
+        partGroups[4].add(rl);
+      }
+
+      // --- GROUP 5: BỘ 14 CHỐT SNAP-FIT (ĐÃ BỎ POKÉBALL & CHARM) ---
+      for (let i = 0; i < 14; i++) {
+        const pin = createSnapFitPin();
+        const r = Math.floor(i / 7);
+        const c = i % 7;
+        pin.position.set((c - 3) * 20, 5, -12 + r * 24);
+        partGroups[5].add(pin);
+      }
+
+      // --- GROUP 6: BỐ CỤC XẾP PHẲNG TRÊN MÂM NHIỆT PEI BAMBU LAB (ĐẦU RỒNG + HỘP TRƠN + THANH GẬP + CHỐT) ---
+      const dPei = buildActiveTopperGroup();
+      dPei.scale.set(0.82, 0.82, 1.0);
+      dPei.rotation.x = -Math.PI / 2;
+      dPei.position.set(0, 3, -25);
+      partGroups[6].add(dPei);
+      for (let c = 0; c < 4; c++) {
+        const bPei = createCardBinAndBadge(BIN_CONFIGS[c], binW, false, !noCircles);
+        bPei.scale.set(0.88, 0.88, 0.88);
+        bPei.position.set((c - 1.5) * 52, 0, 74);
+        partGroups[6].add(bPei);
+      }
+      [-1, 1].forEach((s, idx) => {
+        const lbPei = createLinkageBar(88, 4.5, matDragonYel);
+        lbPei.rotation.set(Math.PI / 2, 0, 0);
+        lbPei.position.set(s * 118, 2.5, 58);
+        partGroups[6].add(lbPei);
+      });
+      for (let p = 0; p < 6; p++) {
+        const pinPei = createSnapFitPin();
+        pinPei.position.set(-75 + p * 30, 4, 112);
+        partGroups[6].add(pinPei);
+      }
+
+      // Bật đổ bóng vật lý thật (castShadow & receiveShadow) cho toàn bộ mesh
+      for (let gIdx = 0; gIdx <= 6; gIdx++) {
+        partGroups[gIdx].traverse(obj => {
+          if (obj.isMesh) {
+            obj.castShadow = true;
+            obj.receiveShadow = true;
+          }
+        });
+      }
+
+      updateKinematics();
+      showPart(activePartId);
+    }
+
+    // =========================================================================
+    // ĐỘNG HỌC GẬP MỞ 2 TẦNG & TÁCH RỜI CHI TIẾT (EXPLODED VIEW)
+    // =========================================================================
+    function updateKinematics() {
+      const deg = Number(document.getElementById("fold-slider").value);
+      const explodePct = Number(document.getElementById("explode-slider").value);
+      const ex = explodePct / 100;
+
+      document.getElementById("angle-val").innerText =
+        deg <= 18 ? `Đã gập phẳng (${deg}°)` : `Mở trưng bày (${deg}°)`;
+      document.getElementById("explode-val").innerText =
+        explodePct === 0 ? "Lắp ráp (0%)" : `Tách rời (${explodePct}%)`;
+
+      const rad = (deg * Math.PI) / 180;
+      const linkLen = 86;
+
+      // Vị trí khay tầng 1 (Dưới) và khay tầng 2 (Trên) theo góc thanh truyền
+      const botY = 4;
+      const botZ = 36;
+      const topY = botY + linkLen * Math.sin(rad) + ex * 35;
+      const topZ = botZ - linkLen * Math.cos(rad) - ex * 25;
+
+      dynRefs.trayBot.position.set(0, botY, botZ);
+      dynRefs.trayTop.position.set(0, topY, topZ);
+
+      // Cập nhật 8 hộp rời
+      dynRefs.binsBot.forEach(b => {
+        b.position.set(
+          b.userData.xBase * (1 + ex * 0.22),
+          botY + 3.5 + ex * 42,
+          botZ + ex * 30
+        );
+      });
+      dynRefs.binsTop.forEach(b => {
+        b.position.set(
+          b.userData.xBase * (1 + ex * 0.22),
+          topY + 3.5 + ex * 48,
+          topZ + ex * 20
+        );
+      });
+
+      // Cập nhật Đầu Rồng Charizard cắm sát ngay trên hàng thẻ bài tầng 2 (Mặt to nổi bật đúng chuẩn ảnh mẫu!)
+      const dragonY = topY + 62 + ex * 65;
+      const dragonZ = topZ - 26 - ex * 35;
+      dynRefs.dragonTopper.position.set(0, dragonY, dragonZ);
+
+      // Cập nhật 4 Charm trên Đầu Rồng
+      dynRefs.charms.forEach(ch => {
+        ch.position.set(
+          ch.userData.x,
+          dragonY + ch.userData.y,
+          dragonZ + 5.8 + ex * 28
+        );
+      });
+
+      // Cập nhật 4 thanh truyền 2 bên hông
+      const halfW = dynRefs.totalW / 2;
+      const midY = (botY + topY) / 2 + 12;
+      const midZ = (botZ + topZ) / 2;
+      const barPitch = Math.PI / 2 - rad;
+
+      dynRefs.linkBars.forEach(bar => {
+        const { side, zPivot } = bar.userData;
+        const xPos = side * (halfW + 3 + ex * 38);
+        bar.position.set(xPos, midY, midZ + zPivot);
+        bar.rotation.x = -barPitch;
+      });
+
+      // Cập nhật 2 chân chống gập sau
+      dynRefs.rearLegs.forEach(leg => {
+        const { side } = leg.userData;
+        const xPos = side * (halfW - 12 + ex * 25);
+        leg.position.set(xPos, topY / 2 + 8, topZ - 32 - ex * 30);
+        leg.rotation.x = (deg <= 20) ? 1.35 : 0.32;
+      });
+    }
+
+    function setSizePreset(preset) {
+      currentSizePreset = preset;
+      document.getElementById("sz-booster").classList.toggle("active", preset === "booster");
+      document.getElementById("sz-compact").classList.toggle("active", preset === "compact");
+      rebuildAllGeometry();
+    }
+
+    function showPart(partId) {
+      activePartId = partId;
+      document.querySelectorAll(".part-btn").forEach(b => b.classList.remove("active"));
+      const btn = document.getElementById("pbtn-" + partId);
+      if (btn) btn.classList.add("active");
+
+      Object.entries(partGroups).forEach(([id, grp]) => {
+        grp.visible = (Number(id) === partId);
+      });
+
+      const sp = PART_SPECS[partId];
+      if (sp) {
+        document.getElementById("spec-title").innerText = sp.title;
+        document.getElementById("hud-title").innerText = sp.hud;
+        document.getElementById("spec-table").innerHTML = sp.rows
+          .map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`)
+          .join("");
+        document.getElementById("spec-note").innerHTML = sp.note;
+      }
+      if (typeof updateLiveQuote === "function") updateLiveQuote();
+    }
+
+    function switchMode(mode) {
+      document.querySelectorAll(".mode-tab").forEach(t => t.classList.remove("active"));
+      document.getElementById("tab-" + mode).classList.add("active");
+      document.getElementById("svg-panel").style.display = (mode === "svg") ? "flex" : "none";
+    }
+
+    function setCameraView(v) {
+      if (v === "front") {
+        camera.position.set(0, 165, 540);
+        controls.target.set(0, 130, 0);
+      } else if (v === "iso") {
+        camera.position.set(340, 250, 460);
+        controls.target.set(0, 125, 0);
+      } else if (v === "side") {
+        camera.position.set(520, 140, 10);
+        controls.target.set(0, 100, 10);
+      } else if (v === "back") {
+        camera.position.set(180, 210, -480);
+        controls.target.set(0, 130, 0);
+      } else if (v === "dragon") {
+        camera.position.set(0, 235, 290);
+        controls.target.set(0, 210, -25);
+      }
+      controls.update();
+    }
+
+    // =========================================================================
+    // XUẤT FILE .STL & .3MF ĐA MÀU TRỰC TIẾP TRONG 0.1 GIÂY
+    // =========================================================================
+    function exportCurrentSTL() {
+      const exporter = new THREE.STLExporter();
+      const targetGroup = partGroups[activePartId];
+      const result = exporter.parse(targetGroup, { binary: true });
+      const blob = new Blob([result], { type: "application/octet-stream" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = ((PART_SPECS[activePartId] && PART_SPECS[activePartId].file) || "Ke_Rong_Charizard") + ".stl";
+      a.click();
+    }
+
+    async function build3MFBlobFromGroup(targetGroup) {
+      targetGroup.updateMatrixWorld(true);
+      const zip = new JSZip();
+      zip.file("[Content_Types].xml", `<?xml version="1.0" encoding="UTF-8"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+ <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+ <Default Extension="model" ContentType="application/vnd.ms-package.3dmanufacturing-3dmodel+xml"/>
+ <Default Extension="config" ContentType="text/xml"/>
+</Types>`);
+
+      zip.folder("_rels").file(".rels", `<?xml version="1.0" encoding="UTF-8"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/package/2006/relationships">
+ <Relationship Target="/3D/3dmodel.model" Id="rel0" Type="http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel"/>
+</Relationships>`);
+
+      let objXmlList = [];
+      let buildXmlList = [];
+      let settingsObjList = [];
+      let objId = 1;
+
+      targetGroup.traverse(node => {
+        if (!node.isMesh || !node.geometry) return;
+        const geom = node.geometry.clone();
+        geom.applyMatrix4(node.matrixWorld);
+        const pos = geom.attributes.position;
+        const index = geom.index;
+
+        let vLines = [];
+        let minZ = Infinity;
+        const pts = [];
+        for (let i = 0; i < pos.count; i++) {
+          const x = pos.getX(i) + 128;
+          const y = -pos.getZ(i) + 128;
+          const z = pos.getY(i);
+          if (z < minZ) minZ = z;
+          pts.push([x, y, z]);
+        }
+        const zShift = minZ < 0 ? -minZ : 0;
+        for (let i = 0; i < pts.length; i++) {
+          vLines.push(`<vertex x="${pts[i][0].toFixed(3)}" y="${pts[i][1].toFixed(3)}" z="${(pts[i][2] + zShift).toFixed(3)}"/>`);
+        }
+
+        let tLines = [];
+        if (index) {
+          for (let i = 0; i < index.count; i += 3) {
+            tLines.push(`<triangle v1="${index.getX(i)}" v2="${index.getX(i+1)}" v3="${index.getX(i+2)}"/>`);
+          }
+        } else {
+          for (let i = 0; i < pos.count; i += 3) {
+            tLines.push(`<triangle v1="${i}" v2="${i+1}" v3="${i+2}"/>`);
+          }
+        }
+
+        const extId = (node.material && node.material.userData && node.material.userData.extruder) || 1;
+        const partName = (node.material && node.material.userData && node.material.userData.name) || ("Part_" + objId);
+
+        objXmlList.push(`<object id="${objId}" type="model"><mesh><vertices>${vLines.join("")}</vertices><triangles>${tLines.join("")}</triangles></mesh></object>`);
+        buildXmlList.push(`<item objectid="${objId}"/>`);
+        settingsObjList.push(`<object id="${objId}"><metadata key="name" value="${partName}_${objId}"/><metadata key="extruder" value="${extId}"/></object>`);
+        objId++;
+      });
+
+      const modelXml = `<?xml version="1.0" encoding="UTF-8"?>
+<model unit="millimeter" xml:lang="en-US" xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02">
+ <resources>${objXmlList.join("\n")}</resources>
+ <build>${buildXmlList.join("\n")}</build>
+</model>`;
+
+      zip.folder("3D").file("3dmodel.model", modelXml);
+      zip.folder("Metadata").file("model_settings.config", `<?xml version="1.0" encoding="UTF-8"?><config>${settingsObjList.join("\n")}</config>`);
+
+      return await zip.generateAsync({ type: "blob", compression: "DEFLATE" });
+    }
+
+    async function exportCurrent3MF() {
+      const targetGroup = partGroups[activePartId];
+      const content = await build3MFBlobFromGroup(targetGroup);
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(content);
+      a.download = ((PART_SPECS[activePartId] && PART_SPECS[activePartId].file) || "Ke_Rong_Charizard") + "_Bambu_DaMau.3mf";
+      a.click();
+    }
+
+    async function exportAllPlates3MF() {
+      // Tạo group tất cả các bàn in đặt sát mặt phẳng Z=0 để in ngay
+      const printBedGroup = new THREE.Group();
+      [1, 2, 3, 4, 5].forEach((pid, idx) => {
+        const cloneGrp = partGroups[pid].clone();
+        cloneGrp.visible = true;
+        cloneGrp.position.set((idx % 2) * 320, 0, Math.floor(idx / 2) * 260);
+        printBedGroup.add(cloneGrp);
+      });
+      scene.add(printBedGroup);
+      const content = await build3MFBlobFromGroup(printBedGroup);
+      scene.remove(printBedGroup);
+
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(content);
+      a.download = "TRON_BO_5_PART_KE_XEP_GON_RONG_CHARIZARD_BAMBU.3mf";
+      a.click();
+    }
+
+    function downloadSVG() {
+      const svgEl = document.getElementById("blueprint-svg");
+      const svgData = '<?xml version="1.0" encoding="UTF-8"?>\n' + svgEl.outerHTML;
+      const blob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "Ban_Ve_2D_Ke_Xep_Gon_Rong_Charizard_Pokemon.svg";
+      a.click();
+    }
+
+    function updateLiveQuote() {
+      const sSlider = document.getElementById("head-scale-slider");
+      const scalePct = sSlider ? Number(sSlider.value) : 100;
+      const noCircles = document.getElementById("chk-no-circles") ? document.getElementById("chk-no-circles").checked : true;
+      const noPokeball = document.getElementById("chk-no-pokeball") ? document.getElementById("chk-no-pokeball").checked : true;
+      const isBooster = (currentSizePreset === "booster");
+
+      const spanMm = Math.round(288 * (scalePct / 100));
+      const lbl = document.getElementById("head-scale-lbl");
+      if (lbl) lbl.innerText = `${scalePct}% (${spanMm}mm)`;
+
+      // Tính khối lượng nhựa PLA & thời gian in dựa trên cấu hình thực tế
+      let baseGram = isBooster ? 265 : 230;
+      let topperGram = Math.round(120 * Math.pow(scalePct / 100, 2));
+      let extraGram = (noCircles ? 0 : 18) + (noPokeball ? 0 : 12);
+      let totalGram = baseGram + topperGram + extraGram;
+      if (activePartId === 1) totalGram = topperGram;
+      else if (activePartId === 2) totalGram = 115;
+      else if (activePartId === 3) totalGram = 128 + (noCircles ? 0 : 18);
+      else if (activePartId === 4) totalGram = 22;
+      else if (activePartId === 5) totalGram = 14 + (noPokeball ? 0 : 12);
+
+      const hours = (totalGram / 56.5).toFixed(1);
+      const costVnd = Math.round((totalGram * 215) / 1000) * 1000;
+      const sellVnd = activePartId === 0 ? Math.max(349000, Math.round((costVnd * 4.5) / 1000) * 1000) : Math.max(99000, Math.round((costVnd * 4.2) / 1000) * 1000);
+
+      const gEl = document.getElementById("q-gram");
+      const hEl = document.getElementById("q-hours");
+      const cEl = document.getElementById("q-cost");
+      const pEl = document.getElementById("q-price");
+      if (gEl) gEl.innerText = `${totalGram} g`;
+      if (hEl) hEl.innerText = `~${hours} giờ`;
+      if (cEl) cEl.innerText = costVnd.toLocaleString("vi-VN") + " đ";
+      if (pEl) pEl.innerText = sellVnd.toLocaleString("vi-VN") + " đ";
+    }
+
+    function onOpsToggleChange() {
+      rebuildAllGeometry();
+      updateLiveQuote();
+    }
+
+    function handleDrop2DEvent(ev) {
+      ev.preventDefault();
+      document.getElementById("drop-2d-box").classList.remove("dragover");
+      if (ev.dataTransfer && ev.dataTransfer.files && ev.dataTransfer.files[0]) {
+        processCustomer2DImage(ev.dataTransfer.files[0]);
+      }
+    }
+
+    function processCustomer2DImage(file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          // Phân tách 4 lớp màu Z-Stacking trực tiếp từ ảnh 2D khách gửi (Grid 56x42)
+          const cw = 56, ch = 42;
+          const cvs = document.createElement("canvas");
+          cvs.width = cw; cvs.height = ch;
+          const ctx = cvs.getContext("2d");
+          ctx.drawImage(img, 0, 0, cw, ch);
+          const data = ctx.getImageData(0, 0, cw, ch).data;
+
+          customTopperName = file.name.replace(/\.[^/.]+$/, "");
+          customTopperBuilder = function() {
+            const g = new THREE.Group();
+            // Thân ngàm tím liền khối không lỗ cắm vào khay tầng 2
+            addCadRingLayer(g, CAD_DATA.stem, 0.0, 4.0, matPegPurple, false);
+
+            const voxSize = 3.8;
+            for (let y = 0; y < ch; y++) {
+              for (let x = 0; x < cw; x++) {
+                const idx = (y * cw + x) * 4;
+                const r = data[idx], gr = data[idx+1], b = data[idx+2], a = data[idx+3];
+                if (a < 60 || (r > 240 && gr > 240 && b > 240)) continue;
+                const lum = 0.299 * r + 0.587 * gr + 0.114 * b;
+                let mat = matDragonOrg, h = 4.0;
+                if (lum < 55) { mat = matDragonBlack; h = 5.6; }
+                else if (lum > 205) { mat = matDragonWhite; h = 4.8; }
+                else if (b > r + 20) { mat = matDragonTeal; h = 4.2; }
+                const boxM = new THREE.Mesh(new THREE.BoxGeometry(voxSize + 0.15, voxSize + 0.15, h), mat);
+                boxM.position.set((x - cw / 2) * voxSize, (ch - y) * voxSize - 10, h / 2);
+                g.add(boxM);
+              }
+            }
+            return g;
+          };
+          document.getElementById("reset-topper-btn").style.display = "block";
+          rebuildAllGeometry();
+          updateLiveQuote();
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function resetToCharizardTopper() {
+      customTopperBuilder = null;
+      customTopperName = "";
+      document.getElementById("reset-topper-btn").style.display = "none";
+      rebuildAllGeometry();
+      updateLiveQuote();
+    }
+
+    async function publishToStore8088() {
+      const btn = document.getElementById("publish-store-btn");
+      const statusEl = document.getElementById("store-status");
+      btn.disabled = true;
+      btn.innerText = "⏳ Đang đóng gói 3D & đẩy lên Web Bán Hàng (:8088)...";
+      statusEl.style.display = "block";
+      statusEl.innerHTML = "Đang trích xuất ảnh chụp 3D + file .STL & .3MF đa màu...";
+
+      try {
+        // 1. Đảm bảo đang chụp góc tổng thể đẹp nhất
+        const prevPart = activePartId;
+        if (activePartId !== 0) showPart(0);
+        renderer.render(scene, camera);
+
+        const dataUrl = renderer.domElement.toDataURL("image/png");
+        const imgBlob = await (await fetch(dataUrl)).blob();
+
+        // 2. Tạo file .STL nhị phân siêu tốc (0.05s) từ mô hình hiện tại
+        const exporter = new THREE.STLExporter();
+        const stlBin = exporter.parse(partGroups[0], { binary: true });
+        const stlBlob = new Blob([stlBin], { type: "application/octet-stream" });
+
+        if (prevPart !== 0) showPart(prevPart);
+
+        const prodTitle = customTopperName
+          ? `Kệ Xếp Gọn 2 Tầng + Topper 3D (${customTopperName}) & 8 Hộp Trơn`
+          : "Kệ Xếp Gọn 2 Tầng Rồng Charizard Liền Khối & 8 Hộp Đựng Bài Trơn";
+
+        const fd = new FormData();
+        fd.append("name", prodTitle);
+        fd.append("category", "figure-nhan-vat");
+        fd.append("priceVnd", "374000");
+        fd.append("badge", "Mẫu Mới Xưởng In");
+        fd.append("color", "#f97316");
+        fd.append("summary", `${prodTitle} — Bản chuẩn không đục lỗ, bỏ Pokéball, mặt trước 8 hộp trơn phẳng không hình tròn, mặt rồng to nổi bật 288mm.`);
+        fd.append("image", imgBlob, "ke_rong_charizard_preview.png");
+        fd.append("model_stl", stlBlob, "Ke_Xep_Gon_Rong_Charizard_Full.stl");
+
+        const apiBase = window.location.port === "8088" ? "" : "http://127.0.0.1:8088";
+        const resp = await fetch(apiBase + "/api/products/upload", { method: "POST", body: fd });
+        const res = await resp.json();
+        if (res && res.ok) {
+          const storeUrl = (apiBase || window.location.origin) + "/khoixinh_3d_hub.html";
+          statusEl.innerHTML = `✅ <b>Đã đăng thành công lên Web Bán Hàng!</b><br>Mã SP: <code>${res.product ? res.product.id : "custom-charizard"}</code> · Giá: <b>389.000đ</b><br><a href="${storeUrl}" target="_blank" style="display:inline-block;margin-top:5px;padding:4px 9px;background:#22c55e;color:#052e16;font-weight:800;border-radius:5px;text-decoration:none;">👉 Mở Xem Ngay Trên Web Bán Hàng (:8088)</a>`;
+        } else {
+          statusEl.innerHTML = `⚠️ Lỗi: ${(res && res.error) || "Không kết nối được cổng :8088"}`;
+        }
+      } catch (err) {
+        statusEl.innerHTML = `⚠️ Lỗi kết nối: ${err.message}`;
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "🛍️ Đẩy Mẫu Này Lên Web Bán Hàng (:8088)";
+      }
+    }
+
+    function setRealBackgroundMode(mode) {
+      const sel = document.getElementById("real-bg-select");
+      if (sel && sel.value !== mode) sel.value = mode;
+      if (mode === "cad_dark") {
+        viewport.style.backgroundImage = "none";
+        scene.background = new THREE.Color(0x090d16);
+        grid.visible = true;
+        shadowCatcher.visible = false;
+      } else {
+        scene.background = null;
+        renderer.setClearColor(0x000000, 0);
+        grid.visible = false;
+        shadowCatcher.visible = true;
+        const bgMap = {
+          oak_desk: "/assets/real_bgs/bg_oak_desk_16x9.jpg",
+          bambu_pei: "/assets/real_bgs/bg_bambu_pei_16x9.jpg",
+          cutting_mat: "/assets/real_bgs/bg_cutting_mat_16x9.jpg"
+        };
+        viewport.style.backgroundImage = `url('${bgMap[mode] || bgMap.oak_desk}')`;
+        viewport.style.backgroundSize = "cover";
+        viewport.style.backgroundPosition = "center";
+      }
+    }
+
+    window.enterTransparentCaptureMode = function(w, h) {
+      document.getElementById("sidebar").style.display = "none";
+      document.getElementById("ops-panel").style.display = "none";
+      document.getElementById("hud").style.display = "none";
+      document.getElementById("cam-bar").style.display = "none";
+      document.getElementById("live-sub-banner").style.display = "none";
+      viewport.style.backgroundImage = "none";
+      viewport.style.background = "transparent";
+      document.body.style.background = "transparent";
+      scene.background = null;
+      renderer.setClearColor(0x000000, 0);
+      grid.visible = false;
+      shadowCatcher.visible = true;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    };
+
+    const BOX_COLOR_PRESETS = {
+      pastel_8_types: [0xfda4af, 0xf9a8d4, 0xbef264, 0xfef08a, 0xd8b4fe, 0xfb923c, 0x7dd3fc, 0x38bdf8],
+      charizard_flame: [0xef4444, 0xf97316, 0xfacc15, 0xfb923c, 0xdc2626, 0xea580c, 0xfde047, 0x1e293b],
+      gengar_shadow:   [0x9333ea, 0x6366f1, 0xc084fc, 0xec4899, 0x4f46e5, 0x7e22ce, 0x38bdf8, 0x1e1b4b],
+      tournament_pro:  [0x1e293b, 0x334155, 0x1e293b, 0x334155, 0xf97316, 0xea580c, 0xf97316, 0xea580c]
+    };
+
+    window.setBoxThemePreset = function(themeId) {
+      const sel = document.getElementById("box-theme-select");
+      if (sel && sel.value !== themeId) sel.value = themeId;
+      const hexList = BOX_COLOR_PRESETS[themeId] || BOX_COLOR_PRESETS.pastel_8_types;
+      const allBins = [...(dynRefs.binsTop || []), ...(dynRefs.binsBot || [])];
+      allBins.forEach((b, idx) => {
+        if (b && b.userData && b.userData.binMat) {
+          b.userData.binMat.color.setHex(hexList[idx % hexList.length]);
+        }
+      });
+      renderer.render(scene, camera);
+    };
+
+    window.setCardDrawChoreography = function(wavePhase) {
+      // wavePhase = 0 (thẻ bài nằm gọn trong hộp) -> > 0 (thẻ bài nhô lên theo làn sóng 8 hệ Pokémon)
+      const allBins = [...(dynRefs.binsTop || []), ...(dynRefs.binsBot || [])];
+      allBins.forEach((b, idx) => {
+        if (!b || !b.userData || !b.userData.deckGrp) return;
+        const dg = b.userData.deckGrp;
+        if (wavePhase <= 0.001) {
+          dg.position.set(0, 0, 0);
+          dg.rotation.set(0, 0, 0);
+        } else {
+          const offset = idx * 0.52;
+          const lift = Math.max(0, Math.sin(wavePhase * Math.PI * 2.2 - offset));
+          dg.position.set(0, lift * 29.0, lift * 7.5);
+          dg.rotation.z = Math.sin(wavePhase * Math.PI * 2.0 + idx) * 0.08 * lift;
+          // Xòe nhẹ 3 xấp thẻ bài bên trong mỗi hộp khi nhô lên
+          dg.children.forEach((pack, cIdx) => {
+            pack.rotation.z = (cIdx - 1) * 0.11 * lift;
+          });
+        }
+      });
+    };
+
+    function onHighlightToggleChange() {
+      const showProps = document.getElementById("chk-hl-props") ? document.getElementById("chk-hl-props").checked : true;
+      if (dynRefs.collectorProps) dynRefs.collectorProps.visible = showProps;
+      const drawCards = document.getElementById("chk-hl-carddraw") ? document.getElementById("chk-hl-carddraw").checked : true;
+      window.setCardDrawChoreography(drawCards ? 0.35 : 0.0);
+      renderer.render(scene, camera);
+    }
+
+    function onPersonaPresetChange(persona) {
+      if (activePartId !== 0) showPart(0);
+      if (persona === "tcg_collector") {
+        setRealBackgroundMode("oak_desk");
+        window.setBoxThemePreset("pastel_8_types");
+        if (dynRefs.collectorProps) dynRefs.collectorProps.visible = true;
+        window.setCardDrawChoreography(0.42);
+        document.getElementById("fold-slider").value = 52;
+        document.getElementById("explode-slider").value = 0;
+        updateKinematics();
+        camera.position.set(-110, 195, 430);
+        controls.target.set(0, 115, 10);
+      } else if (persona === "anime_decor") {
+        setRealBackgroundMode("oak_desk");
+        window.setBoxThemePreset("charizard_flame");
+        if (dynRefs.collectorProps) dynRefs.collectorProps.visible = true;
+        window.setCardDrawChoreography(0.18);
+        document.getElementById("fold-slider").value = 52;
+        document.getElementById("explode-slider").value = 0;
+        updateKinematics();
+        camera.position.set(0, 215, 395);
+        controls.target.set(0, 150, -10);
+      } else if (persona === "tournament_fold") {
+        setRealBackgroundMode("cutting_mat");
+        window.setBoxThemePreset("tournament_pro");
+        if (dynRefs.collectorProps) dynRefs.collectorProps.visible = false;
+        window.setCardDrawChoreography(0.0);
+        document.getElementById("fold-slider").value = 22;
+        document.getElementById("explode-slider").value = 0;
+        updateKinematics();
+        camera.position.set(360, 175, 290);
+        controls.target.set(0, 95, 0);
+      } else if (persona === "custom_trainer") {
+        setRealBackgroundMode("oak_desk");
+        window.setBoxThemePreset("gengar_shadow");
+        if (dynRefs.collectorProps) dynRefs.collectorProps.visible = true;
+        window.setCardDrawChoreography(0.32);
+        document.getElementById("fold-slider").value = 52;
+        document.getElementById("explode-slider").value = 24;
+        updateKinematics();
+        camera.position.set(175, 210, 440);
+        controls.target.set(0, 125, 0);
+      }
+      controls.update();
+      renderer.render(scene, camera);
+    }
+
+    let storyboardTimer = null;
+    function runLive5SceneStoryboard() {
+      const btn = document.getElementById("play-storyboard-btn");
+      const banner = document.getElementById("live-sub-banner");
+      const tagEl = document.getElementById("sub-scene-tag");
+      const txtEl = document.getElementById("sub-main-txt");
+      const statusEl = document.getElementById("store-status");
+
+      if (storyboardTimer) {
+        clearInterval(storyboardTimer);
+        storyboardTimer = null;
+        banner.style.display = "none";
+        window.setCardDrawChoreography(0);
+        setRealBackgroundMode("oak_desk");
+        showPart(0);
+        btn.innerText = "🎬 Chạy Showcase Decor Pokémon 4 Cảnh & Tải .MP4";
+        return;
+      }
+
+      banner.style.display = "block";
+      statusEl.style.display = "block";
+      statusEl.innerHTML = `🔥 <b>Đang trình diễn Showcase Decor Sưu Tập Pokémon TCG 4 Cảnh...</b><br><a href="/assets/videos/ke_rong_charizard_pokemon_collector_decor_4canh.mp4" download="VIDEO_DECOR_POKEMON_TCG_KE_RONG_CHARIZARD_4CANH.mp4" style="display:inline-block;margin-top:5px;padding:5px 10px;background:#f97316;color:#fff;font-weight:900;border-radius:6px;text-decoration:none;">⬇️ Tải Video Decor Pokémon TCG 4 Cảnh (.MP4)</a>`;
+
+      const tStart = performance.now();
+      const totalDur = 18.0;
+      btn.innerText = "⏹️ Dừng Showcase Decor";
+
+      storyboardTimer = setInterval(() => {
+        const t = ((performance.now() - tStart) / 1000);
+        if (t >= totalDur) {
+          clearInterval(storyboardTimer);
+          storyboardTimer = null;
+          banner.style.display = "none";
+          window.setCardDrawChoreography(0);
+          window.setBoxThemePreset("pastel_8_types");
+          setRealBackgroundMode("oak_desk");
+          showPart(0);
+          document.getElementById("fold-slider").value = 52;
+          document.getElementById("explode-slider").value = 0;
+          updateKinematics();
+          setCameraView("front");
+          btn.innerText = "🎬 Chạy Showcase Decor Pokémon 4 Cảnh & Tải .MP4";
+          return;
+        }
+
+        if (t < 4.5) {
+          setRealBackgroundMode("oak_desk");
+          if (activePartId !== 0) showPart(0);
+          if (dynRefs.collectorProps) dynRefs.collectorProps.visible = true;
+          window.setBoxThemePreset("pastel_8_types");
+          window.setCardDrawChoreography(0.15);
+          tagEl.innerText = "🔥 CẢNH 01 / 04: TÂM ĐIỂM DECOR GÓC SƯU TẦM THẺ BÀI POKÉMON TCG";
+          txtEl.innerHTML = `Đầu Rồng <span style="color:#fde047">CHARIZARD SẢI CÁNH 288MM</span> biến bàn học thành trạm đấu bài!`;
+          const u = t / 4.5;
+          document.getElementById("fold-slider").value = 52;
+          document.getElementById("explode-slider").value = 0;
+          updateKinematics();
+          const ang = -0.35 + u * 0.70;
+          camera.position.set(Math.sin(ang) * 445, 195 + u * 20, Math.cos(ang) * 445);
+          controls.target.set(0, 132, 0);
+        } else if (t < 9.5) {
+          setRealBackgroundMode("oak_desk");
+          if (activePartId !== 0) showPart(0);
+          const u = (t - 4.5) / 5.0;
+          window.setCardDrawChoreography(u);
+          tagEl.innerText = "🃏 CẢNH 02 / 04: HIGHLIGHT GAME THỦ — PHÂN LOẠI 8 HỆ & RÚT NHANH 8 DECK BÀI";
+          txtEl.innerHTML = `8 Hộp <span style="color:#00ffff">48×42×52MM</span> vừa khít thẻ bọc Sleeve · Rút bài 1 chạm theo hệ!`;
+          const ang = 0.22 - u * 0.44;
+          camera.position.set(Math.sin(ang) * 390, 175, Math.cos(ang) * 390);
+          controls.target.set(0, 95, 15);
+        } else if (t < 14.0) {
+          setRealBackgroundMode("cutting_mat");
+          window.setCardDrawChoreography(0.0);
+          const u = (t - 9.5) / 4.5;
+          const foldDeg = 33.0 + 19.0 * Math.cos(u * Math.PI * 2.0);
+          document.getElementById("fold-slider").value = foldDeg;
+          document.getElementById("explode-slider").value = 0;
+          updateKinematics();
+          tagEl.innerText = "🎒 CẢNH 03 / 04: HIGHLIGHT CƠ ĐỘNG — GẬP PHẲNG 14° MANG ĐI GIAO LƯU ĐẤU GIẢI";
+          txtEl.innerHTML = `Thanh truyền 4 khâu <span style="color:#fde047">GẬP PHẲNG 1 CHẠM</span> · Bỏ gọn balo đi Offline TCG!`;
+          const ang = 0.58 - u * 0.35;
+          camera.position.set(Math.sin(ang) * 460, 185, Math.cos(ang) * 460);
+          controls.target.set(0, 108, 0);
+        } else {
+          setRealBackgroundMode("oak_desk");
+          const u = (t - 14.0) / 4.0;
+          const themes = ["pastel_8_types", "charizard_flame", "gengar_shadow", "tournament_pro"];
+          window.setBoxThemePreset(themes[Math.min(3, Math.floor(u * 4))]);
+          window.setCardDrawChoreography(0.35);
+          document.getElementById("fold-slider").value = 52;
+          document.getElementById("explode-slider").value = Math.round(24 * Math.sin(u * Math.PI));
+          updateKinematics();
+          tagEl.innerText = "🎨 CẢNH 04 / 04: CÁ NHÂN HÓA THEO TRAINER — TỰ CHỌN PHỐI MÀU 8 HỘP & SNAP-FIT";
+          txtEl.innerHTML = `Tùy chọn màu <span style="color:#fde047">LỬA CHARIZARD / BÓNG ĐÊM GENGAR / 8 HỆ PASTEL</span>!`;
+          const ang = -0.25 + u * 0.50;
+          camera.position.set(Math.sin(ang) * 455, 205, Math.cos(ang) * 455);
+          controls.target.set(0, 125, 0);
+        }
+        controls.update();
+      }, 33);
+    }
+
+    window.addEventListener("resize", () => {
+      camera.aspect = (window.innerWidth - 450) / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth - 450, window.innerHeight);
+    });
+
+    rebuildAllGeometry();
+    updateLiveQuote();
+
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</body>
+</html>

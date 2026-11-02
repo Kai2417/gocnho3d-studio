@@ -1,0 +1,387 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <script src="assets/kx_order_integrity.js?v=20261101_cleanname"></script>
+  <meta name="color-scheme" content="dark" />
+  <meta name="darkreader-lock" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🔒 Đăng Nhập & Quản Trị Shop 3D — Khối Xinh 3D Studio</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔒</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #090d16;
+      --card: #111827;
+      --border: #1e293b;
+      --accent: #ff6b2c;
+      --teal: #14b8a6;
+      --gold: #fbbf24;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: radial-gradient(circle at 20% 0%, #172036 0%, #090d16 65%);
+      color: var(--text);
+      font-family: 'Be Vietnam Pro', system-ui, sans-serif;
+      min-height: 100vh;
+      padding: 28px 18px 110px;
+    }
+    .container { max-width: 1120px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
+    .top-bar {
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+      background: rgba(17, 24, 39, 0.92); border: 1px solid rgba(255,255,255,0.14);
+      padding: 18px 24px; border-radius: 22px; box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 42px; padding: 0 18px;
+      border-radius: 999px; border: 0; font-weight: 800; font-size: 13px; cursor: pointer;
+      text-decoration: none; transition: transform 0.15s ease;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary { background: linear-gradient(135deg, #ff6b2c, #f59e0b); color: #120802; }
+    .btn-teal { background: linear-gradient(135deg, #14b8a6, #0d9488); color: #042f2e; }
+    .btn-danger { background: rgba(239, 68, 68, 0.16); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.55); }
+    .grid-2 { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 22px; }
+    @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } }
+    .card {
+      background: rgba(17, 24, 39, 0.92); border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 16px;
+      box-shadow: 0 18px 45px rgba(0,0,0,0.5);
+    }
+    .card h2 { font-size: 18px; font-weight: 900; color: var(--gold); display: flex; align-items: center; gap: 8px; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label { font-size: 12.5px; font-weight: 800; color: #cbd5e1; }
+    .inp {
+      height: 42px; border-radius: 12px; border: 1px solid #334155;
+      background: #0b1120; color: #fff; padding: 0 14px; font-size: 13.5px; outline: none; width: 100%;
+    }
+    .inp:focus { border-color: var(--teal); }
+    .status-banner {
+      display: none; padding: 12px 16px; border-radius: 14px;
+      background: rgba(20, 184, 166, 0.16); border: 1px solid var(--teal);
+      color: #5eead4; font-weight: 800; font-size: 13px;
+    }
+    .login-gate-wrap {
+      max-width: 460px; margin: 48px auto;
+      background: linear-gradient(165deg, rgba(17, 24, 39, 0.96), rgba(9, 13, 22, 0.98));
+      border: 1.5px solid rgba(251, 191, 36, 0.45);
+      border-radius: 26px; padding: 30px 26px;
+      box-shadow: 0 28px 70px rgba(0, 0, 0, 0.82);
+      display: flex; flex-direction: column; gap: 16px;
+    }
+  </style>
+</head>
+<body>
+  <!-- CỔNG ĐĂNG NHẬP QUẢN TRỊ SHOP 3D (máy chủ kiểm tra phiên, không còn mật khẩu mặc định) -->
+  <section id="admin-login-gate" class="login-gate-wrap" aria-label="Đăng Nhập Quản Trị Shop 3D">
+    <div style="text-align:center;">
+      <div style="font-size:38px;margin-bottom:6px;">🔒</div>
+      <div style="font-size:11.5px;font-weight:800;color:#5eead4;text-transform:uppercase;letter-spacing:0.08em;">KHU VỰC DÀNH RIÊNG CHO CHỦ SHOP</div>
+      <h1 style="font-size:21px;font-weight:900;color:#fef3c7;margin-top:4px;">🔒 Đăng Nhập Quản Trị Shop 3D</h1>
+      <p style="font-size:12.5px;color:#94a3b8;margin-top:6px;line-height:1.45;">
+        Trang quản trị tách biệt hoàn toàn với giao diện khách mua hàng. Vui lòng nhập mật khẩu Admin để mở bảng điều khiển.
+      </p>
+    </div>
+    <form id="admin-login-form" style="display:flex;flex-direction:column;gap:12px;" autocomplete="off">
+      <div class="field">
+        <label for="admin-login-password">Mật khẩu Quản trị Admin:</label>
+        <input type="password" id="admin-login-password" class="inp" placeholder="Nhập mật khẩu Admin..." required autofocus />
+      </div>
+      <button type="submit" id="btn-admin-login-submit" class="btn btn-primary" style="width:100%;height:44px;font-size:14px;">🔓 Đăng Nhập Vào Trang Quản Trị</button>
+      <div id="admin-login-error" style="display:none;padding:10px 12px;border-radius:12px;background:rgba(239,68,68,0.16);border:1px solid #ef4444;color:#fca5a5;font-size:12.5px;font-weight:800;text-align:center;"></div>
+    </form>
+    <div style="text-align:center;border-top:1px solid #1e293b;padding-top:12px;">
+      <a href="khoixinh_3d_hub.html" style="color:#5eead4;font-size:12.5px;font-weight:700;text-decoration:none;">← Quay về Trang Chủ Cửa Hàng 3D (Dành cho Khách)</a>
+    </div>
+  </section>
+
+  <!-- NỘI DUNG QUẢN TRỊ ĐƯỢC BẢO VỆ (CHỈ HIỆN SAU KHI ĐĂNG NHẬP ĐÚNG MẬT KHẨU) -->
+  <div id="admin-protected-content" class="container" style="display:none;">
+    <header class="top-bar">
+      <div>
+        <div style="font-size:11.5px;font-weight:800;color:#5eead4;text-transform:uppercase;letter-spacing:0.08em;">⚙️ TRANG QUẢN TRỊ CHỦ SHOP (ADMIN) · ĐÃ XÁC THỰC</div>
+        <h1 style="font-size:22px;font-weight:900;margin-top:4px;">Cấu Hình Liên Hệ Mèo Béo 3D · Quản Lý Sản Phẩm & Khách Tư Vấn</h1>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <a href="khoixinh_3d_hub.html" class="btn btn-teal">🏠 Về Trang Chủ Cửa Hàng 3D</a>
+        <a href="theme_selector_studio.html" class="btn btn-primary">📦 Đăng / Xóa Sản Phẩm 3D</a>
+        <button type="button" id="btn-admin-logout" class="btn btn-danger">🚪 Đăng Xuất</button>
+      </div>
+    </header>
+
+    <div class="grid-2">
+      <!-- Cột Trái: Form cập nhật thông tin liên lạc thật lên Mèo Béo Của Shop -->
+      <section class="card">
+        <h2>📞 1. Thông Tin Liên Lạc Thật Trong Bụng Mèo Béo 3D</h2>
+        <p style="font-size:13px;color:var(--muted);line-height:1.5;">
+          Nếu bạn để trống SĐT / Zalo / Facebook, hệ thống sẽ <b>tự động ẩn khu vực nút liên lạc</b> đối với khách hàng (không hiển thị nút mẫu/chờ gắn số). Khi bạn điền kênh nào và bấm <b>Lưu Cấu Hình</b>, chỉ những kênh đã cấu hình mới hiển thị cho khách.
+        </p>
+        <form id="admin-contact-form" style="display:flex;flex-direction:column;gap:14px;">
+          <div class="field">
+            <label>Tên Cửa Hàng / Xưởng In 3D:</label>
+            <input type="text" id="adm-shop-name" class="inp" placeholder="VD: Khối Xinh 3D Studio" />
+          </div>
+          <div class="field">
+            <label>Số Điện Thoại / Hotline Thật (Để trống nếu chưa muốn hiện):</label>
+            <input type="text" id="adm-hotline" class="inp" placeholder="VD: 0988.123.456" />
+          </div>
+          <div class="field">
+            <label>Số Zalo hoặc Link Zalo Thật (VD: https://zalo.me/0988123456):</label>
+            <input type="text" id="adm-zalo" class="inp" placeholder="VD: 0988123456 hoặc https://zalo.me/..." />
+          </div>
+          <div class="field">
+            <label>Link Facebook Fanpage / Messenger Thật:</label>
+            <input type="text" id="adm-facebook" class="inp" placeholder="VD: https://m.me/ten_shop_3d" />
+          </div>
+          <div class="field">
+            <label>Số Tài Khoản Ngân Hàng Nhận VietQR (MB / Vietcombank...):</label>
+            <input type="text" id="adm-bank-acc" class="inp" placeholder="VD: 0988123456" />
+          </div>
+          <div class="field">
+            <label>Địa Chỉ Xưởng In 3D:</label>
+            <input type="text" id="adm-address" class="inp" placeholder="VD: Quận 7, TP. Hồ Chí Minh" />
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:4px;">
+            <button type="submit" class="btn btn-primary">💾 Lưu Cấu Hình Liên Hệ Thật</button>
+            <button type="button" id="btn-clear-contacts" class="btn btn-danger">🗑️ Xóa Trống SĐT / Zalo (Ẩn Với Khách)</button>
+          </div>
+          <div id="adm-save-banner" class="status-banner">✅ Đã lưu thông tin liên lạc thật!</div>
+        </form>
+      </section>
+
+      <!-- Cột Phải: Đổi mật khẩu Admin & Bảo mật Quản trị -->
+      <section class="card">
+        <h2>🔑 2. Đổi Mật Khẩu Admin & Bảo Mật Cửa Hàng</h2>
+        <p style="font-size:13px;color:var(--muted);line-height:1.5;">
+          Không còn mật khẩu mặc định. Đổi mật khẩu cần đang đăng nhập + mật khẩu hiện tại; mật khẩu mới (8–64 ký tự) được băm PBKDF2 lưu trên máy chủ, mọi phiên Quản trị cũ bị đăng xuất.
+        </p>
+        <form id="admin-change-pw-form" style="display:flex;flex-direction:column;gap:14px;" autocomplete="off">
+          <div class="field">
+            <label for="adm-cur-pw">Mật khẩu Admin hiện tại:</label>
+            <input type="password" id="adm-cur-pw" class="inp" placeholder="Nhập mật khẩu hiện tại..." required />
+          </div>
+          <div class="field">
+            <label for="adm-new-pw">Mật khẩu Admin mới (8–64 ký tự):</label>
+            <input type="password" id="adm-new-pw" class="inp" placeholder="Nhập mật khẩu mới..." required />
+          </div>
+          <div class="field">
+            <label for="adm-confirm-pw">Nhập lại mật khẩu Admin mới:</label>
+            <input type="password" id="adm-confirm-pw" class="inp" placeholder="Xác nhận mật khẩu mới..." required />
+          </div>
+          <button type="submit" id="btn-change-pw-submit" class="btn btn-teal" style="width:100%;">🔑 Đổi Mật Khẩu Admin</button>
+          <div id="adm-pw-banner" class="status-banner"></div>
+        </form>
+      </section>
+    </div>
+
+    <!-- Mục 2b: Phân loại đơn (thay cho xóa đơn — 2026-11-02) -->
+    <section class="card">
+      <h2>🏷️ Đơn Hàng · Phân Loại (Không Xóa Đơn)</h2>
+      <p style="font-size:13px;color:var(--muted);line-height:1.5;">Đơn ảo/test, khách hủy, khách không mua, sai giá: chọn phân loại + ghi chú. Đơn được ẩn khỏi danh sách đang xử lý nhưng vẫn giữ trong sổ và đếm trong báo cáo ngày.</p>
+      <div id="kx-admin-orders"></div>
+    </section>
+
+    <!-- Mục 3: Đã chuyển Danh sách khách tư vấn về Bộ Phận Vận Hành (:8568) -->
+    <section class="card" style="border-color:rgba(20,184,166,0.45);background:linear-gradient(135deg,#0f172a,#0c1e24);">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+        <div>
+          <h2>💬 3. Danh Sách Khách Cần Tư Vấn (Từ Mèo Béo Chat) → Đã Chuyển Về Bộ Phận Vận Hành</h2>
+          <p style="font-size:13px;color:var(--muted);line-height:1.5;margin-top:6px;">
+            Toàn bộ thông tin khách để lại trong <b>Mèo Béo Chat</b> đã được chuyển thẳng về <b>Bộ Phận Vận Hành (Bước 5 — Đơn Khách Đặt &amp; Khách Cần Tư Vấn CSKH)</b> để nhân viên trực tiếp bấm nhận chat Zalo / gọi điện tư vấn cho khách mà không cần vào trang Admin này.
+          </p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <a href="http://127.0.0.1:8568/quy-trinh#b5" target="_blank" class="btn btn-teal">🚀 Mở Bộ Phận Vận Hành Nhận Chat (:8568) →</a>
+          <a href="/duyet-mau" class="btn btn-primary">🎛️ Mở Link Chung Duyệt Mẫu Shop</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="assets/multisite_dock_suite.js?v=20261101_v10"></script>
+  <script src="assets/multisite_dock.js?v=20261102_sec"></script>
+  <script src="assets/kx_order_labels_admin.js?v=20261102"></script>
+  <script>
+    (function () {
+      const STORAGE_KEY = "kx_shop_contact_config_v1";
+      const ADMIN_SESSION_KEY = "kx_admin_auth_session_v1";
+      const loginGate = document.getElementById("admin-login-gate");
+      const protectedContent = document.getElementById("admin-protected-content");
+      const loginForm = document.getElementById("admin-login-form");
+      const loginPwInp = document.getElementById("admin-login-password");
+      const loginErr = document.getElementById("admin-login-error");
+
+      function showProtectedAdminDashboard() {
+        if (loginGate) loginGate.style.display = "none";
+        if (protectedContent) protectedContent.style.display = "flex";
+        loadAdminContactsAndLeads();
+        if (window.KXOrderLabelsAdmin) window.KXOrderLabelsAdmin.load();
+      }
+
+      function lockAdminDashboard() {
+        try { sessionStorage.removeItem(ADMIN_SESSION_KEY); } catch (_) {}
+        if (protectedContent) protectedContent.style.display = "none";
+        if (loginGate) loginGate.style.display = "flex";
+        if (loginPwInp) { loginPwInp.value = ""; loginPwInp.focus(); }
+      }
+
+      function adminToken() { try { return sessionStorage.getItem(ADMIN_SESSION_KEY) || ""; } catch (_) { return ""; } }
+      // Máy chủ xác nhận phiên (token ngẫu nhiên có hạn) — không tin sessionStorage phía trình duyệt.
+      fetch("/api/admin/session?t=" + Date.now(), { headers: { "X-Studio-Token": adminToken() }, credentials: "same-origin" })
+        .then((r) => r.json()).then((d) => { if (d && d.admin) showProtectedAdminDashboard(); else lockAdminDashboard(); })
+        .catch(() => lockAdminDashboard());
+
+      loginForm?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const password = (loginPwInp?.value || "").trim();
+        if (loginErr) loginErr.style.display = "none";
+        try {
+          const res = await fetch("/api/admin/login", {
+            method: "POST", credentials: "same-origin",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ password }),
+          });
+          const data = await res.json();
+          if (res.ok && data && data.ok) {
+            try { sessionStorage.setItem(ADMIN_SESSION_KEY, data.token || "authenticated"); } catch (_) {}
+            showProtectedAdminDashboard();
+          } else {
+            if (loginErr) {
+              loginErr.textContent = "⚠️ " + ((data && data.error) || "Mật khẩu Admin không đúng!");
+              loginErr.style.display = "block";
+            }
+          }
+        } catch (err) {
+          if (loginErr) {
+            loginErr.textContent = "⚠️ Lỗi kết nối máy chủ.";
+            loginErr.style.display = "block";
+          }
+        }
+      });
+
+      document.getElementById("btn-admin-logout")?.addEventListener("click", () => {
+        fetch("/api/admin/logout", { method: "POST", headers: { "Content-Type": "application/json", "X-Studio-Token": adminToken() }, credentials: "same-origin", body: "{}" }).catch(() => {});
+        lockAdminDashboard();
+      });
+
+      document.getElementById("admin-change-pw-form")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const currentPassword = (document.getElementById("adm-cur-pw")?.value || "").trim();
+        const newPassword = (document.getElementById("adm-new-pw")?.value || "").trim();
+        const confirmPassword = (document.getElementById("adm-confirm-pw")?.value || "").trim();
+        const banner = document.getElementById("adm-pw-banner");
+        if (newPassword !== confirmPassword) {
+          if (banner) {
+            banner.style.display = "block";
+            banner.style.borderColor = "#ef4444";
+            banner.style.color = "#fca5a5";
+            banner.textContent = "⚠️ Mật khẩu mới và xác nhận mật khẩu không khớp!";
+          }
+          return;
+        }
+        try {
+          const res = await fetch("/api/admin/change-password", {
+            method: "POST", credentials: "same-origin",
+            headers: { "Content-Type": "application/json", "X-Studio-Token": adminToken() },
+            body: JSON.stringify({ currentPassword, newPassword }),
+          });
+          const data = await res.json();
+          if (res.ok && data && data.ok) {
+            try { sessionStorage.setItem(ADMIN_SESSION_KEY, data.token || "authenticated"); } catch (_) {}
+            if (banner) {
+              banner.style.display = "block";
+              banner.style.borderColor = "#14b8a6";
+              banner.style.color = "#5eead4";
+              banner.textContent = "✅ " + (data.message || "Đã đổi mật khẩu Quản trị thành công!");
+            }
+            document.getElementById("adm-cur-pw").value = "";
+            document.getElementById("adm-new-pw").value = "";
+            document.getElementById("adm-confirm-pw").value = "";
+          } else if (banner) {
+            banner.style.display = "block";
+            banner.style.borderColor = "#ef4444";
+            banner.style.color = "#fca5a5";
+            banner.textContent = "⚠️ " + ((data && data.error) || "Không đổi được mật khẩu!");
+          }
+        } catch (err) {
+          if (banner) {
+            banner.style.display = "block";
+            banner.style.borderColor = "#ef4444";
+            banner.style.color = "#fca5a5";
+            banner.textContent = "⚠️ Lỗi kết nối: " + ((err && err.message) || err);
+          }
+        }
+      });
+
+      function populateForm(cfg) {
+        if (!cfg) return;
+        document.getElementById("adm-shop-name").value = cfg.shopName || "Khối Xinh 3D Studio";
+        document.getElementById("adm-hotline").value = cfg.hotline || "";
+        document.getElementById("adm-zalo").value = cfg.zalo || "";
+        document.getElementById("adm-facebook").value = cfg.facebook || "";
+        document.getElementById("adm-bank-acc").value = cfg.bankAccount || "";
+        document.getElementById("adm-address").value = cfg.address || "";
+      }
+
+      function loadAdminContactsAndLeads() {
+        fetch("/api/shop-contact?admin=1&t=" + Date.now(), { headers: { "X-Studio-Token": adminToken() }, credentials: "same-origin" })
+          .then((r) => r.json())
+          .then((res) => {
+            const serverCfg = (res && res.config) ? res.config : res;
+            let localCfg = {};
+            try { localCfg = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); } catch (_) {}
+            populateForm({ ...localCfg, ...(serverCfg || {}) });
+          })
+          .catch(() => {});
+        if (window.S3DDockSuite && typeof window.S3DDockSuite.refreshAdminLeadsUI === "function") {
+          window.S3DDockSuite.refreshAdminLeadsUI();
+        }
+      }
+
+      document.getElementById("admin-contact-form")?.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const nextCfg = {
+          shopName: document.getElementById("adm-shop-name").value.trim(),
+          hotline: document.getElementById("adm-hotline").value.trim(),
+          zalo: document.getElementById("adm-zalo").value.trim(),
+          facebook: document.getElementById("adm-facebook").value.trim(),
+          bankAccount: document.getElementById("adm-bank-acc").value.trim(),
+          address: document.getElementById("adm-address").value.trim(),
+        };
+        if (window.KXShopContact && window.KXShopContact.saveShopContactConfig) {
+          window.KXShopContact.saveShopContactConfig(nextCfg);
+        } else {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(nextCfg));
+        }
+        const b = document.getElementById("adm-save-banner");
+        b.textContent = "✅ Đã lưu thông tin liên lạc thật!";
+        b.style.display = "block";
+        setTimeout(() => { b.style.display = "none"; }, 4000);
+      });
+
+      document.getElementById("btn-clear-contacts")?.addEventListener("click", () => {
+        const emptyCfg = { shopName: "Khối Xinh 3D Studio", hotline: "", zalo: "", facebook: "", bankAccount: "", address: "" };
+        populateForm(emptyCfg);
+        if (window.KXShopContact && window.KXShopContact.saveShopContactConfig) {
+          window.KXShopContact.saveShopContactConfig(emptyCfg);
+        } else {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(emptyCfg));
+        }
+        const b = document.getElementById("adm-save-banner");
+        b.textContent = "✅ Đã xóa trống SĐT & Zalo (Tự động ẩn vùng liên lạc phía khách hàng)!";
+        b.style.display = "block";
+      });
+
+      document.getElementById("btn-refresh-leads")?.addEventListener("click", () => {
+        if (window.S3DDockSuite && typeof window.S3DDockSuite.refreshAdminLeadsUI === "function") {
+          window.S3DDockSuite.refreshAdminLeadsUI();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

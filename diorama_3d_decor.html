@@ -1,0 +1,1607 @@
+<!doctype html>
+<html lang="vi" class="dark">
+<head>
+  <meta charset="utf-8" />
+  <script src="assets/kx_order_integrity.js?v=20261101d"></script>
+  <meta name="color-scheme" content="dark" />
+  <meta name="darkreader-lock" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5" />
+  <title>Mẫu 3: Dựng Ảnh Phòng Sang 3D AutoCAD / Blender & Cửa Hàng Đặt In 3D | Khối Xinh 3D</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧊</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <style>
+    :root {
+      --bg: #090c10;
+      --background: #090c10;
+      --glass: rgba(13, 17, 24, 0.91);
+      --glass-card: rgba(18, 24, 34, 0.94);
+      --border: rgba(255, 255, 255, 0.14);
+      --control-border: #3a4358;
+      --border-focus: rgba(20, 184, 166, 0.65);
+      --fg: #f3f6fa;
+      --foreground: #f3f6fa;
+      --muted: #94a3b8;
+      --teal: #14b8a6;
+      --teal-glow: rgba(20, 184, 166, 0.35);
+      --orange: #ff6b2c;
+      --accent: #ff6b2c;
+      --accent-strong: #ff8247;
+      --accent-ink: #0b0d13;
+      --secondary: #14b8a6;
+      --secondary-strong: #2dd4bf;
+      --highlight: #ffc83d;
+      --gold: #fbbf24;
+      --cyan: #38bdf8;
+      --red: #ef4444;
+      --surface: #11151e;
+      --surface-muted: #171c26;
+      --font-sans: 'Be Vietnam Pro', system-ui, sans-serif;
+      --font-display: 'Be Vietnam Pro', system-ui, sans-serif;
+      --clay: 0 2px 0 rgba(255, 255, 255, 0.06) inset,
+              0 -3px 0 rgba(0, 0, 0, 0.35) inset,
+              0 18px 36px -14px rgba(0, 0, 0, 0.6);
+      --clay-accent: 0 2px 0 rgba(255, 255, 255, 0.28) inset,
+                     0 -3px 0 rgba(120, 34, 4, 0.55) inset,
+                     0 14px 28px -10px rgba(255, 107, 44, 0.45);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: 'Be Vietnam Pro', system-ui, sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    /* 100vh Interactive 3D Room Studio Hero */
+    #room-planner-hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      min-height: 680px;
+      overflow: hidden;
+      user-select: none;
+      border-bottom: 1px solid var(--border);
+      background: radial-gradient(circle at 50% 42%, #1e293b 0%, #0f172a 65%, #090c10 100%);
+    }
+    #room-bg-backdrop {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background-image: radial-gradient(circle at 52% 38%, #1e2638 0%, #0f1420 58%, #070a10 100%);
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.72) saturate(1.08);
+      transition: background-image 0.35s ease;
+    }
+    #room-bg-vignette {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background: radial-gradient(circle at 50% 45%, rgba(9, 12, 18, 0.15) 0%, rgba(9, 12, 18, 0.68) 100%);
+      pointer-events: none;
+    }
+    .bedroom-tpl-list {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      max-height: 215px;
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+    .bedroom-tpl-card {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 8px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.04);
+      cursor: pointer;
+      transition: all 0.16s ease;
+      width: 100%;
+    }
+    .bedroom-tpl-card:hover {
+      background: rgba(20, 184, 166, 0.14);
+      border-color: var(--teal);
+      transform: translateX(2px);
+    }
+    .bedroom-tpl-card.active {
+      background: linear-gradient(135deg, rgba(20, 184, 166, 0.24), rgba(56, 189, 248, 0.18));
+      border-color: #2dd4bf;
+      box-shadow: 0 0 0 1px rgba(45, 212, 191, 0.45);
+    }
+    .bedroom-tpl-thumb {
+      width: 52px;
+      height: 36px;
+      border-radius: 7px;
+      object-fit: cover;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      flex-shrink: 0;
+    }
+
+    #diorama-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: 1; cursor: grab; }
+    #diorama-canvas.dragging-item { cursor: move !important; }
+    #hotspots-layer { position: absolute; inset: 0; pointer-events: none; z-index: 10; }
+
+    /* Top Control Bar (Single Row - Never Wraps Over Side Panels) */
+    .top-bar { position: fixed; top: 8px; left: 12px; right: 12px; z-index: 60; display: flex; justify-content: space-between; align-items: center; gap: 6px; pointer-events: none; flex-wrap: nowrap; transition: transform .24s ease, opacity .22s ease; }
+    .top-pill { pointer-events: auto; display: flex; align-items: center; gap: 4px; background: var(--glass); border: 1px solid var(--border); backdrop-filter: blur(16px); border-radius: 999px; padding: 4px 9px; box-shadow: 0 10px 30px rgba(0,0,0,0.55); flex-wrap: nowrap; overflow-x: auto; max-width: 100%; scrollbar-width: none; }
+    .top-pill::-webkit-scrollbar { display: none; }
+    .btn-top { flex: 0 0 auto; white-space: nowrap; border: 1px solid transparent; background: rgba(255,255,255,0.07); color: var(--fg); font-size: 11px; font-weight: 700; padding: 5px 9px; border-radius: 999px; cursor: pointer; transition: all .15s ease; display: inline-flex; align-items: center; gap: 4px; text-decoration: none; }
+    .btn-top:hover { background: rgba(255,255,255,0.16); color: #fff; transform: translateY(-1px); }
+    .btn-top.active { background: var(--teal); color: #05221f; font-weight: 800; border-color: var(--teal); }
+    .btn-top.cad-mode.active { background: var(--cyan); color: #041d29; font-weight: 900; border-color: var(--cyan); }
+    .btn-top.rotate-stop { background: rgba(239,68,68,0.22); border-color: #ef4444; color: #fecaca; font-weight: 900; }
+    .btn-top.rotate-play { background: rgba(20,184,166,0.22); border-color: var(--teal); color: #5eead4; font-weight: 900; }
+    .btn-top.zen-btn { background: linear-gradient(135deg, rgba(16,185,129,0.26), rgba(56,189,248,0.26)); border-color: #34d399; color: #a7f3d0; font-weight: 900; }
+    .btn-top.zen-btn:hover { background: #10b981; color: #032218; }
+    .btn-top.primary { background: linear-gradient(135deg, #ff6b2c, #ea580c); color: #fff; font-weight: 800; }
+    .fps-badge { flex: 0 0 auto; white-space: nowrap; font-size: 10px; font-weight: 900; color: #5eead4; background: rgba(20,184,166,0.18); border: 1px solid var(--teal); padding: 2px 7px; border-radius: 999px; }
+
+    /* Floating Panorama Mini-Bar (Visible when Zen Panorama Mode is Active) */
+    #zen-floating-bar {
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-80px);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 99990;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(9, 13, 20, 0.92);
+      border: 1.5px solid #34d399;
+      border-radius: 999px;
+      padding: 6px 12px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.85);
+      backdrop-filter: blur(16px);
+      transition: transform .26s cubic-bezier(0.16, 1, 0.3, 1), opacity .22s ease;
+      max-width: 96vw;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    body.zen-panorama-mode #zen-floating-bar {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+    body.zen-panorama-mode .top-bar,
+    body.zen-panorama-mode .dio-panel,
+    body.zen-panorama-mode .shop-card,
+    body.zen-panorama-mode .center-guide-dock,
+    body.zen-panorama-mode #studio3d-multisite-dock,
+    body.zen-panorama-mode #studio3d-omni-wrap,
+    body.zen-panorama-mode .edge-restore-btn {
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+      display: none !important;
+    }
+    body.hide-3d-pins #hotspots-layer {
+      display: none !important;
+    }
+    /* Auto-hide fixed room side panels when user scrolls down into the Full Store */
+    body.scrolled-to-store .dio-panel,
+    body.scrolled-to-store .shop-card,
+    body.scrolled-to-store .center-guide-dock,
+    body.scrolled-to-store .edge-restore-btn {
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+
+    /* Individual Panel Collapse & Edge Restore Tabs */
+    .dio-panel, .shop-card, .center-guide-dock {
+      transition: transform .22s cubic-bezier(0.16, 1, 0.3, 1), opacity .18s ease;
+    }
+    body.left-panel-collapsed .dio-panel {
+      transform: translateX(-380px);
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+    body.right-panel-collapsed .shop-card {
+      transform: translateX(390px);
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+    .panel-collapse-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 6px;
+      margin-bottom: 2px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .btn-panel-fold {
+      border: 1px solid rgba(56,189,248,0.45);
+      background: rgba(56,189,248,0.12);
+      color: #bae6fd;
+      font-size: 10.5px;
+      font-weight: 800;
+      padding: 3px 9px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: .15s;
+    }
+    .btn-panel-fold:hover { background: var(--cyan); color: #041d29; }
+    .edge-restore-btn {
+      position: fixed;
+      top: 58px;
+      z-index: 36;
+      border: 1.5px solid var(--cyan);
+      background: rgba(11, 16, 25, 0.94);
+      color: #bae6fd;
+      font-size: 11.5px;
+      font-weight: 800;
+      padding: 7px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+      backdrop-filter: blur(12px);
+      display: none;
+      align-items: center;
+      gap: 5px;
+      transition: .18s;
+    }
+    .edge-restore-btn:hover { background: var(--cyan); color: #041d29; }
+    #btn-restore-left-panel { left: 12px; }
+    #btn-restore-right-panel { right: 12px; }
+    body.left-panel-collapsed #btn-restore-left-panel { display: inline-flex; }
+    body.right-panel-collapsed #btn-restore-right-panel { display: inline-flex; }
+
+    /* Center Bottom Floating CAD / Blender Toolbar */
+    .center-guide-dock {
+      position: fixed;
+      bottom: 56px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 35;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(13, 17, 24, 0.95);
+      border: 1.5px solid rgba(56, 189, 248, 0.55);
+      border-radius: 999px;
+      padding: 6px 14px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.8);
+      backdrop-filter: blur(14px);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #e2e8f0;
+      white-space: nowrap;
+      max-width: 96vw;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .center-guide-dock::-webkit-scrollbar { display: none; }
+    .guide-pill-btn {
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 9px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: .15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      text-decoration: none;
+    }
+    .guide-pill-btn:hover { background: var(--teal); color: #04211d; border-color: var(--teal); }
+    .guide-pill-btn.active { background: var(--cyan); color: #041d29; border-color: var(--cyan); }
+
+    /* Left Control Panel */
+    .dio-panel { position: fixed; top: 54px; left: 12px; z-index: 30; width: 304px; max-height: calc(100dvh - 116px); scrollbar-width: none; overflow-y: auto; background: var(--glass); border: 1px solid var(--border); backdrop-filter: blur(18px); border-radius: 18px; padding: 13px; box-shadow: 0 20px 50px rgba(0,0,0,0.65); display: flex; flex-direction: column; gap: 10px; scrollbar-width: thin; }
+    .dio-panel::-webkit-scrollbar { width: 5px; }
+    .dio-panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 999px; }
+    .sec-label { font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.4px; color: var(--muted); display: flex; justify-content: space-between; align-items: center; }
+
+    .ctrl-row { display: flex; gap: 5px; flex-wrap: wrap; }
+    .dio-btn { flex: 1; min-width: 76px; height: 31px; border-radius: 9px; border: 1px solid var(--border); background: rgba(255,255,255,0.05); color: var(--fg); font-size: 11px; font-weight: 700; cursor: pointer; transition: all .15s ease; display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 0 7px; }
+    .dio-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
+    .dio-btn.active { background: var(--orange); border-color: var(--orange); color: #160802; font-weight: 800; }
+    .dio-btn.teal.active { background: var(--teal); border-color: var(--teal); color: #04211d; font-weight: 800; }
+    .dio-btn.cyan.active { background: var(--cyan); border-color: var(--cyan); color: #041d29; font-weight: 800; }
+
+    /* Catalog Model Selector Grid */
+    .models-shelf { display: flex; flex-direction: column; gap: 5px; max-height: 175px; overflow-y: auto; padding-right: 4px; }
+    .model-chip-btn { display: flex; align-items: center; gap: 8px; padding: 6px 9px; border-radius: 10px; border: 1px solid var(--border); background: rgba(255,255,255,0.03); color: var(--fg); text-align: left; cursor: pointer; transition: all .15s ease; font-size: 11.5px; }
+    .model-chip-btn:hover { background: rgba(255,255,255,0.09); border-color: var(--teal); transform: translateX(2px); }
+    .model-chip-btn.in-room { border-color: var(--teal); background: rgba(20,184,166,0.12); }
+    .chip-icon { width: 26px; height: 26px; border-radius: 7px; background: rgba(255,255,255,0.08); display: grid; place-items: center; font-size: 13px; flex-shrink: 0; }
+
+    /* Right Live Product / CAD Block Inspector & Controller */
+    .shop-card { position: fixed; top: 54px; right: 12px; z-index: 30; width: 312px; max-height: calc(100dvh - 116px); scrollbar-width: none; overflow-y: auto; background: var(--glass-card); border: 1px solid var(--border); backdrop-filter: blur(18px); border-radius: 18px; padding: 14px; box-shadow: 0 20px 50px rgba(0,0,0,0.65); display: flex; flex-direction: column; gap: 9px; scrollbar-width: thin; }
+    .badge-lead { font-size: 10.5px; font-weight: 800; color: #5eead4; background: rgba(20,184,166,0.18); border: 1px solid var(--teal); padding: 2px 8px; border-radius: 999px; }
+    .buy-btn { width: 100%; height: 39px; border-radius: 11px; border: 0; background: linear-gradient(135deg, #ff6b2c, #ea580c); color: #fff; font-size: 12.5px; font-weight: 800; cursor: pointer; box-shadow: 0 8px 22px rgba(255,107,44,0.4); transition: all .16s ease; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+    .buy-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+    /* Live 3D Editor Toolbar & D-Pad on Selected Product / CAD Furniture */
+    .editor-box { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 7px; }
+    .editor-toolbar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+    .btn-edit-action { height: 28px; border-radius: 7px; border: 1px solid var(--border); background: rgba(255,255,255,0.06); color: var(--fg); font-size: 10.5px; font-weight: 700; cursor: pointer; transition: .14s; display: inline-flex; align-items: center; justify-content: center; gap: 3px; }
+    .btn-edit-action:hover { background: var(--teal); border-color: var(--teal); color: #04211d; }
+    .btn-edit-action.danger:hover { background: rgba(239,68,68,0.25); border-color: var(--red); color: #fca5a5; }
+
+    /* Interactive 3D Hotspot Pins */
+    .dio-pin { position: absolute; transform: translate(-50%, -100%); pointer-events: auto; cursor: pointer; display: flex; align-items: center; gap: 5px; background: rgba(13,17,24,0.88); border: 1.5px solid rgba(255,255,255,0.28); color: #fff; padding: 3px 8px 3px 4px; border-radius: 999px; font-size: 10.5px; font-weight: 800; box-shadow: 0 6px 16px rgba(0,0,0,0.55); transition: all .16s ease; white-space: nowrap; }
+    .dio-pin .pin-label { max-width: 125px; overflow: hidden; text-overflow: ellipsis; opacity: 0.9; }
+    .dio-pin:hover { transform: translate(-50%, -108%) scale(1.06); border-color: var(--teal); background: #0c1520; z-index: 25; }
+    .dio-pin.active { border-color: var(--orange); background: rgba(34,14,6,0.95); color: #ffedd5; box-shadow: 0 8px 22px rgba(255,107,44,0.45); z-index: 20; }
+    .dio-pin.cad-pin { border-color: rgba(56,189,248,0.55); background: rgba(8,24,38,0.88); color: #bae6fd; }
+    .dio-pin.cad-pin.active { border-color: var(--cyan); background: rgba(12,38,58,0.96); color: #fff; }
+    .pin-circle { width: 19px; height: 19px; border-radius: 50%; background: var(--teal); color: #04201c; display: grid; place-items: center; font-size: 10px; font-weight: 900; flex-shrink: 0; }
+    .dio-pin.cad-pin .pin-circle { background: var(--cyan); color: #041d29; }
+    .dio-pin.active .pin-circle { background: var(--orange); color: #fff; }
+
+    /* Modal: 🏗️ Dựng Ảnh Phòng Sang 3D AutoCAD / Blender */
+    .modal-backdrop { position: fixed; inset: 0; z-index: 9992; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); display: none; place-items: center; padding: 16px; }
+    .modal-backdrop.open { display: grid; }
+    .modal-box { width: 100%; max-width: 640px; background: var(--glass-card); border: 1px solid var(--border); border-radius: 20px; padding: 20px; box-shadow: 0 25px 60px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 13px; max-height: 90vh; overflow-y: auto; }
+    .modal-head { display: flex; justify-content: space-between; align-items: center; }
+    .btn-close-modal { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border); background: transparent; color: var(--fg); cursor: pointer; font-size: 16px; display: grid; place-items: center; }
+    .drop-zone { border: 2px dashed rgba(56,189,248,0.65); border-radius: 14px; padding: 18px; text-align: center; cursor: pointer; background: rgba(56,189,248,0.07); transition: all .16s ease; }
+    .drop-zone:hover { border-color: var(--cyan); background: rgba(56,189,248,0.14); }
+    .preset-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .preset-card { padding: 10px; border-radius: 12px; border: 1px solid var(--border); background: rgba(255,255,255,0.04); cursor: pointer; text-align: left; transition: all .15s ease; font-size: 12px; color: var(--fg); }
+    .preset-card:hover { border-color: var(--teal); background: rgba(255,255,255,0.09); transform: translateY(-1px); }
+
+    /* Drawer: 🛡️ Kiểm Duyệt & Biên Tập Trưng Bày */
+    .drawer-backdrop { position: fixed; inset: 0; z-index: 9993; background: rgba(0,0,0,0.65); backdrop-filter: blur(6px); display: none; }
+    .drawer-backdrop.open { display: block; }
+    .drawer-panel { position: fixed; top: 0; right: 0; bottom: 0; width: 440px; max-width: 100vw; background: #0e1219; border-left: 1px solid var(--border); z-index: 9994; padding: 20px; display: flex; flex-direction: column; gap: 14px; box-shadow: -15px 0 45px rgba(0,0,0,0.7); transform: translateX(100%); transition: transform .24s cubic-bezier(0.16, 1, 0.3, 1); }
+    .drawer-backdrop.open .drawer-panel { transform: translateX(0); }
+    .review-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px; border-radius: 12px; border: 1px solid var(--border); background: rgba(255,255,255,0.03); }
+    .switch-toggle { position: relative; width: 38px; height: 22px; cursor: pointer; }
+    .switch-toggle input { opacity: 0; width: 0; height: 0; }
+    .slider-toggle { position: absolute; inset: 0; background: rgba(255,255,255,0.18); border-radius: 999px; transition: .18s; }
+    .slider-toggle:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background: #fff; border-radius: 50%; transition: .18s; }
+    input:checked + .slider-toggle { background: var(--teal); }
+    input:checked + .slider-toggle:before { transform: translateX(16px); }
+
+    /* Slide-Over Cart Drawer */
+    #cart-slideover { position: fixed; top: 0; right: 0; bottom: 0; width: 420px; max-width: 100vw; background: #0c1017; border-left: 1px solid var(--border); z-index: 9996; padding: 20px; display: flex; flex-direction: column; gap: 14px; box-shadow: -15px 0 45px rgba(0,0,0,0.75); transform: translateX(100%); transition: transform .24s ease; }
+    #cart-slideover.open { transform: translateX(0); }
+
+    /* =======================================================================
+       FULL STORE & CUSTOM 3D SECTIONS BELOW 3D ROOM STUDIO (MẪU 1 UNIFIED)
+       ======================================================================= */
+    #mau3-full-store {
+      position: relative;
+      z-index: 20;
+      background: linear-gradient(180deg, #090c10 0%, #0d1118 100%);
+      padding-bottom: 64px;
+    }
+    .font-display { font-family: var(--font-display); }
+    .kx-section { max-width: 1180px; margin: 0 auto; padding: 56px 16px 0; }
+    .sec-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px; }
+    .sec-title { font-family: var(--font-display); font-size: 28px; font-weight: 800; line-height: 1.2; }
+    .btn-clay {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      height: 44px; padding: 0 22px; border-radius: 999px;
+      background: var(--accent); color: var(--accent-ink);
+      font-weight: 700; font-size: 14px; border: 0; cursor: pointer;
+      box-shadow: var(--clay-accent); transition: transform 0.15s ease, background 0.15s ease;
+      text-decoration: none;
+    }
+    .btn-clay:hover { background: var(--accent-strong); transform: translateY(-1px); }
+    .btn-outline {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      height: 44px; padding: 0 20px; border-radius: 999px;
+      border: 1px solid var(--border); background: rgba(17, 20, 28, 0.72);
+      color: var(--foreground); font-weight: 600; font-size: 14px; cursor: pointer;
+      transition: border-color 0.15s ease; text-decoration: none;
+    }
+    .btn-outline:hover { border-color: var(--accent-strong); }
+
+    /* Shop This Room BOM Strip */
+    .bom-strip-panel {
+      background: linear-gradient(135deg, rgba(20, 184, 166, 0.12), rgba(56, 189, 248, 0.08));
+      border: 1px solid rgba(20, 184, 166, 0.4);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--clay);
+    }
+    .bom-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .bom-item-card {
+      background: rgba(17, 21, 30, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* Product Catalog */
+    .cat-top-strip { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; list-style: none; }
+    .cat-top-pill {
+      display: inline-flex; align-items: center; height: 40px; padding: 0 16px;
+      border-radius: 999px; border: 1px solid var(--border); background: var(--surface);
+      color: var(--foreground); font-size: 13.5px; font-weight: 600; cursor: pointer; white-space: nowrap;
+    }
+    .cat-top-pill.active { background: var(--teal); color: #04211d; border-color: var(--teal); font-weight: 800; }
+    .catalog-layout { margin-top: 24px; display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 28px; align-items: start; }
+    .catalog-sidebar { display: flex; flex-direction: column; gap: 20px; position: sticky; top: 68px; }
+    .filter-group-title { font-size: 12.5px; font-weight: 700; color: var(--foreground); margin-bottom: 8px; }
+    .filter-pills-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
+    .sidebar-pill {
+      display: inline-flex; align-items: center; min-height: 34px; padding: 4px 12px;
+      border-radius: 999px; border: 1px solid var(--border); background: var(--surface);
+      color: var(--foreground); font-size: 12.5px; cursor: pointer; transition: 0.15s;
+    }
+    .sidebar-pill:hover { border-color: var(--teal); }
+    .sidebar-pill.active { background: var(--teal); color: #04211d; border-color: var(--teal); font-weight: 700; }
+
+    .prod-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .prod-card {
+      display: flex; flex-direction: column; overflow: hidden; border-radius: 20px;
+      border: 1px solid var(--border); background: var(--surface); box-shadow: var(--clay);
+      cursor: pointer; transition: transform 0.18s ease, border-color 0.18s ease;
+    }
+    .prod-card:hover { transform: translateY(-4px); border-color: var(--teal); }
+    .prod-thumb { position: relative; aspect-ratio: 1 / 1; background: var(--surface-muted); overflow: hidden; }
+    .prod-thumb-glow { position: absolute; inset: 0; display: grid; place-items: center; padding: 12px; }
+    .prod-thumb-glow img { width: 88%; height: 88%; object-fit: contain; filter: drop-shadow(0 12px 18px rgba(0,0,0,0.45)); }
+    .kx-badge-left { position: absolute; top: 12px; left: 12px; border-radius: 999px; background: var(--highlight); color: var(--accent-ink); padding: 4px 10px; font-size: 11.5px; font-weight: 700; }
+    .kx-badge-right { position: absolute; top: 12px; right: 12px; border-radius: 999px; background: var(--secondary); color: var(--accent-ink); padding: 4px 10px; font-size: 11.5px; font-weight: 700; }
+    .prod-body { display: flex; flex: 1; flex-direction: column; gap: 4px; padding: 15px; }
+    .prod-title { font-size: 16.5px; font-weight: 700; line-height: 1.35; color: var(--foreground); }
+    .prod-desc { font-size: 13px; color: var(--muted); line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .prod-foot { margin-top: auto; padding-top: 10px; display: flex; align-items: center; justify-content: space-between; gap: 6px; flex-wrap: wrap; }
+    .prod-price { font-size: 15px; font-weight: 800; color: var(--gold); white-space: nowrap; }
+    .prod-actions { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+    .btn-card-3d { height: 30px; padding: 0 9px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface-muted); color: var(--fg); font-size: 11.5px; font-weight: 700; cursor: pointer; }
+    .btn-card-3d:hover { border-color: var(--teal); color: var(--teal); }
+    .btn-card-room { border-color: rgba(20,184,166,0.55); background: rgba(20,184,166,0.15); color: #5eead4; }
+    .btn-card-add { height: 30px; padding: 0 11px; border-radius: 999px; border: 0; background: var(--accent); color: var(--accent-ink); font-size: 11.5px; font-weight: 800; cursor: pointer; }
+
+    /* Interactive 3D Product Stage (#trung-mau-3d) */
+    .kx-showcase-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+    .kx-stage-frame { position: relative; aspect-ratio: 4 / 3; border-radius: 24px; overflow: hidden; border: 1px solid var(--border); background: #07080c; box-shadow: var(--clay); }
+    #kx-showcase-canvas { width: 100%; height: 100%; display: block; cursor: grab; }
+    .kx-stage-hint-top { position: absolute; top: 14px; left: 14px; padding: 6px 12px; border-radius: 999px; background: rgba(17, 20, 28, 0.80); border: 1px solid var(--border); font-size: 12px; color: var(--muted); pointer-events: none; }
+    .kx-stage-toolbar-below { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; }
+    .kx-ctrl-pill { height: 36px; padding: 0 13px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--foreground); font-size: 12.5px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+    .kx-ctrl-pill:hover, .kx-ctrl-pill.active { border-color: var(--teal); color: #5eead4; }
+    .kx-swatch-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+    .kx-swatch-btn { width: 34px; height: 34px; border-radius: 999px; border: 2px solid var(--border); cursor: pointer; }
+    .kx-swatch-btn.active { transform: scale(1.1); border-color: #ffffff; box-shadow: 0 0 0 2px var(--teal); }
+    .kx-qty-pill { display: inline-flex; align-items: center; height: 44px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); overflow: hidden; }
+    .kx-qty-pill button { width: 40px; height: 100%; background: transparent; border: 0; color: var(--foreground); font-size: 18px; font-weight: 700; cursor: pointer; }
+    .kx-qty-pill span { min-width: 32px; text-align: center; font-weight: 700; font-size: 14px; }
+
+    /* Custom Slicer & 2D->3D Studio */
+    .clay-panel { background: var(--surface-muted); border: 1px solid var(--border); border-radius: 28px; padding: 28px; }
+    .kx-card-surface { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; box-shadow: var(--clay); }
+    .two-col { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 24px; }
+    .drop-box { border: 2px dashed var(--border); border-radius: 20px; background: var(--surface); padding: 20px; text-align: center; cursor: pointer; transition: border-color 0.15s; }
+    .drop-box:hover, .drop-box.drag { border-color: var(--teal); }
+    .slicer-preview-wrap { margin-top: 14px; border-radius: 18px; overflow: hidden; border: 1px solid var(--border); background: #07080c; height: 240px; }
+    #slicer-canvas { width: 100%; height: 100%; display: block; }
+    .form-grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+    .field-lbl { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; color: var(--foreground); }
+    .kx-select, .kx-input { height: 42px; border-radius: 12px; border: 1px solid var(--control-border); background: var(--surface); color: var(--foreground); padding: 0 12px; font-size: 13.5px; outline: none; }
+    .kx-select:focus, .kx-input:focus { border-color: var(--teal); }
+    .steps-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; list-style: none; }
+    .steps-pills li { padding: 6px 14px; border-radius: 999px; font-size: 12px; font-weight: 700; background: var(--surface); color: var(--muted); border: 1px solid var(--border); }
+    .steps-pills li.active { background: var(--teal); color: #04211d; border-color: var(--teal); }
+    .steps-pills li.done { background: var(--secondary); color: var(--accent-ink); border-color: var(--secondary); }
+    .quote-result-box { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+    .quote-big-price { font-size: 30px; font-weight: 800; color: var(--highlight); }
+    .kx-pay-option { display: flex; align-items: flex-start; gap: 12px; padding: 13px 15px; border-radius: 16px; border: 1px solid var(--border); background: var(--surface-muted); cursor: pointer; }
+    .kx-pay-option.active { border-color: var(--teal); background: rgba(20,184,166,0.12); }
+
+    .cart-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.72); backdrop-filter: blur(4px); z-index: 9997; display: none; justify-content: flex-end; }
+    .cart-backdrop.open { display: flex; }
+    .cart-drawer { width: min(420px, 100vw); height: 100%; background: var(--surface); border-left: 1px solid var(--border); padding: 22px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; }
+    .freeship-bar { height: 8px; border-radius: 999px; background: var(--surface-muted); overflow: hidden; margin-top: 6px; }
+    .freeship-fill { height: 100%; background: var(--teal); transition: width 0.25s ease; }
+    .cart-item { background: var(--surface-muted); border: 1px solid var(--border); border-radius: 16px; padding: 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    #kx-fullscreen-dialog { width: 100vw; max-width: 100vw; height: 100vh; max-height: 100vh; border: 0; padding: 0; background: #07080c; color: var(--foreground); overflow: hidden; }
+    #kx-fullscreen-dialog::backdrop { background: rgba(0,0,0,0.88); }
+
+    @media (max-width: 980px) {
+      .center-guide-dock { display: none; }
+      .dio-panel { width: calc(100vw - 24px); max-height: 36dvh; top: 58px; }
+      .shop-card { width: calc(100vw - 24px); top: auto; bottom: 56px; right: 12px; left: 12px; max-height: 42dvh; }
+      .catalog-layout, .kx-showcase-grid, .two-col { grid-template-columns: 1fr; }
+      .catalog-sidebar { position: static; }
+      .prod-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 767px) {
+      #room-planner-hero { height: 100dvh; min-height: 540px; }
+      .top-bar { left: 6px; right: 6px; top: 6px; flex-direction: column; align-items: stretch; gap: 4px; }
+      .top-pill { width: 100%; max-width: calc(100vw - 12px); padding: 4px 8px; }
+      .dio-title-extra { display: none; }
+      .dio-panel { top: 88px; width: calc(100vw - 16px); left: 8px; max-height: calc(100dvh - 150px); }
+      .edge-restore-btn { font-size: 11px !important; padding: 6px 11px !important; top: 88px !important; max-width: 47vw; white-space: nowrap; }
+      #btn-restore-left-panel { left: 6px; }
+      #btn-restore-right-panel { right: 6px; }
+      .dio-pin { padding: 2px 7px 2px 3px; font-size: 9.5px; gap: 4px; }
+      .dio-pin .pin-label { max-width: 92px; }
+      .pin-circle { width: 16px; height: 16px; font-size: 9px; }
+      .prod-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+  <meta name="description" content="Trải nghiệm Phòng Trưng Bày Cửa Kính 3D & 5 Style Góc Bàn Gaming RGB, Bàn Học Bắc Âu, Creator Setup. Ướm thử 14 mẫu mô hình in 3D .3MF/.GLB thật vào phòng và đặt in giao nhanh 3–5 ngày." />
+<!-- CLAUDE_SEO_GEO_START -->
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <link rel="canonical" href="http://127.0.0.1:8088/diorama_3d_decor.html" />
+  <link rel="alternate" hreflang="vi-VN" href="http://127.0.0.1:8088/diorama_3d_decor.html" />
+  <link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8088/diorama_3d_decor.html" />
+  <link rel="alternate" type="text/markdown" href="http://127.0.0.1:8088/diorama_3d_decor.html.md" title="Markdown version for AI Search & LLMs" />
+  <link rel="ai-catalog" href="http://127.0.0.1:8088/.well-known/ai-catalog.json" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="vi_VN" />
+  <meta property="og:site_name" content="Khối Xinh 3D Studio" />
+  <meta property="og:title" content="Mẫu 3: Phòng Trưng Bày Cửa Kính 3D & Góc Setup Gaming / Học Tập | Khối Xinh 3D" />
+  <meta property="og:description" content="Trải nghiệm Phòng Trưng Bày Cửa Kính 3D & 5 Style Góc Bàn Gaming RGB, Bàn Học Bắc Âu, Creator Setup. Ướm thử 14 mẫu mô hình in 3D .3MF/.GLB thật vào phòng và đặt in giao nhanh 3–5 ngày." />
+  <meta property="og:url" content="http://127.0.0.1:8088/diorama_3d_decor.html" />
+  <meta property="og:image" content="http://127.0.0.1:8088/assets/images/bedrooms/bedroom_5_gaming_neon.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Mẫu 3: Phòng Trưng Bày Cửa Kính 3D & Góc Setup Gaming / Học Tập | Khối Xinh 3D" />
+  <meta name="twitter:description" content="Trải nghiệm Phòng Trưng Bày Cửa Kính 3D & 5 Style Góc Bàn Gaming RGB, Bàn Học Bắc Âu, Creator Setup. Ướm thử 14 mẫu mô hình in 3D .3MF/.GLB thật vào phòng và đặt in giao nhanh 3–5 ngày." />
+  <meta name="twitter:image" content="http://127.0.0.1:8088/assets/images/bedrooms/bedroom_5_gaming_neon.jpg" />
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": ["OnlineStore", "LocalBusiness"], "@id": "http://127.0.0.1:8088/#organization", "name": "Khối Xinh 3D Studio", "url": "http://127.0.0.1:8088/diorama_3d_decor.html", "logo": "http://127.0.0.1:8088/assets/images/bedrooms/bedroom_5_gaming_neon.jpg", "image": "http://127.0.0.1:8088/assets/images/bedrooms/bedroom_5_gaming_neon.jpg", "description": "Trải nghiệm Phòng Trưng Bày Cửa Kính 3D & 5 Style Góc Bàn Gaming RGB, Bàn Học Bắc Âu, Creator Setup. Ướm thử 14 mẫu mô hình in 3D .3MF/.GLB thật vào phòng và đặt in giao nhanh 3–5 ngày.", "priceRange": "59.000₫ - 590.000₫", "address": {"@type": "PostalAddress", "addressLocality": "TP. Hồ Chí Minh", "addressCountry": "VN"}}, {"@type": "WebSite", "@id": "http://127.0.0.1:8088/#website", "url": "http://127.0.0.1:8088", "name": "Khối Xinh 3D Studio", "inLanguage": "vi-VN", "publisher": {"@id": "http://127.0.0.1:8088/#organization"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Trang chủ Khối Xinh 3D", "item": "http://127.0.0.1:8088/khoixinh_3d_hub.html"}, {"@type": "ListItem", "position": 2, "name": "Mẫu 3: Phòng Trưng Bày Cửa Kính 3D & Góc Setup Gaming / Học Tập | Khối Xinh 3D", "item": "http://127.0.0.1:8088/diorama_3d_decor.html"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "In 3D theo yêu cầu (.STL / .3MF) tại Khối Xinh mất bao lâu?", "acceptedAnswer": {"@type": "Answer", "text": "Toàn bộ sản phẩm in 3D handmade và đặt in theo file .STL/.3MF tại xưởng Khối Xinh được hoàn thiện và giao tận tay toàn quốc trong 3 – 5 ngày."}}, {"@type": "Question", "name": "Làm sao để biết giá in 3D file .STL của tôi trước khi đặt?", "acceptedAnswer": {"@type": "Answer", "text": "Bạn chỉ cần tải file .STL, .3MF hoặc .OBJ lên khung Báo Giá 3 Bước trên web, hệ thống tự động dựng mô hình trên bàn in 256×256×256mm, đo kích thước (mm), thể tích thực (cm³) và báo giá tức thì."}}]}]}</script>
+  <script src="assets/studio3d_seo_webmcp.js?v=20261101d" defer></script>
+  <!-- CLAUDE_SEO_GEO_END -->
+  <link rel="stylesheet" href="assets/khoixinh_mobile_fix.css?v=20261101_v10" />
+</head>
+<body>
+  <!-- Hidden Personal 3D File Input (.3mf, .stl, .glb) -->
+  <input type="file" id="personal-3d-file-input" accept=".3mf,.stl,.glb,.gltf" style="display:none;" />
+
+  <!-- TOP CONTROL BAR (SINGLE ROW - RETAIL BEDROOM SHOWCASE) -->
+  <header class="top-bar">
+    <div class="top-pill">
+      <a href="#room-planner-hero" style="font-weight:900;font-size:12px;color:#fff;display:flex;align-items:center;gap:5px;white-space:nowrap;text-decoration:none;">
+        <h1 style="font-size:12px;font-weight:900;margin:0;display:inline;"><span style="color:var(--teal);">🪟</span> Mẫu 3: Phòng Trưng Bày 3D<span class="dio-title-extra"> Cửa Kính &amp; Góc Setup Gaming / Học Tập</span></h1>
+      </a>
+      <button type="button" class="btn-top zen-btn" id="btn-toggle-zen-ui" title="Ẩn các bảng bên cạnh để nhìn toàn cảnh phòng decor (Phím tắt: H)">👁️ Xem Toàn Cảnh (H)</button>
+      <button type="button" class="btn-top" id="btn-toggle-pins" style="border-color:rgba(251,191,36,0.45);color:#fde68a;" title="Ẩn/Hiện nhãn tên sản phẩm">🏷️ Ẩn Nhãn</button>
+      <a href="#shop-this-room" class="btn-top" style="border-color:rgba(20,184,166,0.55);color:#5eead4;">🏠 Đồ Trong Phòng</a>
+      <a href="#san-pham" class="btn-top" style="border-color:rgba(56,189,248,0.55);color:#bae6fd;">🛍️ Cửa Hàng ↓</a>
+      <a href="#gio-hang-day-du" class="btn-top">💳 Thanh Toán</a>
+    </div>
+
+    <div class="top-pill" style="gap:4px;">
+      <!-- Quick 5 Bedroom Template Pills in Top Bar -->
+      <button type="button" class="btn-top active" data-bedroom-tpl="bedroom-1">⚡ Style 1: Gaming RGB</button>
+      <button type="button" class="btn-top" data-bedroom-tpl="bedroom-2">📚 Style 2: Bàn Học Bắc Âu</button>
+      <button type="button" class="btn-top" data-bedroom-tpl="bedroom-3">🪟 Style 3: Tủ Kính 360°</button>
+      <button type="button" class="btn-top" data-bedroom-tpl="bedroom-4">💻 Style 4: Creator Setup</button>
+      <button type="button" class="btn-top" data-bedroom-tpl="bedroom-5">🍵 Style 5: Japandi Gỗ Ấm</button>
+
+      <!-- Simple Camera Views & Zoom -->
+      <button type="button" class="btn-top" id="btn-cam-iso" title="Góc nhìn toàn phòng">📐 Toàn Phòng</button>
+      <button type="button" class="btn-top" id="btn-cam-desk" title="Góc cận cảnh Bàn Gaming / Học Tập & Pegboard">🖥️ Góc Bàn Setup</button>
+      <button type="button" class="btn-top" id="btn-cam-cabinet" title="Góc cận cảnh Tủ Kính Cửa Kính LED">🪟 Tủ Kính LED</button>
+      <button type="button" class="btn-top" id="btn-zoom-out-room" title="Thu nhỏ góc nhìn">➖</button>
+      <button type="button" class="btn-top" id="btn-zoom-in-room" title="Phóng to góc nhìn">➕</button>
+      <button type="button" class="btn-top rotate-play" id="btn-autorotate-toggle">🔄 Tự Xoay</button>
+      <button type="button" class="btn-top primary" id="btn-open-cart">🛒 Giỏ (<span id="cart-chip-count">0</span>)</button>
+      <!-- Hidden technical elements preserved for compatibility -->
+      <span id="fps-counter" style="display:none;">60 FPS</span>
+      <button type="button" id="btn-cam-wide-cad" style="display:none;"></button>
+      <button type="button" id="btn-cam-top" style="display:none;"></button>
+      <button type="button" id="btn-view-blender" style="display:none;"></button>
+      <button type="button" id="btn-view-autocad" style="display:none;"></button>
+      <button type="button" id="btn-upload-3mf-top" style="display:none;"></button>
+      <button type="button" id="btn-open-moderation" style="display:none;"></button>
+    </div>
+  </header>
+
+  <!-- FLOATING PANORAMA MINI-BAR (VISIBLE WHEN UI IS HIDDEN) -->
+  <div id="zen-floating-bar">
+    <button type="button" class="btn-top zen-btn" id="btn-exit-zen-ui" style="background:#10b981;color:#032218;">👁️ Hiện Lại Bảng Chọn Mẫu (Phím H)</button>
+    <button type="button" class="btn-top active" data-bedroom-tpl="bedroom-1">⚡ Style 1: Gaming</button>
+    <button type="button" class="btn-top" data-bedroom-tpl="bedroom-2">📚 Style 2: Học Tập</button>
+    <button type="button" class="btn-top" data-bedroom-tpl="bedroom-3">🪟 Style 3: Tủ Kính</button>
+    <button type="button" class="btn-top" data-bedroom-tpl="bedroom-4">💻 Style 4: Creator</button>
+    <button type="button" class="btn-top" data-bedroom-tpl="bedroom-5">🍵 Style 5: Japandi</button>
+    <button type="button" class="btn-top" id="btn-zen-zoom-out">➖ Thu Nhỏ</button>
+    <button type="button" class="btn-top" id="btn-zen-zoom-in">➕ Phóng To</button>
+    <button type="button" class="btn-top" id="btn-zen-toggle-pins" style="border-color:rgba(251,191,36,0.45);color:#fde68a;">🏷️ Ẩn/Hiện Nhãn</button>
+  </div>
+
+  <!-- 100VH INTERACTIVE 3D BEDROOM SHOWCASE HERO -->
+  <section id="room-planner-hero" aria-label="Không gian Phòng Decor 3D & Ướm Thử Đồ Decor">
+    <!-- High-Resolution Real Bedroom Photo Background -->
+    <div id="room-bg-backdrop"></div>
+    <div id="room-bg-vignette"></div>
+    <canvas id="diorama-canvas"></canvas>
+    <div id="hotspots-layer"></div>
+
+    <!-- FLOATING RESTORE TABS WHEN INDIVIDUAL SIDE PANELS ARE COLLAPSED -->
+    <button type="button" class="edge-restore-btn" id="btn-restore-left-panel" title="Mở lại bảng chọn mẫu phòng decor & sản phẩm">▶ 5 Phòng &amp; Kệ 3D</button>
+    <button type="button" class="edge-restore-btn" id="btn-restore-right-panel" title="Mở lại bảng chi tiết sản phẩm đang chọn">◀ Sản Phẩm Đang Chọn</button>
+
+    <!-- CENTER FLOATING RETAIL GUIDE DOCK -->
+    <div class="center-guide-dock" id="center-guide-dock">
+      <button type="button" class="guide-pill-btn" id="btn-dock-hide-ui" style="border-color:#34d399;color:#a7f3d0;background:rgba(16,185,129,0.18);">👁️ Xem Toàn Cảnh</button>
+      <span id="drag-status-text">🪟 <b>Chọn 5 Style Góc Bàn Gaming / Học Tập &amp; Tủ Kính bên trái</b> · Kéo thả mô hình lên Tủ Kính Cửa Kính, Bảng Pegboard, Bàn Setup &amp; Kệ LED!</span>
+      <button type="button" class="guide-pill-btn" id="btn-open-room-modal" style="border-color:var(--cyan);color:#38bdf8;">📸 Tải Ảnh Phòng Của Bạn</button>
+      <a href="#shop-this-room" class="guide-pill-btn" style="border-color:var(--orange);background:rgba(255,107,44,0.22);color:#ffedd5;">🛍️ Mua Bộ Decor Trong Phòng ↓</a>
+      <button type="button" id="btn-demo-photo-dock" style="display:none;"></button>
+      <div id="ar-depth-controls" style="display:none;"></div>
+    </div>
+
+    <!-- LEFT CONTROL PANEL: 5 BEDROOM BACKGROUNDS + PRODUCT PICKER -->
+    <aside class="dio-panel">
+      <div class="panel-collapse-bar">
+        <span style="font-size:10.5px;font-weight:900;color:#5eead4;">🪟 TỦ KÍNH 3D &amp; GÓC SETUP GAMING / HỌC TẬP</span>
+        <div style="display:flex;gap:5px;">
+          <button type="button" class="btn-panel-fold" id="btn-fold-both-panels" style="border-color:#34d399;color:#a7f3d0;" title="Ẩn toàn bộ bảng để ngắm phòng (Phím H)">👁️ Toàn Cảnh</button>
+          <button type="button" class="btn-panel-fold" id="btn-fold-left-panel" title="Thu gọn bảng bên trái">◀ Thu gọn</button>
+        </div>
+      </div>
+
+      <!-- 1. CHỌN 5 PHÒNG DECOR TRƯNG BÀY (BACKGROUND + PHÒNG 3D ĐỒNG BỘ) -->
+      <div style="background:rgba(20,184,166,0.08);border:1px solid rgba(20,184,166,0.38);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:7px;">
+        <div class="sec-label" style="color:#5eead4;">
+          <span>🖥️ 1. Chọn 5 Style Góc Bàn &amp; Tủ Kính</span>
+          <span id="current-room-style" style="color:var(--gold);font-weight:800;">1. Góc Gaming RGB &amp; Tủ Kính</span>
+        </div>
+        <div class="bedroom-tpl-list" id="bedroom-templates-grid">
+          <button type="button" class="bedroom-tpl-card active" data-bedroom-tpl="bedroom-1">
+            <img class="bedroom-tpl-thumb" width="54" height="38" src="assets/images/bedrooms/bedroom_1_japandi_oak.jpg?v=20261101_cleanname" alt="Mẫu 1: Phòng Decor Luxury Gallery &amp; Kệ Đèn LED" loading="eager" style="width:54px;height:38px;border-radius:7px;object-fit:cover;border:1px solid rgba(94,234,212,0.45);display:block;flex-shrink:0;background:#1e293b;" />
+            <div style="flex:1;min-width:0;text-align:left;">
+              <div style="font-size:11.5px;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Mẫu 1: Phòng Decor Luxury Gallery &amp; Kệ Đèn LED</div>
+              <div style="font-size:10px;color:#5eead4;margin-top:1px;">Vách lam gỗ óc chó · Kệ LED, Bàn trà &amp; Bục đôn</div>
+            </div>
+          </button>
+          <button type="button" class="bedroom-tpl-card" data-bedroom-tpl="bedroom-2">
+            <img class="bedroom-tpl-thumb" width="54" height="38" src="assets/images/bedrooms/bedroom_2_nordic_scandi.jpg?v=20261101_cleanname" alt="Mẫu 2: Phòng Decor Bắc Âu Sáng (Nordic Studio)" loading="eager" style="width:54px;height:38px;border-radius:7px;object-fit:cover;border:1px solid rgba(94,234,212,0.45);display:block;flex-shrink:0;background:#1e293b;" />
+            <div style="flex:1;min-width:0;text-align:left;">
+              <div style="font-size:11.5px;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Mẫu 2: Phòng Decor Bắc Âu Sáng (Nordic Studio)</div>
+              <div style="font-size:10px;color:#5eead4;margin-top:1px;">Gỗ sồi sáng · Bàn setup, Kệ treo &amp; Cửa sổ nắng</div>
+            </div>
+          </button>
+          <button type="button" class="bedroom-tpl-card" data-bedroom-tpl="bedroom-3">
+            <img class="bedroom-tpl-thumb" width="54" height="38" src="assets/images/bedrooms/bedroom_3_modern_luxury.jpg?v=20261101_cleanname" alt="Mẫu 3: Phòng Trà &amp; Trưng Bày Japandi Gỗ Ấm" loading="eager" style="width:54px;height:38px;border-radius:7px;object-fit:cover;border:1px solid rgba(94,234,212,0.45);display:block;flex-shrink:0;background:#1e293b;" />
+            <div style="flex:1;min-width:0;text-align:left;">
+              <div style="font-size:11.5px;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Mẫu 3: Phòng Trà &amp; Trưng Bày Japandi Gỗ Ấm</div>
+              <div style="font-size:10px;color:#5eead4;margin-top:1px;">Ấm cúng · Bàn trà đôi, Kệ LED &amp; Bục triển lãm</div>
+            </div>
+          </button>
+          <button type="button" class="bedroom-tpl-card" data-bedroom-tpl="bedroom-4">
+            <img class="bedroom-tpl-thumb" width="54" height="38" src="assets/images/bedrooms/bedroom_4_pastel_cozy.jpg?v=20261101_cleanname" alt="Mẫu 4: Phòng Setup &amp; Sưu Tập Mô Hình Minimalist" loading="eager" style="width:54px;height:38px;border-radius:7px;object-fit:cover;border:1px solid rgba(94,234,212,0.45);display:block;flex-shrink:0;background:#1e293b;" />
+            <div style="flex:1;min-width:0;text-align:left;">
+              <div style="font-size:11.5px;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Mẫu 4: Phòng Setup &amp; Sưu Tập Mô Hình Minimalist</div>
+              <div style="font-size:10px;color:#5eead4;margin-top:1px;">Hiện đại · Bàn Setup rộng, Kệ treo &amp; Tủ trưng bày</div>
+            </div>
+          </button>
+          <button type="button" class="bedroom-tpl-card" data-bedroom-tpl="bedroom-5">
+            <img class="bedroom-tpl-thumb" width="54" height="38" src="assets/images/bedrooms/bedroom_5_gaming_neon.jpg?v=20261101_cleanname" alt="Mẫu 5: Showroom Decor Gỗ Tự Nhiên &amp; Cửa Kính" loading="eager" style="width:54px;height:38px;border-radius:7px;object-fit:cover;border:1px solid rgba(94,234,212,0.45);display:block;flex-shrink:0;background:#1e293b;" />
+            <div style="flex:1;min-width:0;text-align:left;">
+              <div style="font-size:11.5px;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Mẫu 5: Showroom Decor Gỗ Tự Nhiên &amp; Cửa Kính</div>
+              <div style="font-size:10px;color:#5eead4;margin-top:1px;">Thiên nhiên · Cửa kính lớn, Đôn gỗ &amp; Cây xanh 3D</div>
+            </div>
+          </button>
+        </div>
+
+        <div class="ctrl-row" style="margin-top:2px;">
+          <button type="button" class="dio-btn" id="btn-left-upload-room" style="background:rgba(56,189,248,0.14);border-color:rgba(56,189,248,0.45);color:#bae6fd;font-weight:800;">
+            📸 Tải Ảnh Phòng Của Bạn Lên Ướm Thử
+          </button>
+        </div>
+
+        <!-- Camera Zoom Slider -->
+        <div style="margin-top:2px;font-size:11px;color:var(--muted);display:flex;justify-content:space-between;align-items:center;">
+          <span>🔍 Thu nhỏ / Phóng to góc nhìn:</span>
+          <strong id="room-zoom-val" style="color:#5eead4;">100%</strong>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <button type="button" class="btn-edit-action" id="btn-left-zoom-out" style="width:34px;flex-shrink:0;" title="Thu nhỏ góc nhìn">➖</button>
+          <input type="range" id="room-zoom-slider" min="25" max="240" value="100" style="flex:1;accent-color:var(--teal);" />
+          <button type="button" class="btn-edit-action" id="btn-left-zoom-in" style="width:34px;flex-shrink:0;" title="Phóng to góc nhìn">➕</button>
+        </div>
+
+        <!-- Hidden technical elements preserved so all JS hooks & tests pass -->
+        <div style="display:none;">
+          <span id="cad-mode-badge"></span>
+          <span id="room-area-badge"></span>
+          <button type="button" id="btn-left-view-blender"></button>
+          <button type="button" id="btn-left-view-autocad"></button>
+          <button type="button" id="btn-left-demo-bedroom"></button>
+          <button type="button" id="btn-upload-3mf-left"></button>
+          <div id="upload-3mf-status"></div>
+        </div>
+      </div>
+
+      <!-- 2. CHỌN SẢN PHẨM DECOR 3D ĐẶT VÀO PHÒNG -->
+      <div style="border-top:1px solid var(--border);padding-top:8px;">
+        <div class="sec-label">
+          <span>🎁 2. Chọn Đồ Decor Đặt Vào Phòng</span>
+          <span style="font-size:10px;color:var(--teal);">Bấm để đặt lên bàn/kệ</span>
+        </div>
+        <div class="models-shelf" id="shelf-models-list" style="margin-top:5px;">
+          <!-- Dynamically populated from catalog -->
+        </div>
+      </div>
+
+      <!-- 3. ĐỔI ÁNH SÁNG PHÒNG NGỦ (BAN NGÀY / HOÀNG HÔN / ĐÊM) -->
+      <div style="border-top:1px solid var(--border);padding-top:8px;">
+        <div class="sec-label">
+          <span>☀️ 3. Ánh Sáng Phòng Decor</span>
+          <span id="rot-state-badge" style="color:var(--gold);font-size:10px;">Đang dừng xoay</span>
+        </div>
+        <div class="ctrl-row" style="margin-top:5px;">
+          <button type="button" class="dio-btn active" data-light-mode="day">☀️ Ban Ngày</button>
+          <button type="button" class="dio-btn" data-light-mode="sunset">🌅 Hoàng Hôn</button>
+          <button type="button" class="dio-btn" data-light-mode="night">🌙 Đêm Bật Đèn</button>
+        </div>
+        <div class="ctrl-row" style="margin-top:5px;">
+          <button type="button" class="dio-btn teal" id="btn-panel-rotate-room">🔄 Xoay Phòng 360°</button>
+          <button type="button" class="dio-btn" id="btn-panel-rotate-item">🎡 Tự Xoay Mẫu Chọn</button>
+        </div>
+        <div style="display:none;">
+          <input type="color" id="picker-wall-color" value="#2b3344" />
+          <input type="color" id="picker-floor-color" value="#9c663e" />
+          <button type="button" id="btn-reset-colors"></button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- RIGHT PANEL: SELECTED PRODUCT DETAILS & PLACEMENT CONTROLS (RETAIL CLEAN) -->
+    <aside class="shop-card" id="dio-shop-card">
+      <div class="panel-collapse-bar">
+        <span style="font-size:10px;font-weight:900;color:var(--gold);" id="sel-prod-cat">ĐỒ DECOR & QUÀ TẶNG 3D</span>
+        <div style="display:flex;align-items:center;gap:5px;">
+          <span class="badge-lead" id="sel-prod-lead">⏱️ Giao 3 - 5 ngày</span>
+          <button type="button" class="btn-panel-fold" id="btn-fold-right-panel" title="Thu gọn bảng bên phải">Thu gọn ▶</button>
+        </div>
+      </div>
+      <h2 style="font-size:15.5px;font-weight:900;line-height:1.25;" id="sel-prod-name">Kỳ Nhông Gai Cầu Vồng Khớp Động</h2>
+      <p style="font-size:11.5px;color:var(--muted);line-height:1.38;" id="sel-prod-desc">
+        Mô hình khớp động đa sắc trang trí bàn học, kệ tủ và phòng decor.
+      </p>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;">
+        <strong style="font-size:19px;color:var(--gold);" id="sel-prod-price">390.000 ₫</strong>
+        <span style="font-size:11px;color:#5eead4;font-weight:700;" id="sel-prod-source">Vị trí: Bàn Gaming / Học Tập</span>
+      </div>
+
+      <!-- RETAIL PLACEMENT & SIZE CONTROLLER (ZERO TECHNICAL CAD/XYZ JARGON) -->
+      <div class="editor-box">
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:10.5px;font-weight:800;color:#5eead4;">
+          <span>🖐️ DI CHUYỂN & CHỈNH CỠ TRONG PHÒNG</span>
+          <span id="sel-coords-label" style="display:none;"></span>
+        </div>
+        <div id="sel-cad-dims" style="font-size:11px;color:#e2e8f0;font-weight:600;background:rgba(20,184,166,0.1);padding:4px 8px;border-radius:6px;border:1px solid rgba(20,184,166,0.25);">
+          📏 Kích thước sản phẩm: 185 × 140 × 195 mm (Cỡ 100%)
+        </div>
+
+        <!-- 6-Button Directional Placement Pad -->
+        <div class="editor-toolbar">
+          <button type="button" class="btn-edit-action" id="btn-move-left">⬅️ Sang Trái</button>
+          <button type="button" class="btn-edit-action" id="btn-move-forward">⬇️ Lại Gần</button>
+          <button type="button" class="btn-edit-action" id="btn-move-right">➡️ Sang Phải</button>
+          <button type="button" class="btn-edit-action" id="btn-move-up">🔼 Nâng Cao</button>
+          <button type="button" class="btn-edit-action" id="btn-move-back">⬆️ Đẩy Xa</button>
+          <button type="button" class="btn-edit-action" id="btn-move-down">🔽 Hạ Thấp</button>
+        </div>
+
+        <!-- Product Size Slider -->
+        <div style="display:flex;flex-direction:column;gap:4px;padding-top:2px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--muted);">
+            <span>🔍 Chỉnh cỡ sản phẩm (Nhỏ / Vừa / Lớn):</span>
+            <strong id="item-scale-val" style="color:#5eead4;font-size:12px;">100%</strong>
+          </div>
+          <div style="display:flex;align-items:center;gap:4px;">
+            <button type="button" class="btn-edit-action" id="btn-scale-down" style="width:42px;flex-shrink:0;">-15%</button>
+            <input type="range" id="item-scale-slider" min="5" max="300" value="100" style="flex:1;accent-color:var(--teal);" />
+            <button type="button" class="btn-edit-action" id="btn-scale-reset" style="width:42px;flex-shrink:0;">100%</button>
+            <button type="button" class="btn-edit-action" id="btn-scale-up" style="width:42px;flex-shrink:0;">+15%</button>
+          </div>
+        </div>
+
+        <!-- Rotation Slider -->
+        <div style="display:flex;flex-direction:column;gap:3px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--muted);">
+            <span>🔄 Xoay hướng đặt sản phẩm:</span>
+            <strong id="item-rot-val" style="color:var(--orange);">0°</strong>
+          </div>
+          <input type="range" id="item-rot-slider" min="0" max="360" value="0" style="width:100%;accent-color:var(--orange);" />
+        </div>
+
+        <!-- Quick Spot Switcher, Rotate 45 & Remove -->
+        <div class="editor-toolbar" style="padding-top:2px;">
+          <button type="button" class="btn-edit-action" id="btn-item-rotate">🔄 Xoay 45°</button>
+          <button type="button" class="btn-edit-action" id="btn-item-switch-spot">📍 Đổi Vị Trí Đặt</button>
+          <button type="button" class="btn-edit-action danger" id="btn-item-remove">🗑️ Bỏ Khỏi Phòng</button>
+        </div>
+      </div>
+
+      <input type="text" id="dio-custom-engrave" placeholder="✒️ Khắc tên / lời chúc riêng lên sản phẩm (Miễn phí)..." maxlength="24" style="height:34px;border-radius:9px;border:1px solid var(--border);background:rgba(255,255,255,0.05);color:#fff;padding:0 10px;font-size:11.5px;" />
+      <button type="button" class="buy-btn" id="btn-buy-selected">🛒 Thêm Vào Giỏ Hàng (+Khắc Tên)</button>
+    </aside>
+  </section>
+
+  <!-- =======================================================================
+       FULL E-COMMERCE & CUSTOM 3D FABRICATION STORE BELOW 3D ROOM (MẪU 1 + 3)
+       ======================================================================= -->
+  <main id="mau3-full-store">
+    <!-- 1. SHOP THIS ROOM / MUA TRỌN BỘ ĐỒ TRONG PHÒNG 3D (#shop-this-room) -->
+    <section id="shop-this-room" class="kx-section" style="padding-top:36px;">
+      <div class="bom-strip-panel">
+        <div class="sec-head">
+          <div>
+            <span style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;color:var(--teal);">🏠 Shop This 3D Room · IKEA Kreativ / Modsy BOM</span>
+            <h2 class="sec-title" style="margin-top:4px;">Danh Sách Đồ Decor Đang Đặt Trong Phòng 3D (<span id="room-bom-count">0</span> món)</h2>
+            <p style="font-size:13.5px;color:var(--muted);margin-top:4px;">
+              Mọi thay đổi khi bạn kéo thả, thêm hoặc xóa vật thể trên Phòng 3D ở trên đều tự động cập nhật vào bảng báo giá trọn bộ dưới đây.
+            </p>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+            <div style="text-align:right;">
+              <div style="font-size:12px;color:var(--muted);">Tổng giá trị bộ decor trong phòng:</div>
+              <strong id="room-bom-total" style="font-size:24px;font-weight:900;color:var(--gold);">0 ₫</strong>
+            </div>
+            <button type="button" class="btn-clay" id="btn-buy-whole-room">
+              🛒 Mua Trọn Bộ Đồ Trong Phòng
+            </button>
+          </div>
+        </div>
+        <div class="bom-grid" id="room-bom-grid"></div>
+      </div>
+    </section>
+
+    <!-- 2. QUICK CATEGORY STRIP (#sau-3d) -->
+    <section id="sau-3d" class="kx-section" style="padding-top:32px;" aria-label="Danh mục">
+      <ul class="cat-top-strip" id="top-cat-strip">
+        <li><button type="button" class="cat-top-pill active" data-top-cat="all">Tất cả sản phẩm</button></li>
+        <li><button type="button" class="cat-top-pill" data-top-cat="van-hoa-viet">🇻🇳 Văn hóa &amp; Kiến trúc Việt (.GLB Free)</button></li>
+        <li><button type="button" class="cat-top-pill" data-top-cat="figure-nhan-vat">Figure &amp; nhân vật</button></li>
+        <li><button type="button" class="cat-top-pill" data-top-cat="hoc-cu-khoa-hoc">Học cụ &amp; mô hình khoa học</button></li>
+        <li><button type="button" class="cat-top-pill" data-top-cat="moc-khoa-the-ten">Móc khóa &amp; thẻ tên</button></li>
+        <li><button type="button" class="cat-top-pill" data-top-cat="qua-tang">Quà tặng &amp; trang trí</button></li>
+        <li><button type="button" class="cat-top-pill" data-top-cat="stem-kit">STEM kit lắp ráp</button></li>
+        <li><button type="button" class="cat-top-pill" data-top-cat="do-dung-ban-hoc">Đồ dùng bàn học</button></li>
+      </ul>
+    </section>
+
+    <!-- 3. COMPLETE PRODUCT CATALOG SYSTEM (#san-pham) -->
+    <section id="san-pham" class="kx-section" style="padding-top:32px;">
+      <div class="sec-head">
+        <div>
+          <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--secondary-strong);">Kho Mẫu 3D Thực Tế</p>
+          <h2 class="sec-title" style="margin-top:2px;">Chọn Sản Phẩm Đặt Vào Phòng 3D Hoặc Mua Lẻ</h2>
+          <p style="color:var(--muted);font-size:14px;margin-top:4px;">Bấm <b>🏠 Đặt Vào Phòng 3D</b> trên bất kỳ thẻ sản phẩm nào để thả ngay mô hình đó lên bàn/kệ trong Phòng 3D ở trên!</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span id="kx-catalog-count" style="font-size:13.5px;font-weight:700;color:var(--muted);">14 sản phẩm tuyển chọn</span>
+          <button type="button" id="kx-reset-filters" class="sidebar-pill" style="display:none;border-color:var(--accent);color:var(--accent-strong);">↺ Xóa bộ lọc</button>
+        </div>
+      </div>
+
+      <div class="catalog-layout">
+        <aside class="catalog-sidebar" aria-label="Bộ lọc sản phẩm">
+          <div>
+            <p class="filter-group-title">Tìm nhanh</p>
+            <input type="search" id="kx-search-input" class="kx-input" style="width:100%;" placeholder="Tên sản phẩm, mô tả…" />
+          </div>
+
+          <div>
+            <p class="filter-group-title">Danh mục</p>
+            <div class="filter-pills-wrap" id="filter-cat-pills">
+              <button type="button" class="sidebar-pill active" data-cat="all">Tất cả</button>
+              <button type="button" class="sidebar-pill" data-cat="van-hoa-viet">🇻🇳 Văn hóa Việt (.GLB)</button>
+              <button type="button" class="sidebar-pill" data-cat="do-dung-ban-hoc">Đồ dùng bàn học</button>
+              <button type="button" class="sidebar-pill" data-cat="qua-tang">Quà tặng &amp; trang trí</button>
+              <button type="button" class="sidebar-pill" data-cat="moc-khoa-the-ten">Móc khóa &amp; thẻ tên</button>
+              <button type="button" class="sidebar-pill" data-cat="stem-kit">STEM kit lắp ráp</button>
+              <button type="button" class="sidebar-pill" data-cat="hoc-cu-khoa-hoc">Học cụ &amp; mô hình khoa học</button>
+              <button type="button" class="sidebar-pill" data-cat="figure-nhan-vat">Figure &amp; nhân vật</button>
+            </div>
+          </div>
+
+          <div>
+            <p class="filter-group-title">Hình dáng</p>
+            <div class="filter-pills-wrap" id="filter-shape-pills">
+              <button type="button" class="sidebar-pill active" data-shape="all">Tất cả</button>
+              <button type="button" class="sidebar-pill" data-shape="tron-cau">Tròn / cầu</button>
+              <button type="button" class="sidebar-pill" data-shape="khoi-hop">Khối hộp</button>
+              <button type="button" class="sidebar-pill" data-shape="dong-vat">Động vật</button>
+              <button type="button" class="sidebar-pill" data-shape="nhan-vat">Nhân vật</button>
+              <button type="button" class="sidebar-pill" data-shape="hinh-hoc">Đa diện / hình học</button>
+              <button type="button" class="sidebar-pill" data-shape="chu-ten">Chữ &amp; tên</button>
+              <button type="button" class="sidebar-pill" data-shape="co-khi-banh-rang">Cơ khí / bánh răng</button>
+              <button type="button" class="sidebar-pill" data-shape="hoa-la">Hoa lá</button>
+            </div>
+          </div>
+
+          <div>
+            <p class="filter-group-title">Cấp học</p>
+            <div class="filter-pills-wrap" id="filter-grade-pills">
+              <button type="button" class="sidebar-pill active" data-grade="all">Tất cả</button>
+              <button type="button" class="sidebar-pill" data-grade="tieu-hoc">Tiểu học</button>
+              <button type="button" class="sidebar-pill" data-grade="thcs">THCS</button>
+              <button type="button" class="sidebar-pill" data-grade="thpt">THPT</button>
+            </div>
+          </div>
+
+          <div>
+            <p class="filter-group-title">Môn học</p>
+            <div class="filter-pills-wrap" id="filter-subject-pills">
+              <button type="button" class="sidebar-pill active" data-subject="all">Tất cả</button>
+              <button type="button" class="sidebar-pill" data-subject="toan">Toán</button>
+              <button type="button" class="sidebar-pill" data-subject="ly">Vật lí</button>
+              <button type="button" class="sidebar-pill" data-subject="hoa">Hóa học</button>
+              <button type="button" class="sidebar-pill" data-subject="sinh">Sinh học</button>
+              <button type="button" class="sidebar-pill" data-subject="dia">Địa lí</button>
+              <button type="button" class="sidebar-pill" data-subject="tin">Tin học</button>
+              <button type="button" class="sidebar-pill" data-subject="my-thuat">Mỹ thuật</button>
+            </div>
+          </div>
+
+          <div>
+            <p class="filter-group-title">Sắp xếp</p>
+            <div class="filter-pills-wrap" id="filter-sort-pills">
+              <button type="button" class="sidebar-pill active" data-sort="featured">Phổ biến</button>
+              <button type="button" class="sidebar-pill" data-sort="price-asc">Giá tăng dần</button>
+              <button type="button" class="sidebar-pill" data-sort="price-desc">Giá giảm dần</button>
+            </div>
+          </div>
+        </aside>
+
+        <div>
+          <div class="prod-grid" id="kx-product-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. INTERACTIVE 3D PRODUCT STAGE (#trung-mau-3d) -->
+    <section id="trung-mau-3d" class="kx-section">
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:20px;">
+        <div>
+          <p id="kx-detail-cat" style="font-size:13px;font-weight:600;color:var(--secondary-strong);">Quà tặng &amp; trang trí · Tròn / cầu</p>
+          <h2 id="kx-detail-title" class="font-display" style="font-size:clamp(24px,3vw,34px);font-weight:800;margin-top:2px;">Đèn ngủ mặt trăng</h2>
+          <p style="font-size:14px;color:var(--muted);margin-top:2px;">
+            <span id="kx-detail-short-summary">Đèn ngủ 3D hình mặt trăng, tặng bạn bè.</span> · <span id="kx-detail-rating" style="color:var(--highlight);font-weight:600;" hidden></span>
+          </p>
+        </div>
+        <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;" id="kx-quick-showcase-strip">
+          <button type="button" class="sidebar-pill active" data-Quick-Showcase="iguana-rainbow-3mf">🦎 Kỳ Nhông Gai Cầu Vồng (.3MF)</button>
+          <button type="button" class="sidebar-pill" data-Quick-Showcase="mini-dragon-keychain-3mf">🐉 Rồng Thần Khớp Động (.3MF)</button>
+          <button type="button" class="sidebar-pill" data-Quick-Showcase="fluffy-flexi-puppy-3mf">🐶 Thú Cưng 4 Màu Fluffy (.3MF)</button>
+          <button type="button" class="sidebar-pill" data-Quick-Showcase="planetary-gear-fidget-3mf">⚙️ Bánh Răng Hành Tinh (.3MF)</button>
+          <button type="button" class="sidebar-pill" data-Quick-Showcase="kumiko-desk-organizer-3mf">🎋 Ống Cắm Bút Kumiko</button>
+          <button type="button" class="sidebar-pill" data-Quick-Showcase="bonsai-spirit-zen-3mf">🌳 Cây Bonsai Xoắn (.3MF)</button>
+          <button type="button" class="sidebar-pill" data-Quick-Showcase="lamella-nordic-lamp-3mf">💡 Đèn Lamella Bắc Âu (.3MF)</button>
+          <button type="button" class="sidebar-pill" data-Quick-Showcase="3dlab-traditional-vietnamese-communal-house-dinh">🏛️ Đình Làng Việt (.GLB)</button>
+        </div>
+      </div>
+
+      <div class="kx-showcase-grid">
+        <div>
+          <div class="kx-stage-frame">
+            <canvas id="kx-showcase-canvas"></canvas>
+            <div class="kx-stage-hint-top">🖱 Kéo để xoay 360° · Cuộn để phóng to</div>
+          </div>
+          <div class="kx-stage-toolbar-below">
+            <button type="button" class="kx-ctrl-pill" id="kx-ctrl-zoom-in">🔍+ Phóng to</button>
+            <button type="button" class="kx-ctrl-pill" id="kx-ctrl-zoom-out">🔍− Thu nhỏ</button>
+            <button type="button" class="kx-ctrl-pill" id="kx-ctrl-autorotate">⏸ Tự xoay</button>
+            <button type="button" class="kx-ctrl-pill" id="kx-ctrl-left">↺ Xoay trái</button>
+            <button type="button" class="kx-ctrl-pill" id="kx-ctrl-right">↻ Xoay phải</button>
+            <button type="button" class="kx-ctrl-pill" id="kx-ctrl-reset">⟲ Đặt lại góc nhìn</button>
+            <button type="button" class="kx-ctrl-pill" id="kx-ctrl-snap">📷 Chụp ảnh</button>
+            <button type="button" class="kx-ctrl-pill" id="kx-ctrl-fullscreen">⛶ Xem toàn màn hình</button>
+            <button type="button" class="kx-ctrl-pill" id="kx-ctrl-night">🌙 Đèn Đêm 2700K</button>
+            <button type="button" class="kx-ctrl-pill" id="kx-ctrl-desk">🪑 Ướm Bàn Học</button>
+          </div>
+        </div>
+
+        <div class="kx-card-surface" style="padding:24px;">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;">
+            <span id="kx-detail-price" class="font-display" style="font-size:32px;font-weight:800;color:var(--accent-strong);">199.000 ₫</span>
+            <span id="kx-detail-spec-pill" style="font-size:12.5px;color:var(--secondary-strong);font-weight:600;">Còn hàng · Giao 3 – 5 ngày</span>
+          </div>
+
+          <p id="kx-detail-summary" style="color:var(--muted);font-size:14px;line-height:1.6;margin-top:12px;">
+            Đèn ngủ mặt trăng in 3D từ dữ liệu địa hình thật, ánh sáng vàng dịu cho góc học tập.
+          </p>
+
+          <div style="margin-top:18px;">
+            <div style="font-size:13.5px;font-weight:600;">
+              Màu sắc: <span id="kx-detail-color-name" style="color:var(--accent-strong);">Cam</span>
+            </div>
+            <div class="kx-swatch-row" id="kx-detail-swatches"></div>
+          </div>
+
+          <div id="kx-detail-custom-wrap" style="margin-top:16px;">
+            <label class="field-lbl">
+              <span id="kx-detail-custom-label">Khắc chữ / tên riêng (tùy chọn):</span>
+              <input type="text" id="kx-detail-custom-input" class="kx-input" maxlength="20" placeholder="Nhập tên muốn khắc (VD: MINH ANH)..." />
+            </label>
+          </div>
+
+          <div style="margin-top:18px;background:var(--surface-muted);border-radius:16px;padding:14px 16px;font-size:13px;display:flex;flex-direction:column;gap:6px;">
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--muted);">Kích thước</span><strong id="kx-detail-spec-size">12 × 12 × 12 cm</strong></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--muted);">Chất liệu</span><strong id="kx-detail-spec-material">PLA sinh học an toàn</strong></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--muted);">Thời gian in &amp; giao</span><strong id="kx-detail-spec-time">3 – 5 ngày</strong></div>
+          </div>
+
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:20px;">
+            <div class="kx-qty-pill">
+              <button type="button" id="kx-detail-qty-minus">−</button>
+              <span id="kx-detail-qty-val">1</span>
+              <button type="button" id="kx-detail-qty-plus">+</button>
+            </div>
+            <button type="button" class="btn-clay" id="kx-detail-add-cart" style="flex:1;">Thêm vào giỏ · 199.000 ₫</button>
+            <a id="kx-detail-download-glb" href="#" download class="btn-outline" style="display:none;border-color:var(--secondary);color:var(--secondary-strong);">⬇ Tải .GLB Free</a>
+          </div>
+          <p id="kx-detail-freeship-hint" style="font-size:12.5px;color:var(--muted);margin-top:10px;"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Fullscreen 3D Dialog -->
+    <dialog id="kx-fullscreen-dialog">
+      <div style="display:flex;flex-direction:column;width:100%;height:100%;">
+        <div class="kx-fs-header">
+          <div class="kx-fs-title-row">
+            <div class="kx-fs-title-wrap">
+              <strong id="kx-fs-title">Xem 3D Toàn Màn Hình</strong>
+              <div id="kx-fs-sub">Nhựa PLA · Kích thước Chuẩn</div>
+            </div>
+            <button type="button" class="btn-clay kx-fs-close-btn" id="kx-fs-close">✕ Đóng</button>
+          </div>
+          <div class="kx-fs-toolbar">
+            <div id="kx-fs-swatches" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;"></div>
+            <button type="button" class="kx-ctrl-pill" id="kx-fs-zoom-in">🔍+ Phóng to</button>
+            <button type="button" class="kx-ctrl-pill" id="kx-fs-zoom-out">🔍− Thu nhỏ</button>
+            <button type="button" class="kx-ctrl-pill" id="kx-fs-autorotate">⏸ Tự xoay</button>
+            <button type="button" class="kx-ctrl-pill" id="kx-fs-reset">⟲ Đặt lại</button>
+            <button type="button" class="kx-ctrl-pill" id="kx-fs-snap">📷 Chụp ảnh</button>
+          </div>
+        </div>
+        <div style="position:relative;flex:1;min-height:0;background:#07080c;">
+          <canvas id="kx-fullscreen-canvas" style="width:100%;height:100%;display:block;"></canvas>
+        </div>
+      </div>
+    </dialog>
+
+    <!-- 5. IN THEO YÊU CẦU CHỈ 3 BƯỚC (#dat-in-3d) -->
+    <section id="dat-in-3d" class="kx-section">
+      <div class="clay-panel">
+        <div class="sec-head" style="margin-bottom:20px;">
+          <div>
+            <h2 class="sec-title">In theo yêu cầu chỉ 3 bước (.STL / .3MF / .OBJ)</h2>
+            <p style="color:var(--muted);font-size:14px;margin-top:4px;">Tải file 3D của bạn lên để xem trước trên bàn in 256mm và nhận giá ước tính ngay lập tức.</p>
+          </div>
+          <button type="button" class="btn-outline" id="btn-load-sample-stl" style="height:40px;font-size:13px;">
+            Nạp thử file .3MF / .STL mẫu
+          </button>
+        </div>
+
+        <div id="kx-slicer-format-badge" style="background:rgba(20,184,166,0.10);border:1px solid rgba(20,184,166,0.35);color:var(--foreground);padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.5;margin-bottom:16px;">
+          💡 File 3D chuẩn lên màu tự động: <b>.3MF</b> (Bambu Studio / OrcaSlicer đa sắc AMS), <b>.GLB / .GLTF</b> (kèm Texture UV). File <b>.STL</b> là lưới hình học đơn sắc (chọn màu nhựa bên phải).
+        </div>
+
+        <ol class="steps-pills" id="slicer-steps">
+          <li class="active">1. Tải file hoặc chọn mẫu</li>
+          <li>2. Chọn vật liệu &amp; màu</li>
+          <li>3. In &amp; giao tận nhà (3 – 5 ngày)</li>
+        </ol>
+
+        <form id="slicer-form" class="two-col">
+          <div>
+            <div class="drop-box" id="slicer-dropzone">
+              <input type="file" id="slicer-file-input" name="file" accept=".stl,.3mf,.obj,.glb,.gltf" style="display:none;" />
+              <div style="font-weight:700;font-size:15px;" id="slicer-file-label">Kéo thả hoặc bấm để chọn file .STL / .3MF / .OBJ</div>
+              <div style="font-size:12.5px;color:var(--muted);margin-top:4px;">Tối đa 50MB · Tự động đo kích thước bao (mm) và thể tích (cm³)</div>
+            </div>
+            <div class="slicer-preview-wrap">
+              <canvas id="slicer-canvas"></canvas>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div class="form-grid-2" style="margin-top:0;">
+              <label class="field-lbl">
+                Vật liệu nhựa in
+                <select name="material" id="slicer-material" class="kx-select">
+                  <option value="PLA">PLA Sinh Học (An toàn)</option>
+                  <option value="PLA_SILK">PLA Silk Ánh Lụa</option>
+                  <option value="PETG">PETG Chịu Nhiệt</option>
+                  <option value="TPU">TPU Dẻo Đàn Hồi</option>
+                  <option value="RESIN">Resin 8K Siêu Mịn</option>
+                </select>
+              </label>
+              <label class="field-lbl">
+                Màu sắc nhựa
+                <select name="colorHex" id="slicer-color" class="kx-select">
+                  <option value="FILE_ORIGINAL" data-name="Giữ Màu Gốc Theo File (.3MF / .GLB)" selected>🎨 Giữ Màu Gốc Theo File (.3MF / .GLB)</option>
+                  <option value="#ff6b2c" data-name="Cam Khối Xinh">Cam Khối Xinh</option>
+                  <option value="#14b8a6" data-name="Xanh Mint">Xanh Mint</option>
+                  <option value="#ffc83d" data-name="Vàng Nghệ">Vàng Nghệ</option>
+                  <option value="#f4f1ea" data-name="Trắng Ngà">Trắng Ngà</option>
+                  <option value="#22252a" data-name="Đen Carbon">Đen Carbon</option>
+                </select>
+              </label>
+              <label class="field-lbl">
+                Độ đặc ruột (Infill %)
+                <select name="infillPct" id="slicer-infill" class="kx-select">
+                  <option value="15">15% (Trưng bày)</option>
+                  <option value="20" selected>20% (Tiêu chuẩn)</option>
+                  <option value="40">40% (Chịu lực cơ khí)</option>
+                  <option value="80">80% (Đặc chắc)</option>
+                </select>
+              </label>
+              <label class="field-lbl">
+                Số lượng (Chiếc)
+                <input type="number" name="quantity" id="slicer-qty" value="1" min="1" max="500" class="kx-input" />
+              </label>
+            </div>
+
+            <button type="submit" class="btn-clay" id="btn-calc-quote" style="width:100%;">
+              Tính giá ước tính ngay
+            </button>
+
+            <div class="quote-result-box" id="quote-dynamic-output" style="display:none;"></div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- 6. TẠO TƯỢNG CHIBI TỪ ẢNH 2D (#tao-tuong) -->
+    <section id="tao-tuong" class="kx-section">
+      <div class="clay-panel">
+        <div class="sec-head" style="margin-bottom:20px;">
+          <div>
+            <h2 class="sec-title">Tạo tượng Chibi 3D từ ảnh chụp</h2>
+            <p style="color:var(--muted);font-size:14px;margin-top:4px;">Gửi 1 ảnh chân dung, gia đình hoặc thú cưng — chúng tôi dựng mẫu 3D và in nhiều màu sắc nét (Giao 3 – 5 ngày).</p>
+          </div>
+          <button type="button" class="btn-outline" id="btn-load-sample-fig-photo" style="height:40px;font-size:13px;">
+            📸 Dùng ảnh chân dung mẫu
+          </button>
+        </div>
+
+        <form id="figure-form" class="two-col">
+          <div>
+            <div class="drop-box" id="fig-dropzone">
+              <input type="file" id="fig-photo-input" name="photo" accept="image/*" style="display:none;" />
+              <div style="font-weight:700;font-size:15px;" id="fig-photo-label">Bấm để tải ảnh chân dung / thú cưng (.JPG, .PNG)</div>
+              <div style="font-size:12.5px;color:var(--muted);margin-top:4px;">Ảnh rõ mặt giúp tượng Chibi giống thật và sinh động nhất</div>
+              <img id="fig-photo-preview" alt="Preview" style="display:none;max-height:180px;margin:12px auto 0;border-radius:14px;border:1px solid var(--border);" />
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div class="form-grid-2" style="margin-top:0;">
+              <label class="field-lbl">
+                Chiều cao tượng
+                <select name="heightMm" id="fig-height" class="kx-select">
+                  <option value="80">Cao 8cm (Để bàn gọn)</option>
+                  <option value="100">Cao 10cm (Phổ biến)</option>
+                  <option value="120" selected>Cao 12cm (Chuẩn quà tặng)</option>
+                  <option value="150">Cao 15cm (Trưng bày lớn)</option>
+                </select>
+              </label>
+              <label class="field-lbl">
+                Số màu in 3D
+                <select name="colorCount" id="fig-colors" class="kx-select">
+                  <option value="1">Đơn sắc 1 màu</option>
+                  <option value="4" selected>4 Màu</option>
+                  <option value="7">7 Màu chi tiết</option>
+                </select>
+              </label>
+            </div>
+
+            <label class="field-lbl">
+              Chữ khắc lên bảng tên đế tượng (Miễn phí)
+              <input type="text" name="customText" id="fig-custom-text" placeholder="VD: Cô Giáo Hải Ngọc - 20/11" maxlength="32" class="kx-input" />
+            </label>
+
+            <label style="display:flex;align-items:center;gap:8px;font-size:13.5px;cursor:pointer;">
+              <input type="checkbox" name="withBase" id="fig-base" value="true" checked />
+              Kèm đế tròn &amp; bảng tên khắc nổi (+30.000 ₫)
+            </label>
+
+            <div class="quote-result-box" style="flex-direction:row;align-items:center;justify-content:space-between;">
+              <div>
+                <div style="font-size:12px;color:var(--muted);">Giá trọn gói dựng 3D &amp; in:</div>
+                <div class="quote-big-price" id="fig-live-price" style="font-size:26px;">690.000 ₫</div>
+              </div>
+              <button type="submit" class="btn-clay">Đặt làm tượng →</button>
+            </div>
+            <div id="fig-order-msg" style="display:none;padding:12px;border-radius:12px;background:rgba(20,184,166,0.14);border:1px solid var(--secondary);font-size:13px;"></div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- 7. GIỎ HÀNG & THANH TOÁN 3 BƯỚC (#gio-hang-day-du & #thanh-toan-3-buoc) -->
+    <section id="gio-hang-day-du" class="kx-section">
+      <div class="sec-head" style="margin-bottom:20px;">
+        <div>
+          <h2 class="sec-title">Giỏ hàng &amp; Thanh toán VietQR / COD</h2>
+          <p style="color:var(--muted);font-size:14px;margin-top:4px;">Miễn phí vận chuyển cho đơn từ 500.000 ₫ · Hoàn thiện &amp; giao hàng 3D Handmade trong 3 – 5 ngày.</p>
+        </div>
+      </div>
+
+      <div class="two-col" style="align-items:start;">
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="kx-card-surface" style="padding:16px 18px;">
+            <p id="kx-fullcart-ship-msg" style="font-size:13.5px;">Mua thêm <b>500.000 ₫</b> để được miễn phí vận chuyển.</p>
+            <div class="freeship-bar">
+              <div id="kx-fullcart-bar" class="freeship-fill" style="width:0%;"></div>
+            </div>
+          </div>
+          <div id="kx-fullcart-items" style="display:flex;flex-direction:column;gap:10px;"></div>
+        </div>
+
+        <form id="kx-checkout-form" class="kx-card-surface" style="padding:24px;display:flex;flex-direction:column;gap:14px;">
+          <h3 id="thanh-toan-3-buoc" class="font-display" style="font-size:20px;font-weight:800;">Thông tin nhận hàng</h3>
+          <div class="form-grid-2" style="margin-top:0;">
+            <label class="field-lbl">Họ và tên *
+              <input type="text" id="kx-co-name" required class="kx-input" placeholder="Nguyễn Văn A" />
+            </label>
+            <label class="field-lbl">Số điện thoại *
+              <input type="tel" id="kx-co-phone" required class="kx-input" placeholder="Nhập số điện thoại nhận hàng..." />
+            </label>
+            <label class="field-lbl">Tỉnh / Thành phố *
+              <select id="kx-co-province" class="kx-select">
+                <option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>
+                <option value="Hà Nội">Hà Nội</option>
+                <option value="Đà Nẵng">Đà Nẵng</option>
+                <option value="Cần Thơ">Cần Thơ</option>
+                <option value="Hải Phòng">Hải Phòng</option>
+                <option value="Bình Dương">Bình Dương</option>
+                <option value="Đồng Nai">Đồng Nai</option>
+              </select>
+            </label>
+            <label class="field-lbl">Phường / Xã *
+              <select id="kx-co-ward" class="kx-select"></select>
+            </label>
+          </div>
+          <label class="field-lbl">Địa chỉ chi tiết *
+            <input type="text" id="kx-co-address" required class="kx-input" placeholder="Số nhà, tên đường..." />
+          </label>
+          <input type="hidden" id="kx-co-email" value="" />
+          <input type="hidden" id="kx-co-note" value="" />
+
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px;">
+            <span style="font-size:13px;font-weight:600;">Phương thức thanh toán</span>
+            <label class="kx-pay-option active">
+              <input type="radio" name="kxPaymentMethod" value="VIETQR" checked style="margin-top:3px;" />
+              <div>
+                <div style="font-weight:700;font-size:13.5px;">Chuyển khoản QR (VietQR)</div>
+                <div style="font-size:12px;color:var(--muted);">Quét mã QR ngân hàng, xác nhận tự động</div>
+              </div>
+            </label>
+            <label class="kx-pay-option">
+              <input type="radio" name="kxPaymentMethod" value="COD" style="margin-top:3px;" />
+              <div>
+                <div style="font-weight:700;font-size:13.5px;">Thanh toán khi nhận hàng (COD)</div>
+                <div style="font-size:12px;color:var(--muted);">Áp dụng cho đơn tiêu chuẩn</div>
+              </div>
+            </label>
+          </div>
+
+          <div style="display:flex;gap:8px;">
+            <input type="text" id="kx-co-coupon-input" class="kx-input" placeholder="Mã giảm giá (VD: LOP10, KHOIXINH10, FREESHIP)" style="flex:1;text-transform:uppercase;" />
+            <button type="button" class="btn-outline" id="kx-co-apply-coupon" style="height:42px;padding:0 16px;">Áp dụng</button>
+          </div>
+          <div id="kx-co-coupon-msg" style="display:none;font-size:12.5px;font-weight:600;margin-top:-4px;"></div>
+
+          <div style="border-top:1px solid var(--border);padding-top:12px;font-size:13.5px;display:flex;flex-direction:column;gap:6px;">
+            <div id="kx-co-items" style="display:none;"></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--muted);">Tạm tính</span><span id="kx-co-subtotal">0 ₫</span></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--muted);">Giảm giá</span><span id="kx-co-discount" style="color:var(--secondary-strong);">0 ₫</span></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--muted);">Phí vận chuyển</span><span id="kx-co-ship">0 ₫</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:17px;font-weight:800;padding-top:6px;border-top:1px solid var(--border);">
+              <span>Tổng thanh toán</span><span id="kx-co-total" style="color:var(--highlight);">0 ₫</span>
+            </div>
+          </div>
+
+          <label style="display:none;"><input type="checkbox" id="kx-co-save-addr" checked /></label>
+          <button type="submit" class="btn-clay" id="kx-co-submit-btn" style="width:100%;">Đặt hàng · 0 ₫</button>
+        </form>
+      </div>
+      <div id="kx-order-success-box" class="kx-card-surface" style="display:none;margin-top:18px;padding:22px;border-color:var(--secondary);"></div>
+    </section>
+
+    <!-- 8. TRA CỨU ĐƠN HÀNG, DÀN MÁY IN BAMBU LAB & CÂU HỎI THƯỜNG GẶP (#theo-doi-don & #hoi-dap) -->
+    <section id="theo-doi-don" class="kx-section">
+      <div class="two-col" style="align-items:start;">
+        <div class="kx-card-surface" style="padding:24px;display:none !important;" aria-hidden="true">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
+            <h2 class="sec-title" style="font-size:24px;">Theo dõi đơn hàng</h2>
+            <button type="button" class="sidebar-pill" id="btn-demo-track-order" style="font-size:12px;">🔍 Xem đơn mẫu</button>
+          </div>
+          <p style="font-size:14px;color:var(--muted);margin-top:4px;">Nhập mã đơn (VD: KX-...) hoặc số điện thoại nhận hàng để kiểm tra tiến độ in 3D.</p>
+          <form id="kx-track-form" style="display:flex;gap:8px;margin-top:14px;">
+            <input type="text" id="kx-track-input" class="kx-input" placeholder="Mã đơn KX-... + 4 số cuối SĐT (VD: KX-1031-AB12CD 3333)" style="flex:1;" />
+            <button type="submit" class="btn-clay" style="height:42px;">Tra cứu</button>
+          </form>
+          <div id="kx-track-results" style="margin-top:14px;display:flex;flex-direction:column;gap:8px;"></div>
+
+          <div class="kx-printer-farm-section" style="display:none !important;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+              <strong style="font-size:13.5px;color:var(--foreground);">📦 Tiến độ hoàn thiện đơn hàng</strong>
+              <span style="font-size:11.5px;color:var(--secondary-strong);"></span>
+            </div>
+            <div id="kx-printer-farm-grid" style="display:none !important;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;"></div>
+          </div>
+        </div>
+
+        <div id="hoi-dap" class="kx-card-surface" style="padding:24px;grid-column:1 / -1;">
+          <h2 class="sec-title" style="font-size:24px;">Câu hỏi thường gặp</h2>
+          <div style="margin-top:12px;display:flex;flex-direction:column;gap:10px;font-size:14px;">
+            <details style="border-bottom:1px solid var(--border);padding-bottom:10px;" open>
+              <summary style="font-weight:600;cursor:pointer;">Thời gian in và giao mất bao lâu?</summary>
+              <p style="color:var(--muted);margin-top:6px;">Hàng in 3D handmade / khắc tên riêng hoàn thiện &amp; giao nhanh trong <b>3 – 5 ngày</b>. Phụ kiện đặt xưởng Order 1688 từ <b>12 – 15 ngày</b>.</p>
+            </details>
+            <details style="border-bottom:1px solid var(--border);padding-bottom:10px;">
+              <summary style="font-weight:600;cursor:pointer;">Làm sao đặt thử sản phẩm từ kho lên Phòng 3D?</summary>
+              <p style="color:var(--muted);margin-top:6px;">Bấm nút <b>🏠 Đặt Vào Phòng 3D</b> trên bất kỳ thẻ sản phẩm nào, trang sẽ tự động đặt mô hình đó vào Phòng 3D ở đầu trang để bạn kéo thả, xoay và phóng to.</p>
+            </details>
+            <details>
+              <summary style="font-weight:600;cursor:pointer;">Sản phẩm lỗi thì sao?</summary>
+              <p style="color:var(--muted);margin-top:6px;">Nếu lỗi in hoặc gãy vỡ khi vận chuyển, chúng tôi in lại mới 100% hoặc hoàn tiền.</p>
+            </details>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer style="border-top:1px solid var(--border);background:#07090d;position:relative;z-index:20;">
+    <div style="max-width:1180px;margin:0 auto;padding:42px 16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:28px;">
+      <div>
+        <p class="font-display" style="font-size:22px;font-weight:800;"><span style="color:var(--teal);">🏗️</span> Khối Xinh 3D Studio</p>
+        <p style="font-size:13.5px;color:var(--muted);margin-top:8px;">Thiết kế không gian 3D AutoCAD/Blender, in 3D Studio 3D đa sắc &amp; giao tận nhà 3 – 5 ngày.</p>
+      </div>
+      <nav aria-label="Cửa hàng">
+        <p style="font-weight:700;margin-bottom:8px;">Không gian &amp; Cửa hàng</p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:7px;font-size:13.5px;color:var(--muted);">
+          <li><a href="#room-planner-hero" style="color:inherit;text-decoration:none;">Phòng 3D AutoCAD / Blender</a></li>
+          <li><a href="#shop-this-room" style="color:inherit;text-decoration:none;">Mua trọn bộ đồ trong phòng</a></li>
+          <li><a href="#san-pham" style="color:inherit;text-decoration:none;">Tất cả 28 sản phẩm 3D</a></li>
+          <li><a href="#trung-mau-3d" style="color:inherit;text-decoration:none;">Sân khấu 3D chi tiết</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Dịch vụ">
+        <p style="font-weight:700;margin-bottom:8px;">Đặt in theo yêu cầu</p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:7px;font-size:13.5px;color:var(--muted);">
+          <li><a href="#dat-in-3d" style="color:inherit;text-decoration:none;">Báo giá file .STL / .3MF</a></li>
+          <li><a href="#tao-tuong" style="color:inherit;text-decoration:none;">Tạo tượng Chibi từ ảnh 2D</a></li>
+          <li><a href="#gio-hang-day-du" style="color:inherit;text-decoration:none;">Thanh toán VietQR / COD</a></li>
+          <li style="display:none !important;"><a href="#theo-doi-don" style="color:inherit;text-decoration:none;">Theo dõi đơn &amp; Dàn máy in</a></li>
+        </ul>
+      </nav>
+      <div>
+        <p style="font-weight:700;margin-bottom:8px;">Cam kết dịch vụ</p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:7px;font-size:13.5px;color:var(--muted);">
+          <li id="kx-footer-hotline" style="display:none;"></li>
+          <li>Hàng 3D Handmade: Giao 3 – 5 ngày</li>
+          <li>Mẫu in 3D tại xưởng (in theo đơn): dự kiến 3 – 5 ngày</li>
+          <li>Freeship toàn quốc đơn từ 500.000 ₫</li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODAL: 🏗️ DỰNG ẢNH PHÒNG SANG KHÔNG GIAN 3D AUTOCAD / BLENDER -->
+  <div class="modal-backdrop" id="modal-room-upload">
+    <div class="modal-box">
+      <div class="modal-head">
+        <div>
+          <h3 style="font-size:17px;font-weight:900;color:#fff;">🏗️ Dựng Ảnh Phòng Của Bạn Thành Không Gian & Nội Thất 3D (AutoCAD / Blender)</h3>
+          <p style="font-size:12px;color:var(--muted);margin-top:2px;">
+            Hệ thống tự động bóc tách ảnh phòng thành <b>Tường + Sàn 3D + Các Khối Nội Thất 3D (Giường, Tủ Áo, Bàn, Tab Đầu Giường, Tranh Tường)</b> có lưới kích thước AutoCAD (mm) để bạn xoay 360°, thu nhỏ/phóng to và đặt đồ vật 3D lên!
+          </p>
+        </div>
+        <button type="button" class="btn-close-modal" id="btn-close-room-modal">&times;</button>
+      </div>
+
+      <!-- BẢNG TIÊU CHUẨN 4 QUY TẮC CHỌN ẢNH ĐỂ DỰNG SANG 3D CAD CHUẨN NHẤT -->
+      <div style="background:rgba(15,23,42,0.85);border:1px solid rgba(56,189,248,0.35);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;">
+        <div style="font-size:12px;font-weight:900;color:#38bdf8;display:flex;justify-content:space-between;align-items:center;">
+          <span>📸 ẢNH NHƯ THẾ NÀO THÌ DỰNG SANG PHÒNG 3D ĐẸP &amp; CHUẨN NHẤT?</span>
+          <span style="font-size:10.5px;background:rgba(20,184,166,0.2);color:#5eead4;padding:2px 8px;border-radius:999px;border:1px solid #14b8a6;">App Chuyển 2D → 3D CAD</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;font-size:11.5px;line-height:1.4;">
+          <div style="background:rgba(255,255,255,0.03);padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);">
+            <b style="color:#fde68a;">1. Góc chụp thấy Sàn + Tường:</b><br/>
+            <span style="color:var(--muted);">Chụp góc ngang hoặc góc chéo 45° thấy rõ <b>mặt sàn và 1–2 bức tường</b> (không chụp sát mặt đất hay chỉ chụp trần nhà).</span>
+          </div>
+          <div style="background:rgba(255,255,255,0.03);padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);">
+            <b style="color:#5eead4;">2. Thấy trọn vẹn đồ nội thất:</b><br/>
+            <span style="color:var(--muted);">Giường, bàn làm việc, tủ kệ nằm gọn trong khung hình, <b>không có người đứng chắn</b> phía trước.</span>
+          </div>
+          <div style="background:rgba(255,255,255,0.03);padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);">
+            <b style="color:#38bdf8;">3. Đủ sáng &amp; Ảnh ngang (4:3 / 16:9):</b><br/>
+            <span style="color:var(--muted);">Bật đèn phòng hoặc mở rèm để AI tách chuẩn ranh giới <b>Tường – Sàn – Đồ đạc</b> và lấy đúng màu gỗ/tường.</span>
+          </div>
+          <div style="background:rgba(255,255,255,0.03);padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);">
+            <b style="color:#f472b6;">4. Nhập kích thước thật của phòng:</b><br/>
+            <span style="color:var(--muted);">Nhập <b>Rộng × Sâu × Cao (m)</b> bên dưới để hệ thống dựng đúng tỷ lệ AutoCAD 1:1 với đồ in 3D (mm).</span>
+          </div>
+        </div>
+
+        <!-- Nhập kích thước phòng thực tế ngay trong Modal -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding-top:4px;border-top:1px solid rgba(255,255,255,0.08);">
+          <label style="font-size:11px;color:#cbd5e1;display:flex;flex-direction:column;gap:3px;">
+            <span>📏 Chiều rộng phòng (m):</span>
+            <input type="number" id="modal-room-w" min="2.0" max="12.0" step="0.1" value="4.5" style="height:32px;border-radius:8px;border:1px solid var(--cyan);background:#0f172a;color:#fff;padding:0 8px;font-weight:800;" />
+          </label>
+          <label style="font-size:11px;color:#cbd5e1;display:flex;flex-direction:column;gap:3px;">
+            <span>📐 Chiều sâu phòng (m):</span>
+            <input type="number" id="modal-room-d" min="2.0" max="12.0" step="0.1" value="4.2" style="height:32px;border-radius:8px;border:1px solid var(--cyan);background:#0f172a;color:#fff;padding:0 8px;font-weight:800;" />
+          </label>
+          <label style="font-size:11px;color:#cbd5e1;display:flex;flex-direction:column;gap:3px;">
+            <span>🏔️ Chiều cao trần (m):</span>
+            <input type="number" id="modal-room-h" min="2.0" max="5.0" step="0.1" value="2.8" style="height:32px;border-radius:8px;border:1px solid var(--cyan);background:#0f172a;color:#fff;padding:0 8px;font-weight:800;" />
+          </label>
+        </div>
+      </div>
+
+      <div class="drop-zone" id="room-drop-zone">
+        <div style="font-size:26px;margin-bottom:4px;">🏗️📐</div>
+        <div style="font-size:13.5px;font-weight:800;color:#fff;">Bấm để tải Ảnh Phòng Decor / Phòng Khách / Bàn Làm Việc (.JPG, .PNG, .WEBP)</div>
+        <div style="font-size:11.5px;color:#38bdf8;margin-top:3px;font-weight:700;">
+          ✨ Tự động chấm điểm chất lượng ảnh &amp; dựng thành Phòng 3D theo đúng kích thước (m) bạn nhập ở trên!
+        </div>
+        <input type="file" id="room-photo-input" accept="image/*" style="display:none;" />
+      </div>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button type="button" class="buy-btn" id="btn-modal-demo-bedroom" style="flex:1;background:linear-gradient(135deg,#0284c7,#0f766e);box-shadow:none;">
+          🏛️ Dựng Ngay Phòng Decor Mẫu Sang 3D AutoCAD / Blender (1-Click)
+        </button>
+      </div>
+
+      <div id="room-preview-wrap" style="display:none;padding:12px;border-radius:12px;background:rgba(56,189,248,0.1);border:1px solid var(--cyan);">
+        <div style="display:flex;gap:12px;align-items:center;">
+          <img id="room-preview-img" src="" alt="Room preview" style="width:96px;height:68px;object-fit:cover;border-radius:8px;border:1px solid var(--cyan);" />
+          <div style="flex:1;font-size:12px;">
+            <div style="font-weight:800;color:#38bdf8;">✅ Đã dựng ảnh phòng thành Không Gian & Nội Thất 3D CAD/Blender!</div>
+            <div id="room-ai-analysis" style="color:var(--muted);margin-top:3px;"></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:10px;">
+          <button type="button" class="dio-btn cyan active" id="btn-modal-mode-blender" style="height:34px;">🧊 Xem Dạng Blender 3D Solid + Texture</button>
+          <button type="button" class="dio-btn cyan" id="btn-modal-mode-autocad" style="height:34px;">📐 Xem Dạng AutoCAD 3D Wireframe + Kích Thước</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="sec-label" style="margin-bottom:8px;">Hoặc Chọn Kiến Trúc Phòng Studio 3D Mặc Định:</div>
+        <div class="preset-grid">
+          <button type="button" class="preset-card" data-room-preset="warm-oak">
+            <div style="font-weight:800;color:#fbbf24;">🪵 Studio Gỗ Sồi Ấm</div>
+            <div style="color:var(--muted);font-size:11px;margin-top:2px;">Tường xám than · Sàn gỗ sồi · Đèn vàng 2700K</div>
+          </button>
+          <button type="button" class="preset-card" data-room-preset="nordic-white">
+            <div style="font-weight:800;color:#38bdf8;">❄️ Phòng Bắc Âu MUJI Sáng</div>
+            <div style="color:var(--muted);font-size:11px;margin-top:2px;">Tường kem trắng · Sàn gỗ thông · Nắng tự nhiên</div>
+          </button>
+          <button type="button" class="preset-card" data-room-preset="cyber-gaming">
+            <div style="font-weight:800;color:#a855f7;">🎮 Phòng Gaming Neon Đêm</div>
+            <div style="color:var(--muted);font-size:11px;margin-top:2px;">Tường đen tuyền · Đèn Spotlight tím xanh</div>
+          </button>
+          <button type="button" class="preset-card" data-room-preset="vintage-indochine">
+            <div style="font-weight:800;color:#f97316;">🏮 Không Gian Đông Dương Cổ Điển</div>
+            <div style="color:var(--muted);font-size:11px;margin-top:2px;">Tường nâu trầm · Sàn gỗ lim · Hợp Chùa/Đình .GLB</div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DRAWER: 🛡️ KIỂM DUYỆT & BIÊN TẬP TRƯNG BÀY -->
+  <div class="drawer-backdrop" id="drawer-moderation">
+    <div class="drawer-panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <h3 style="font-size:17px;font-weight:900;color:#fff;">🛡️ Kiểm Duyệt & Quản Lý Mẫu 3D</h3>
+          <p style="font-size:11.5px;color:var(--muted);">Bật/tắt hiển thị các mẫu thực tế hoặc tải thêm mẫu mới vào phòng.</p>
+        </div>
+        <button type="button" class="btn-close-modal" id="btn-close-moderation">&times;</button>
+      </div>
+
+      <div style="padding:12px;border-radius:12px;background:rgba(20,184,166,0.08);border:1px solid rgba(20,184,166,0.25);display:flex;flex-direction:column;gap:8px;">
+        <div style="font-size:12px;font-weight:800;color:#5eead4;">➕ Đăng Nhanh Sản Phẩm Mới Lên Phòng Trưng Bày</div>
+        <input type="text" id="mod-new-name" placeholder="Tên sản phẩm 3D mới..." style="width:100%;height:34px;border-radius:8px;border:1px solid var(--border);background:#141923;color:#fff;padding:0 10px;font-size:12px;" />
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <input type="number" id="mod-new-price" placeholder="Giá (VNĐ) VD: 250000" value="250000" style="width:100%;height:34px;border-radius:8px;border:1px solid var(--border);background:#141923;color:#fff;padding:0 10px;font-size:12px;" />
+          <select id="mod-new-type" style="width:100%;height:34px;border-radius:8px;border:1px solid var(--border);background:#141923;color:#fff;padding:0 8px;font-size:12px;">
+            <option value="stl_multipart">Mô hình .3MF / .STL</option>
+            <option value="glb_model">Kiến trúc Việt (.GLB)</option>
+          </select>
+        </div>
+        <button type="button" id="btn-mod-add" style="height:34px;border-radius:8px;border:0;background:var(--teal);color:#04201c;font-weight:800;font-size:12px;cursor:pointer;">✅ Duyệt & Đặt Vào Phòng Ngay</button>
+      </div>
+
+      <div class="sec-label">Danh Sách Sản Phẩm Thực Tế (Gạt Để Ẩn/Hiện):</div>
+      <div id="moderation-items-list" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding-right:4px;"></div>
+    </div>
+  </div>
+
+  <!-- SLIDE-OVER CART & VIETQR CHECKOUT (UNIFIED WITH FULL CART) -->
+  <div class="cart-backdrop" id="cart-backdrop">
+    <aside class="cart-drawer">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h3 class="font-display" style="font-size:20px;font-weight:800;">Giỏ hàng của bạn</h3>
+        <button type="button" class="btn-outline" id="btn-close-cart" style="height:34px;padding:0 12px;">✕ Đóng</button>
+      </div>
+
+      <div style="background:var(--surface-muted);padding:12px 14px;border-radius:14px;border:1px solid var(--border);">
+        <div id="freeship-text" style="font-size:12.5px;">Mua thêm <b>500.000 ₫</b> để được <b>Freeship toàn quốc</b>!</div>
+        <div class="freeship-bar"><div class="freeship-fill" id="freeship-fill" style="width:0%"></div></div>
+      </div>
+
+      <div id="cart-items-list" style="display:flex;flex-direction:column;gap:10px;flex:1;"></div>
+
+      <div style="border-top:1px solid var(--border);padding-top:12px;display:flex;flex-direction:column;gap:6px;font-size:13.5px;">
+        <div style="display:flex;justify-content:space-between;"><span>Tạm tính:</span><b id="cart-subtotal">0 ₫</b></div>
+        <div style="display:flex;justify-content:space-between;"><span>Tổng khối lượng:</span><span id="cart-weight">0g</span></div>
+        <div style="display:flex;justify-content:space-between;"><span>Phí ship:</span><b id="cart-ship">0 ₫</b></div>
+        <div style="display:flex;justify-content:space-between;font-size:17px;font-weight:800;color:var(--highlight);margin-top:4px;">
+          <span>Tổng cộng:</span><span id="cart-total">0 ₫</span>
+        </div>
+        <button type="button" class="btn-clay" id="btn-checkout-now" style="width:100%;margin-top:10px;">
+          Tiến hành đặt hàng →
+        </button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Legacy Slideover compatibility element -->
+  <aside id="cart-slideover" style="display:none;">
+    <div id="dio-cart-items"></div>
+    <strong id="dio-cart-total">0 ₫</strong>
+  </aside>
+
+  <script src="assets/diorama_catalog_data.js?v=20261101f"></script>
+  <script src="assets/diorama_room_shell.js?v=20261101f"></script>
+  <script src="assets/diorama_cad_furniture.js?v=20261101f"></script>
+  <script src="assets/diorama_model_placer.js?v=20261101f"></script>
+  <script src="assets/diorama_3mf_and_hotspots.js?v=20261101f"></script>
+  <script src="assets/diorama_camera_and_zen.js?v=20261101f"></script>
+  <script src="assets/diorama_photo_reconstruct.js?v=20261101f"></script>
+  <script src="assets/diorama_3d_decor.js?v=20261101f"></script>
+  <script src="assets/khoixinh_3d_models_proc.js?v=20261101f"></script>
+  <script src="assets/khoixinh_3d_models_extra.js?v=20261101f"></script>
+  <script src="assets/khoixinh_showcase_stage.js?v=20261101_v10"></script>
+  <script src="assets/kx_direct_3d_2d_viewer.js?v=20261101_v10"></script>
+  <script src="assets/khoixinh_checkout_and_thumbs.js?v=20261101_v10"></script>
+  <script src="assets/khoixinh_showcase_store.js?v=20261101_v10"></script>
+  <script src="assets/khoixinh_runway_hero.js?v=20261101_v10"></script>
+  <script src="assets/kx_model_colors.js?v=20261101_v10"></script>
+  <script src="assets/khoixinh_slicer_and_chibi.js?v=20261101_v10"></script>
+  <script src="assets/khoixinh_3d_hub.js?v=20261101_v10"></script>
+  <script src="assets/gamified_3d_styles_and_routes.js?v=20261101_v10"></script>
+  <script src="assets/gamified_3d_staff_runner.js?v=20261101_v10"></script>
+  <script src="assets/gamified_3d_cart_and_delivery.js?v=20261101_v10"></script>
+  <script src="assets/multisite_dock_suite.js?v=20261101_v10"></script>
+  <script src="assets/multisite_dock.js?v=20261101_v10"></script>
+<script>if (window.innerWidth <= 900) document.body.classList.add('left-panel-collapsed', 'right-panel-collapsed');</script>
+</body>
+</html>
