@@ -394,8 +394,14 @@
       <div class="btn-grid">
         <button class="action-btn btn-stl" onclick="exportSTL()">⬇️ Tải .STL Liền Khối</button>
         <button class="action-btn btn-3mf" onclick="export3MF()">🎨 Tải .3MF Đa Màu</button>
-        <a class="action-btn btn-glb" href="/uploads/moc_khoa_logo_r/MOC_KHOA_LOGO_R_3D_PBR.glb" download="MOC_KHOA_LOGO_R_3D_PBR.glb">📦 Tải .GLB (Blender)</a>
-        <a class="action-btn btn-glb" href="/uploads/moc_khoa_logo_r/MOC_KHOA_LOGO_R_AUTOCAD.dxf" download="MOC_KHOA_LOGO_R_AUTOCAD.dxf">📐 Tải .DXF (AutoCAD)</a>
+        <a class="action-btn btn-glb" href="uploads/moc_khoa_logo_r/MOC_KHOA_LOGO_R_3D_BAMBU_2MAU.3mf" download="MOC_KHOA_LOGO_R_3D_BAMBU_2MAU.3mf">🖨️ .3MF Gốc (Chuẩn)</a>
+        <a class="action-btn btn-glb" href="uploads/moc_khoa_logo_r/MOC_KHOA_LOGO_R_3D_CO_VIEN_BAMBU_2MAU.3mf" download="MOC_KHOA_LOGO_R_3D_CO_VIEN_BAMBU_2MAU.3mf">🖨️ .3MF Gốc (Có Viền)</a>
+        <a class="action-btn btn-glb" href="uploads/moc_khoa_logo_r/MOC_KHOA_LOGO_R_3D_PBR.glb" download="MOC_KHOA_LOGO_R_3D_PBR.glb">📦 Tải .GLB (Blender)</a>
+        <a class="action-btn btn-glb" href="uploads/moc_khoa_logo_r/MOC_KHOA_LOGO_R_AUTOCAD.dxf" download="MOC_KHOA_LOGO_R_AUTOCAD.dxf">📐 Tải .DXF (AutoCAD)</a>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr;gap:5px;margin-top:6px;">
+        <a class="action-btn" href="uploads/moc_khoa_logo_r/SOURCE_MOC_KHOA_LOGO_R_FULL.zip" download="SOURCE_MOC_KHOA_LOGO_R_FULL.zip" style="background:linear-gradient(135deg,#0284c7,#2563eb);color:#fff;border:1px solid #38bdf8;">📦 Tải Trọn Bộ Source Gốc (.ZIP: .3MF + .STL + .DXF + .GLB + .HTML + .PY)</a>
+        <a class="action-btn" href="kho_source_san_pham_da_tao.html" style="background:#1e293b;color:#fde047;border:1px solid #f59e0b;">🏭 Mở Kho Sản Phẩm &amp; Source Đã Tạo Của Xưởng</a>
       </div>
       <div class="solid-badge">✅ Chữ nổi đã cắm âm 0.40 mm vào đế & khóa cứng vị trí (Tải về in ngay không cần kéo tay)</div>
     </div>
@@ -2414,5 +2420,6 @@
     setCameraView('iso');
     animate();
   </script>
+  <script src="/static/js/airi_vrm_cskh_widget.js" defer></script>
 </body>
 </html>

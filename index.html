@@ -1,1715 +1,1722 @@
-<!DOCTYPE html>
-<html lang="vi" data-theme="light">
+<!doctype html>
+<html lang="vi" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <link rel="icon" href="data:,">
-  <title>MakerWorld 3D Studio — Cộng Đồng In 3D, MakerLab 4 Vũ Khí & Chợ Mô Hình Bambu AMS</title>
+  <meta charset="utf-8" />
+  <script src="assets/kx_order_integrity.js?v=20261101d"></script>
+  <meta name="color-scheme" content="dark" />
+  <meta name="darkreader-lock" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧊</text></svg>" />
+  <title>Khối Xinh 3D — Đồ Gia Dụng, Decor Phòng Khách, Góc Học Tập & Quà Tặng In 3D</title>
+  <meta name="description" content="Đồ dùng học tập, mô hình STEM, móc khóa tên và quà tặng in 3D. Xem thử 3D, in theo yêu cầu, thanh toán online, giao toàn quốc." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/STLExporter.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
-    /* BẢNG MÀU CHUẨN BAMBU LAB MAKERWORLD (MẶC ĐỊNH SÁNG + CHẾ ĐỘ TỐI) */
-    :root, [data-theme="light"] {
-      --mw-green: #00ae42;
-      --mw-green-hover: #00993a;
-      --mw-green-soft: rgba(0, 174, 66, 0.10);
-      --mw-bg: #f5f6f8;
-      --mw-surface: #ffffff;
-      --mw-surface-2: #f0f2f5;
-      --mw-border: #e4e7ed;
-      --mw-text: #18191c;
-      --mw-text-sub: #61666d;
-      --mw-muted: #9499a0;
-      --mw-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-      --mw-shadow-hover: 0 10px 28px rgba(0, 0, 0, 0.12);
-      --mw-thumb-bg: linear-gradient(180deg, #eef2f6 0%, #e2e8f0 100%);
-    }
-
-    [data-theme="dark"] {
-      --mw-green: #00ae42;
-      --mw-green-hover: #00c84d;
-      --mw-green-soft: rgba(0, 174, 66, 0.16);
-      --mw-bg: #0f1115;
-      --mw-surface: #181b22;
-      --mw-surface-2: #222630;
-      --mw-border: #2a303c;
-      --mw-text: #f3f4f6;
-      --mw-text-sub: #cbd5e1;
-      --mw-muted: #9ca3af;
-      --mw-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
-      --mw-shadow-hover: 0 12px 30px rgba(0, 0, 0, 0.55);
-      --mw-thumb-bg: radial-gradient(circle at 50% 45%, #1e293b 0%, #090d16 100%);
+    :root {
+      --ink-900: #14172b;
+      --onyx-950: #07080c;
+      --onyx-900: #11141c;
+      --onyx-800: #1a1e2a;
+      --bg: #07080c;
+      --background: #07080c;
+      --surface: #11141c;
+      --surface-muted: #1a1e2a;
+      --fg: #f5f3ef;
+      --foreground: #f5f3ef;
+      --muted: #a3a9be;
+      --border: #2a3144;
+      --control-border: #6f7893;
+      --accent: #ff6b2c;
+      --accent-strong: #ff9a6b;
+      --accent-ink: #14172b;
+      --secondary: #14b8a6;
+      --secondary-strong: #5eead4;
+      --highlight: #ffc83d;
+      --clay: inset 0 1px 0 rgba(255,255,255,0.08), 0 14px 32px -16px rgba(0,0,0,0.9);
+      --font-display: 'Baloo 2', 'Be Vietnam Pro', system-ui, sans-serif;
+      --font-body: 'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body {
-      width: 100%;
+    html { scroll-behavior: smooth; color-scheme: dark; background-color: var(--background); color: var(--foreground); font-family: var(--font-body); line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: clip; }
+    body {
       min-height: 100vh;
-      background: var(--mw-bg);
-      color: var(--mw-text);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      overflow-x: hidden;
-      transition: background 0.2s, color 0.2s;
+      overflow-x: clip;
+      background:
+        radial-gradient(60rem 34rem at 6% -6%, rgba(255,107,44,0.15), transparent 62%),
+        radial-gradient(48rem 28rem at 100% 0%, rgba(20,184,166,0.10), transparent 60%),
+        var(--background);
+      background-repeat: no-repeat;
     }
+    a { color: inherit; text-decoration: none; }
+    button, input, select, textarea { font: inherit; color: inherit; }
+    .font-display { font-family: var(--font-display); }
 
-    /* HEADER CHUẨN MAKERWORLD.COM */
-    .mw-header {
+    /* 1. STICKY HEADER (Exact Khối Xinh max-w-6xl h-16) */
+    .kx-header {
       position: sticky;
       top: 0;
-      z-index: 120;
-      background: var(--mw-surface);
-      border-bottom: 1px solid var(--mw-border);
-      box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+      z-index: 40;
+      height: 64px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(7, 8, 12, 0.90);
+      backdrop-filter: blur(12px);
     }
-    .mw-header-top {
-      max-width: 1440px;
+    .kx-header-inner {
+      max-width: 1280px;
       margin: 0 auto;
-      padding: 10px 20px;
+      height: 100%;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      flex-wrap: wrap;
+      gap: 16px;
+      padding: 0 16px;
     }
-    .mw-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-      color: var(--mw-text);
-      cursor: pointer;
-    }
-    .mw-logo-mark {
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      background: var(--mw-green);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-weight: 900;
-      font-size: 20px;
-    }
-    .mw-logo-text {
-      font-size: 20px;
-      font-weight: 900;
-      letter-spacing: -0.5px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .mw-logo-sub {
-      font-size: 10px;
-      font-weight: 800;
-      padding: 2px 6px;
-      border-radius: 4px;
-      background: var(--mw-green-soft);
-      color: var(--mw-green);
-    }
-
-    .mw-search-bar {
-      flex: 1;
-      max-width: 480px;
-      min-width: 200px;
-      position: relative;
-    }
-    .mw-search-bar input {
-      width: 100%;
-      background: var(--mw-surface-2);
-      border: 1.5px solid transparent;
-      color: var(--mw-text);
-      padding: 9px 16px 9px 38px;
-      border-radius: 999px;
-      font-size: 13.5px;
-      outline: none;
-      transition: all 0.2s;
-    }
-    .mw-search-bar input:focus {
-      background: var(--mw-surface);
-      border-color: var(--mw-green);
-      box-shadow: 0 0 0 3px rgba(0, 174, 66, 0.12);
-    }
-    .mw-search-bar .icon {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--mw-muted);
-      font-size: 14px;
-    }
-
-    .mw-header-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .mw-theme-btn {
-      background: var(--mw-surface-2);
-      border: 1px solid var(--mw-border);
-      color: var(--mw-text);
-      padding: 7px 12px;
-      border-radius: 999px;
-      font-size: 12.5px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .mw-btn-green {
-      background: var(--mw-green);
-      color: #fff;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 800;
-      cursor: pointer;
+    .kx-logo {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      transition: background 0.15s;
-    }
-    .mw-btn-green:hover {
-      background: var(--mw-green-hover);
-    }
-    .mw-btn-outline {
-      background: var(--mw-surface);
-      color: var(--mw-text);
-      border: 1px solid var(--mw-border);
-      padding: 7px 14px;
-      border-radius: 999px;
-      font-size: 12.5px;
-      font-weight: 700;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .mw-btn-outline:hover {
-      border-color: var(--mw-green);
-      color: var(--mw-green);
-    }
-
-    /* SUB-NAV TABS CHUẨN MAKERWORLD */
-    .mw-subnav {
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 0 20px;
-      display: flex;
-      align-items: center;
-      gap: 22px;
-      overflow-x: auto;
-      border-top: 1px solid var(--mw-border);
-    }
-    .mw-subnav-item {
-      padding: 11px 4px;
-      font-size: 13.5px;
-      font-weight: 700;
-      color: var(--mw-text-sub);
-      cursor: pointer;
-      border-bottom: 3px solid transparent;
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.025em;
       white-space: nowrap;
+    }
+    .kx-logo-sq { color: var(--accent); }
+    .kx-nav {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 14px;
+      margin-left: 12px;
+      font-size: 13.5px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .kx-nav a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      border-bottom: 2px solid transparent;
       transition: color 0.15s, border-color 0.15s;
     }
-    .mw-subnav-item:hover, .mw-subnav-item.active {
-      color: var(--mw-green);
-      border-bottom-color: var(--mw-green);
-    }
-    .mw-hot-tag {
-      background: #ff4d4f;
-      color: #fff;
-      font-size: 9.5px;
-      font-weight: 800;
-      padding: 1px 5px;
-      border-radius: 4px;
-    }
-
-    /* MAIN WRAPPER */
-    .mw-main {
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 18px 20px 64px;
-    }
-
-    /* KHU VỰC TOP SPOTLIGHT: MAKERLAB 4 VŨ KHÍ HẠNG NẶNG (GIỐNG MAKERWORLD MAKERLAB BANNER) */
-    .mw-makerlab-strip {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
-      margin-bottom: 22px;
-    }
-    .ml-tool-card {
-      background: var(--mw-surface);
-      border: 1.5px solid var(--mw-border);
-      border-radius: 14px;
-      padding: 14px 16px;
-      cursor: pointer;
+    .kx-nav a:hover { color: var(--accent-strong); }
+    .kx-header-right {
+      margin-left: auto;
       display: flex;
       align-items: center;
-      gap: 12px;
-      box-shadow: var(--mw-shadow);
-      transition: all 0.18s;
+      gap: 10px;
     }
-    .ml-tool-card:hover, .ml-tool-card.active {
-      border-color: var(--mw-green);
-      transform: translateY(-2px);
-      box-shadow: var(--mw-shadow-hover);
-      background: var(--mw-green-soft);
-    }
-    .ml-tool-icon {
-      width: 46px;
-      height: 46px;
-      border-radius: 12px;
+    .kx-search {
       display: flex;
+      align-items: center;
+      height: 44px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      gap: 8px;
+    }
+    .kx-search input {
+      border: 0;
+      outline: none;
+      background: transparent;
+      width: 130px;
+      font-size: 14px;
+      color: var(--foreground);
+    }
+    .kx-search input::placeholder { color: var(--muted); }
+    .cart-pill {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+    .cart-pill:hover { border-color: var(--accent-strong); transform: translateY(-1px); }
+    .cart-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 5px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: var(--accent-ink);
+      font-size: 11px;
+      font-weight: 800;
+      display: grid;
+      place-items: center;
+    }
+
+    /* Buttons (Exact 0ts68645ysl60.css .bg-accent & .bg-surface) */
+    .btn-clay {
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
-      flex-shrink: 0;
-      color: #fff;
+      gap: 8px;
+      height: 46px;
+      padding: 0 22px;
+      border-radius: 999px;
+      border: 0;
+      background-color: var(--accent);
+      background-image: linear-gradient(180deg, rgba(255,255,255,0.28), rgba(255,255,255,0) 52%), linear-gradient(180deg, rgba(255,154,107,0), rgba(190,50,0,0.22));
+      color: var(--accent-ink);
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: inset 0 1px rgba(255,255,255,0.6), inset 0 -2px rgba(120,30,0,0.18), 0 10px 22px -10px rgba(255,107,44,0.7);
+      transition: transform 0.2s cubic-bezier(.16,1,.3,1), box-shadow 0.2s cubic-bezier(.16,1,.3,1);
+      white-space: nowrap;
     }
-    .ml-tool-info h3 {
-      font-size: 13.5px;
-      font-weight: 800;
-      color: var(--mw-text);
-      margin-bottom: 3px;
+    .btn-clay:hover {
+      transform: translateY(-2px);
+      box-shadow: inset 0 1px rgba(255,255,255,0.7), inset 0 -2px rgba(120,30,0,0.18), 0 16px 32px -10px rgba(255,107,44,0.85), 0 0 0 1px rgba(255,154,107,0.5);
     }
-    .ml-tool-info p {
-      font-size: 11.5px;
-      color: var(--mw-text-sub);
-      line-height: 1.35;
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      height: 46px;
+      padding: 0 20px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--foreground);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: inset 0 1px rgba(255,255,255,0.08);
+      transition: border-color 0.2s, transform 0.2s;
+      white-space: nowrap;
+    }
+    .btn-outline:hover {
+      border-color: var(--accent-strong);
+      color: var(--accent-strong);
+      transform: translateY(-1px);
+    }
+    .tag-highlight {
+      display: inline-block;
+      border-radius: 999px;
+      background: var(--highlight);
+      color: var(--accent-ink);
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 700;
     }
 
-    /* FILTER PILLS & SORT BAR */
-    .mw-filter-row {
+    /* 2. PINNED 3D HERO RUNWAY (Exact Khối Xinh Hero — Zero Scroll-Jacking Void) */
+    .pinned-runway { position: relative; height: calc(100dvh - 64px); min-height: 620px; }
+    .pinned-viewport {
+      position: sticky;
+      top: 64px;
+      height: 100%;
+      min-height: 620px;
+      width: 100%;
+      overflow: hidden;
+      background: var(--background);
+    }
+    #runway-canvas { width: 100%; height: 100%; display: block; }
+    .runway-fade-bottom {
+      pointer-events: none;
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 160px;
+      background: linear-gradient(to top, var(--background), transparent);
+      z-index: 4;
+    }
+    .runway-skip {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      z-index: 20;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 42px;
+      padding: 0 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(17, 20, 28, 0.80);
+      backdrop-filter: blur(8px);
+      font-size: 13.5px;
+      font-weight: 600;
+      transition: border-color 0.15s;
+    }
+    .runway-skip:hover { border-color: var(--accent-strong); }
+    .runway-dots {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .runway-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.22);
+      border: 0;
+      cursor: pointer;
+      transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+    }
+    .runway-dot.active { height: 28px; background: var(--accent); }
+
+    .runway-intro {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
       display: flex;
       align-items: center;
+      pointer-events: none;
+      transition: opacity 0.15s linear;
+    }
+    .runway-intro-box {
+      max-width: 1280px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+    .runway-intro-content {
+      max-width: 560px;
+      pointer-events: auto;
+    }
+    .hero-title {
+      margin-top: 16px;
+      font-family: var(--font-display);
+      font-size: clamp(36px, 5.2vw, 60px);
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+    }
+    .hero-accent {
+      background-image: linear-gradient(100deg, #ffb37a, #ff6b2c 55%, #ff9a6b);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-sub {
+      margin-top: 16px;
+      max-width: 448px;
+      font-size: 18px;
+      color: var(--muted);
+    }
+
+    .stop-overlay {
+      position: absolute;
+      inset: auto 0 64px 0;
+      z-index: 12;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 16px;
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+      will-change: transform, opacity;
+    }
+    .stop-card {
+      pointer-events: auto;
+      max-width: 384px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: rgba(17, 20, 28, 0.75);
+      backdrop-filter: blur(12px);
+      padding: 20px;
+      box-shadow: var(--clay);
+    }
+    .stop-overlay.align-right .stop-card { margin-left: auto; }
+    .stop-card h2 {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 800;
+      margin-top: 8px;
+      line-height: 1.2;
+    }
+    .stop-card p.sum {
+      font-size: 14px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .stop-price {
+      margin-top: 12px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .runway-progress-track {
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 4px;
+      background: rgba(42, 49, 68, 0.4);
+      z-index: 20;
+    }
+    .runway-progress-bar {
+      height: 100%;
+      width: 100%;
+      background: var(--accent);
+      transform-origin: left;
+      transform: scaleX(0);
+    }
+
+    /* 3. LAYOUT CONTAINER & SECTIONS */
+    .kx-section {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 56px 16px 0;
+    }
+    .sec-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
       justify-content: space-between;
       gap: 12px;
-      margin-bottom: 18px;
-      flex-wrap: wrap;
     }
-    .mw-cat-pills {
+    .sec-title {
+      font-family: var(--font-display);
+      font-size: 30px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    /* 4. PRODUCT CATALOG SYSTEM (Exact 2-Column Sidebar + 3-Col Grid from route_san-pham.html) */
+    .cat-top-strip {
       display: flex;
       gap: 8px;
       overflow-x: auto;
-      padding-bottom: 4px;
-      max-width: 100%;
+      padding-bottom: 8px;
+      list-style: none;
     }
-    .mw-cat-pill {
-      background: var(--mw-surface);
-      border: 1px solid var(--mw-border);
-      color: var(--mw-text-sub);
-      padding: 7px 15px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 700;
+    .cat-top-pill {
+      display: inline-flex;
+      align-items: center;
+      height: 42px;
+      padding: 0 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--foreground);
+      font-size: 14px;
+      font-weight: 600;
       cursor: pointer;
       white-space: nowrap;
-      transition: all 0.15s;
+      transition: border-color 0.15s, background 0.15s, color 0.15s;
     }
-    .mw-cat-pill:hover, .mw-cat-pill.active {
-      background: var(--mw-green);
-      border-color: var(--mw-green);
-      color: #fff;
+    .cat-top-pill:hover { border-color: var(--accent-strong); }
+    .cat-top-pill.active {
+      background: var(--accent);
+      color: var(--accent-ink);
+      border-color: var(--accent);
+      font-weight: 700;
     }
 
-    /* MODEL CARDS GRID (CHUẨN MAKERWORLD 4 CỘT) */
-    .mw-models-grid {
+    .catalog-layout {
+      margin-top: 24px;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(285px, 1fr));
-      gap: 18px;
+      grid-template-columns: 240px minmax(0, 1fr);
+      gap: 32px;
+      align-items: start;
     }
-    .mw-model-card {
-      background: var(--mw-surface);
-      border: 1px solid var(--mw-border);
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: var(--mw-shadow);
+    .catalog-sidebar {
       display: flex;
       flex-direction: column;
-      transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+      gap: 22px;
+      position: sticky;
+      top: 84px;
     }
-    .mw-model-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--mw-shadow-hover);
-      border-color: var(--mw-green);
+    .filter-group-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--foreground);
+      margin-bottom: 8px;
     }
-    .mw-thumb {
-      position: relative;
-      height: 192px;
-      background: var(--mw-thumb-bg);
+    .filter-pills-wrap {
       display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .sidebar-pill {
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      overflow: hidden;
+      min-height: 36px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--foreground);
+      font-size: 13px;
       cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
     }
-    .mw-thumb svg {
-      width: 86%;
-      height: 82%;
-      transition: transform 0.25s;
+    .sidebar-pill:hover { border-color: var(--accent-strong); }
+    .sidebar-pill.active {
+      background: var(--accent);
+      color: var(--accent-ink);
+      border-color: var(--accent);
+      font-weight: 700;
     }
-    .mw-model-card:hover .mw-thumb svg {
+
+    .prod-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .prod-card {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      box-shadow: var(--clay);
+      cursor: pointer;
+      transition: transform 0.18s ease, border-color 0.18s ease;
+    }
+    .prod-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-strong);
+    }
+    .prod-thumb {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      background: var(--surface-muted);
+      overflow: hidden;
+    }
+    .prod-thumb-glow {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 12px;
+    }
+    .prod-thumb-glow img {
+      width: 88%;
+      height: 88%;
+      object-fit: contain;
+      filter: drop-shadow(0 12px 18px rgba(0,0,0,0.45));
+      transition: transform 0.25s ease;
+    }
+    .prod-card:hover .prod-thumb-glow img {
       transform: scale(1.05);
     }
-    .mw-tag-customizable {
+    .kx-badge-left {
       position: absolute;
-      top: 10px;
-      left: 10px;
-      background: var(--mw-green);
-      color: #fff;
-      font-size: 10.5px;
-      font-weight: 800;
-      padding: 3px 8px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      box-shadow: 0 2px 8px rgba(0, 174, 66, 0.35);
-    }
-    .mw-tag-ams {
-      position: absolute;
-      bottom: 10px;
-      left: 10px;
-      background: rgba(24, 25, 28, 0.82);
-      color: #fff;
-      padding: 3px 8px;
+      top: 12px;
+      left: 12px;
       border-radius: 999px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 10.5px;
+      background: var(--highlight);
+      color: var(--accent-ink);
+      padding: 4px 12px;
+      font-size: 12px;
       font-weight: 700;
     }
-    .mw-dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.5);
-    }
-    .mw-tag-time {
+    .kx-badge-right {
       position: absolute;
-      bottom: 10px;
-      right: 10px;
-      background: rgba(24, 25, 28, 0.82);
-      color: #fff;
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-size: 10.5px;
+      top: 12px;
+      right: 12px;
+      border-radius: 999px;
+      background: var(--secondary);
+      color: var(--accent-ink);
+      padding: 4px 12px;
+      font-size: 12px;
       font-weight: 700;
     }
-
-    .mw-card-content {
-      padding: 13px 14px 14px;
+    .prod-body {
       display: flex;
-      flex-direction: column;
       flex: 1;
-      justify-content: space-between;
-      gap: 10px;
+      flex-direction: column;
+      gap: 4px;
+      padding: 16px;
     }
-    .mw-card-name {
-      font-size: 14.5px;
-      font-weight: 800;
-      color: var(--mw-text);
+    .prod-title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
       line-height: 1.35;
+      color: var(--foreground);
+      transition: color 0.15s;
+    }
+    .prod-card:hover .prod-title { color: var(--accent-strong); }
+    .prod-desc {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.45;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
-    .mw-card-sub {
-      font-size: 12px;
-      color: var(--mw-text-sub);
-      line-height: 1.4;
-      margin-top: 4px;
-    }
-    .mw-author-row {
+    .prod-foot {
+      margin-top: auto;
+      padding-top: 10px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 11.5px;
-      color: var(--mw-muted);
-      padding-top: 6px;
-      border-top: 1px solid var(--mw-border);
+      gap: 8px;
     }
-    .mw-author-badge {
+    .prod-price {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--foreground);
+      white-space: nowrap;
+    }
+    .prod-actions {
       display: flex;
       align-items: center;
       gap: 6px;
-      font-weight: 700;
-      color: var(--mw-text-sub);
+      flex-shrink: 0;
     }
-    .mw-avatar {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: var(--mw-green);
-      color: #fff;
+    .btn-card-3d {
+      height: 32px;
+      padding: 0 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface-muted);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+    .btn-card-3d:hover { border-color: var(--accent-strong); color: var(--foreground); }
+    .btn-card-add {
+      height: 32px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 0;
+      background: var(--accent);
+      color: var(--accent-ink);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* 5. INTERACTIVE 3D PRODUCT STAGE (#trung-mau-3d — Exact shot_2_product_detail.jpg Layout) */
+    .kx-showcase-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+      gap: 32px;
+      align-items: start;
+    }
+    .kx-stage-frame {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: #07080c;
+      box-shadow: var(--clay);
+    }
+    #kx-showcase-canvas { width: 100%; height: 100%; display: block; cursor: grab; }
+    #kx-showcase-canvas:active { cursor: grabbing; }
+    .kx-stage-hint-top {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(17, 20, 28, 0.80);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--muted);
+      pointer-events: none;
+    }
+    .kx-stage-toolbar-below {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .kx-ctrl-pill {
+      height: 38px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--foreground);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      font-weight: 900;
-    }
-    .mw-metrics {
-      display: flex;
-      gap: 8px;
-      font-weight: 700;
-    }
-    .mw-card-btn-row {
-      display: grid;
-      grid-template-columns: 1.35fr 1fr;
-      gap: 7px;
-      margin-top: 4px;
-    }
-
-    /* TRẠM MAKERLAB ĐA NĂNG (4 TAB VŨ KHÍ HẠNG NẶNG) */
-    #makerlab-workspace {
-      margin-top: 30px;
-      background: var(--mw-surface);
-      border: 2px solid var(--mw-green);
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: var(--mw-shadow-hover);
-    }
-    .ml-bar {
-      background: var(--mw-surface-2);
-      border-bottom: 1px solid var(--mw-border);
-      padding: 10px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    .ml-tabs {
-      display: flex;
       gap: 6px;
-      flex-wrap: wrap;
+      transition: border-color 0.15s, color 0.15s;
     }
-    .ml-tab-btn {
-      background: var(--mw-surface);
-      border: 1px solid var(--mw-border);
-      color: var(--mw-text);
-      padding: 8px 14px;
-      border-radius: 8px;
-      font-size: 12.5px;
-      font-weight: 800;
+    .kx-ctrl-pill:hover, .kx-ctrl-pill.active {
+      border-color: var(--accent-strong);
+      color: var(--accent-strong);
+    }
+    .kx-swatch-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+    .kx-swatch-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      border: 2px solid var(--border);
       cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .kx-swatch-btn.active {
+      transform: scale(1.1);
+      border-color: #ffffff;
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+    .kx-qty-pill {
+      display: inline-flex;
+      align-items: center;
+      height: 46px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      overflow: hidden;
+    }
+    .kx-qty-pill button {
+      width: 42px;
+      height: 100%;
+      background: transparent;
+      border: 0;
+      color: var(--foreground);
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .kx-qty-pill span { min-width: 34px; text-align: center; font-weight: 700; font-size: 14px; }
+
+    /* 6. CUSTOM 3D SLICER & 2D->3D STUDIO CARDS */
+    .clay-panel {
+      background: var(--surface-muted);
+      border-radius: 32px;
+      padding: 32px;
+    }
+    .kx-card-surface {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: var(--clay);
+    }
+    .two-col {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+      gap: 24px;
+    }
+    .drop-box {
+      border: 2px dashed var(--border);
+      border-radius: 20px;
+      background: var(--surface);
+      padding: 22px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .drop-box:hover, .drop-box.drag { border-color: var(--accent); }
+    .slicer-preview-wrap {
+      margin-top: 14px;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: #07080c;
+      height: 250px;
+    }
+    #slicer-canvas { width: 100%; height: 100%; display: block; }
+    .form-grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+    .field-lbl { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; color: var(--foreground); }
+    .kx-select, .kx-input {
+      height: 44px;
+      border-radius: 12px;
+      border: 1px solid var(--control-border);
+      background: var(--surface);
+      color: var(--foreground);
+      padding: 0 12px;
+      font-size: 14px;
+      outline: none;
+    }
+    .kx-select:focus, .kx-input:focus { border-color: var(--accent-strong); }
+    .steps-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; list-style: none; }
+    .steps-pills li { padding: 6px 14px; border-radius: 999px; font-size: 12.5px; font-weight: 700; background: var(--surface); color: var(--muted); border: 1px solid var(--border); }
+    .steps-pills li.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+    .steps-pills li.done { background: var(--secondary); color: var(--accent-ink); border-color: var(--secondary); }
+    .quote-result-box { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+    .quote-big-price { font-family: var(--font-display); font-size: 32px; font-weight: 800; color: var(--highlight); }
+
+    .kx-pay-option { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-radius: 16px; border: 1px solid var(--border); background: var(--surface-muted); cursor: pointer; }
+    .kx-pay-option.active { border-color: var(--accent); background: rgba(255,107,44,0.10); }
+
+    /* Slide-over Cart Drawer */
+    .cart-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 90; display: none; justify-content: flex-end; }
+    .cart-backdrop.open { display: flex; }
+    .cart-drawer { width: min(420px, 100vw); height: 100%; background: var(--surface); border-left: 1px solid var(--border); padding: 22px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; }
+    .freeship-bar { height: 8px; border-radius: 999px; background: var(--surface-muted); overflow: hidden; margin-top: 6px; }
+    .freeship-fill { height: 100%; background: var(--accent); transition: width 0.25s ease; }
+    .cart-item { background: var(--surface-muted); border: 1px solid var(--border); border-radius: 16px; padding: 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+
+    #kx-fullscreen-dialog { width: 100vw; max-width: 100vw; height: 100vh; max-height: 100vh; border: 0; padding: 0; background: #07080c; color: var(--foreground); overflow: hidden; }
+    #kx-fullscreen-dialog::backdrop { background: rgba(0,0,0,0.88); }
+
+    .cta-band {
+      border: 1px solid var(--border);
+      box-shadow: var(--clay);
+      background: radial-gradient(40rem 16rem at 50% 0, rgba(255,107,44,0.28), transparent 70%), linear-gradient(#171a26, #0d0f15);
+      border-radius: 32px;
+      padding: 48px 24px;
+      text-align: center;
+    }
+
+    /* TOP LISTS HOT TREND SECTION STYLES */
+    .top-list-tabs {
       display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .top-tab-pill {
+      display: inline-flex;
       align-items: center;
       gap: 6px;
-      transition: all 0.15s;
+      height: 38px;
+      padding: 0 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
     }
-    .ml-tab-btn.active {
-      background: var(--mw-green);
-      border-color: var(--mw-green);
-      color: #fff;
+    .top-tab-pill:hover {
+      border-color: var(--control-border);
+      color: var(--foreground);
     }
-
-    .ml-pane {
-      display: none;
+    .top-tab-pill.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--accent-ink);
+      font-weight: 700;
+      box-shadow: 0 4px 14px rgba(255, 107, 44, 0.35);
     }
-    .ml-pane.active {
-      display: block;
-    }
-
-    /* Bố cục cho Vũ khí 2, 3, 4 (Sidebar trái + Viewport 3D phải) */
-    .weapon-split {
+    .top-list-grid {
       display: grid;
-      grid-template-columns: 380px 1fr;
-      min-height: 580px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
     }
-    .weapon-ctrl {
-      padding: 18px;
-      border-right: 1px solid var(--mw-border);
-      background: var(--mw-surface);
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .weapon-ctrl h3 {
-      font-size: 15px;
-      font-weight: 900;
-      color: var(--mw-green);
-    }
-    .weapon-view {
-      background: #0d1117;
+    .top-prod-card {
       position: relative;
-      min-height: 520px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .w-field {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
+      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+      cursor: pointer;
+    }
+    .top-prod-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+      box-shadow: 0 16px 32px -12px rgba(0, 0, 0, 0.65), 0 0 20px -8px var(--accent);
+    }
+    .top-rank-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 3;
+      display: inline-flex;
+      align-items: center;
       gap: 4px;
+      padding: 4px 10px;
+      border-radius: 999px;
       font-size: 12px;
-      font-weight: 700;
-      color: var(--mw-text-sub);
+      font-weight: 800;
+      letter-spacing: 0.02em;
     }
-    .w-field input[type="text"], .w-field select, .w-field input[type="file"] {
-      padding: 8px 10px;
+    .top-rank-1 {
+      background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+      color: #07080c;
+      box-shadow: 0 4px 12px rgba(255, 215, 0, 0.45);
+    }
+    .top-rank-2 {
+      background: linear-gradient(135deg, #F3F4F6 0%, #9CA3AF 100%);
+      color: #07080c;
+      box-shadow: 0 4px 12px rgba(200, 200, 200, 0.35);
+    }
+    .top-rank-3 {
+      background: linear-gradient(135deg, #F97316 0%, #B45309 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35);
+    }
+    .top-rank-other {
+      background: var(--surface-muted);
+      color: var(--secondary-strong);
+      border: 1px solid var(--border);
+    }
+    .btn-top-heart {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 3;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      height: 30px;
+      padding: 0 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(7, 8, 12, 0.75);
+      backdrop-filter: blur(8px);
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+    }
+    .btn-top-heart:hover {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: #ef4444;
+      color: #f87171;
+    }
+    .btn-top-heart.liked {
+      background: rgba(239, 68, 68, 0.9);
+      border-color: #ef4444;
+      color: #ffffff;
+      animation: heart-pop 0.3s ease;
+    }
+    @keyframes heart-pop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.25); }
+      100% { transform: scale(1); }
+    }
+    .top-metric-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
       border-radius: 8px;
-      border: 1px solid var(--mw-border);
-      background: var(--mw-surface-2);
-      color: var(--mw-text);
-      font-size: 13px;
-      font-weight: 700;
-    }
-    .quote-result-card {
-      background: var(--mw-green-soft);
-      border: 1px solid var(--mw-green);
-      border-radius: 10px;
-      padding: 12px;
-      font-size: 12.5px;
-      line-height: 1.6;
+      background: var(--surface-muted);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--foreground);
+      margin-top: 6px;
+      width: fit-content;
     }
 
-    /* MODAL ĐƠN ĐẶT IN */
-    .mw-modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.65);
-      backdrop-filter: blur(4px);
-      z-index: 300;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
+        @media (max-width: 960px) {
+      .kx-search { display: none; }
+      .kx-header { height: auto; min-height: 58px; padding: 6px 0; }
+      .kx-header-inner { flex-wrap: wrap; gap: 6px; padding: 0 12px; }
+      .kx-logo { font-size: 20px; }
+      .kx-nav {
+        display: flex !important;
+        order: 3;
+        width: 100%;
+        margin-left: 0;
+        gap: 8px;
+        overflow-x: auto;
+        padding: 4px 0 2px;
+        font-size: 12px;
+        scrollbar-width: none;
+        border-top: 1px solid rgba(255,255,255,0.07);
+      }
+      .kx-nav::-webkit-scrollbar { display: none; }
+      .kx-nav a { min-height: 30px; padding: 3px 8px; }
+      .catalog-layout, .kx-showcase-grid, .two-col { grid-template-columns: 1fr; }
+      .catalog-sidebar { position: static; }
+      .prod-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
     }
-    .mw-modal {
-      background: var(--mw-surface);
-      border: 1px solid var(--mw-border);
-      border-radius: 16px;
-      max-width: 560px;
-      width: 100%;
-      padding: 22px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+    @media (max-width: 640px) {
+      .pinned-runway, .pinned-viewport { height: calc(100dvh - 94px); min-height: 580px; }
+      .runway-intro { align-items: flex-start !important; padding-top: 10px !important; }
+      .hero-title { font-size: 23px !important; line-height: 1.18 !important; margin-top: 8px !important; }
+      .hero-sub { font-size: 12.5px !important; line-height: 1.4 !important; margin-top: 6px !important; }
+      .runway-intro-box { padding: 10px 14px !important; }
+      .stop-overlay { inset: auto 0 14px 0 !important; padding: 0 12px !important; }
+      .stop-card { max-width: 100% !important; padding: 12px 14px !important; background: rgba(14, 17, 26, 0.88) !important; }
+      .stop-card h2 { font-size: 17px !important; margin-top: 4px !important; }
+      .stop-card p.sum { font-size: 12px !important; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+      .stop-price { margin-top: 6px !important; font-size: 14.5px !important; }
+      .btn-clay, .btn-outline { height: 38px; padding: 0 14px; font-size: 12.5px; }
+      .prod-grid { grid-template-columns: 1fr; }
     }
-    .order-item {
-      background: var(--mw-surface-2);
-      border: 1px solid var(--mw-border);
-      border-radius: 8px;
-      padding: 10px 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 8px;
+  
+    /* === ANIMATE-UI MOTION TOKENS & COMPOSITOR OPTIMIZATION (Rules A1, A3, A8, A9, A11) === */
+    :root {
+      --aui-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+      --aui-ease-soft: cubic-bezier(0.32, 0.72, 0, 1);
+      --aui-spring-press: 120ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .btn, .tool-chip, .cat-pill, .kai-chat-quickchip, .kai-chat-sendbtn {
+      transition: transform var(--aui-spring-press), background-color 0.18s var(--aui-ease-out), border-color 0.18s var(--aui-ease-out), box-shadow 0.18s var(--aui-ease-out), opacity 0.18s var(--aui-ease-out);
+      will-change: transform;
+    }
+    .btn:active, .tool-chip:active, .cat-pill:active, .kai-chat-quickchip:active, .kai-chat-sendbtn:active {
+      transform: scale(0.965);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
     }
 
-    @media (max-width: 1024px) {
-      .mw-makerlab-strip {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      .weapon-split {
-        grid-template-columns: 1fr;
-      }
-      .weapon-view {
-        order: -1;
-        min-height: 380px;
-      }
-    }
-    @media (max-width: 600px) {
-      .mw-makerlab-strip {
-        grid-template-columns: 1fr;
-      }
-      .mw-header-top {
-        padding: 8px 12px;
-      }
-      .mw-main {
-        padding: 12px 12px 48px;
-      }
-      .mw-models-grid {
-        grid-template-columns: 1fr;
-      }
-    }
   </style>
+<!-- CLAUDE_SEO_GEO_START -->
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <link rel="canonical" href="http://127.0.0.1:8088/khoixinh_3d_hub.html" />
+  <link rel="alternate" hreflang="vi-VN" href="http://127.0.0.1:8088/khoixinh_3d_hub.html" />
+  <link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8088/khoixinh_3d_hub.html" />
+  <link rel="alternate" type="text/markdown" href="http://127.0.0.1:8088/khoixinh_3d_hub.html.md" title="Markdown version for AI Search & LLMs" />
+  <link rel="ai-catalog" href="http://127.0.0.1:8088/.well-known/ai-catalog.json" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="vi_VN" />
+  <meta property="og:site_name" content="Khối Xinh 3D Studio" />
+  <meta property="og:title" content="Khối Xinh 3D — Đồ In 3D Theo Yêu Cầu (.STL/.3MF), Mô Hình Khớp Động & Decor Bàn Học" />
+  <meta property="og:description" content="Xưởng in 3D Khối Xinh: Mô hình khớp động .3MF, đèn ngủ kiến trúc, phụ kiện góc bàn Gaming/Học tập & báo giá in file .STL tự động theo cm³ trên bàn in 256mm. Giao toàn quốc 3–5 ngày." />
+  <meta property="og:url" content="http://127.0.0.1:8088/khoixinh_3d_hub.html" />
+  <meta property="og:image" content="http://127.0.0.1:8088/assets/images/bedrooms/bedroom_1_japandi_oak.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Khối Xinh 3D — Đồ In 3D Theo Yêu Cầu (.STL/.3MF), Mô Hình Khớp Động & Decor Bàn Học" />
+  <meta name="twitter:description" content="Xưởng in 3D Khối Xinh: Mô hình khớp động .3MF, đèn ngủ kiến trúc, phụ kiện góc bàn Gaming/Học tập & báo giá in file .STL tự động theo cm³ trên bàn in 256mm. Giao toàn quốc 3–5 ngày." />
+  <meta name="twitter:image" content="http://127.0.0.1:8088/assets/images/bedrooms/bedroom_1_japandi_oak.jpg" />
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": ["OnlineStore", "LocalBusiness"], "@id": "http://127.0.0.1:8088/#organization", "name": "Khối Xinh 3D Studio", "url": "http://127.0.0.1:8088/khoixinh_3d_hub.html", "logo": "http://127.0.0.1:8088/assets/images/bedrooms/bedroom_1_japandi_oak.jpg", "image": "http://127.0.0.1:8088/assets/images/bedrooms/bedroom_1_japandi_oak.jpg", "description": "Xưởng in 3D Khối Xinh: Mô hình khớp động .3MF, đèn ngủ kiến trúc, phụ kiện góc bàn Gaming/Học tập & báo giá in file .STL/.3MF tự động theo cm³ trên bàn in 256mm. Giao toàn quốc 3–5 ngày.", "priceRange": "59.000₫ - 590.000₫", "address": {"@type": "PostalAddress", "addressLocality": "TP. Hồ Chí Minh", "addressCountry": "VN"}}, {"@type": "WebSite", "@id": "http://127.0.0.1:8088/#website", "url": "http://127.0.0.1:8088", "name": "Khối Xinh 3D Studio", "inLanguage": "vi-VN", "publisher": {"@id": "http://127.0.0.1:8088/#organization"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Trang chủ Khối Xinh 3D", "item": "http://127.0.0.1:8088/khoixinh_3d_hub.html"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "In 3D theo yêu cầu (.STL / .3MF) tại Khối Xinh mất bao lâu?", "acceptedAnswer": {"@type": "Answer", "text": "Toàn bộ sản phẩm in 3D handmade và đặt in theo file .STL/.3MF tại xưởng Khối Xinh được hoàn thiện và giao tận tay toàn quốc trong 3 – 5 ngày."}}, {"@type": "Question", "name": "Làm sao để biết giá in 3D file .STL/.3MF của tôi trước khi đặt?", "acceptedAnswer": {"@type": "Answer", "text": "Bạn chỉ cần tải file .STL, .3MF hoặc .OBJ lên khung Báo Giá 3 Bước trên web, hệ thống tự động dựng mô hình trên bàn in 256×256×256mm, giữ nguyên màu gốc .3MF AMS, đo kích thước (mm), thể tích thực (cm³) và báo giá tức thì."}}]}]}</script>
+  <script src="assets/studio3d_seo_webmcp.js?v=20261101d" defer></script>
+  <!-- CLAUDE_SEO_GEO_END -->
+  <link rel="stylesheet" href="assets/khoixinh_mobile_fix.css?v=20261101_v10" />
 </head>
 <body>
 
-  <!-- 1. HEADER CHUẨN BAMBU MAKERWORLD (CÓ ĐỔI GIAO DIỆN SÁNG / TỐI) -->
-  <header class="mw-header">
-    <div class="mw-header-top">
-      <div class="mw-logo" onclick="window.scrollTo({top:0, behavior:'smooth'})">
-        <div class="mw-logo-mark">M</div>
-        <div>
-          <div class="mw-logo-text">
-            MakerWorld
-            <span class="mw-logo-sub">BY GÓC NHỎ 3D</span>
-          </div>
+  <!-- 1. STICKY HEADER (Exact Khối Xinh Header) -->
+  <header class="kx-header">
+    <div class="kx-header-inner">
+      <a href="#top" class="kx-logo">
+        <span class="kx-logo-sq">■</span>
+        <span>Khối Xinh</span>
+      </a>
+      <nav class="kx-nav" aria-label="Chính">
+        <a href="theme_selector_studio.html" id="kx-nav-xem-mau" style="background:linear-gradient(135deg,#f59e0b,#ff6b2c);color:#090c14 !important;font-weight:800;padding:5px 13px;border-radius:999px;box-shadow:0 4px 14px rgba(245,158,11,0.4);">🎛️ Xem Mẫu</a>
+        <a href="#top-thinh-hanh" style="color:var(--accent-strong);font-weight:700;">🔥 Top Bán Chạy</a>
+        <a href="#san-pham">Tất cả sản phẩm</a>
+        <a href="#trung-mau-3d">Sân khấu 3D</a>
+        <a href="#dat-in-3d">In theo yêu cầu</a>
+        <a href="#tao-tuong">Tạo tượng từ ảnh</a>
+        <a href="#theo-doi-don" style="display:none !important;">Theo dõi đơn</a>
+        <a href="#hoi-dap">Trợ giúp</a>
+      </nav>
+      <div class="kx-header-right">
+        <div class="kx-search" role="search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--muted)"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+          <input type="search" id="kx-header-search" placeholder="Tìm sản phẩm…" aria-label="Tìm sản phẩm" />
         </div>
-      </div>
-
-      <div class="mw-search-bar">
-        <span class="icon">🔍</span>
-        <input type="text" id="mw-search" placeholder="Tìm mô hình 3D, móc khóa R1, biển số xe, kệ rồng, bảng QR..." oninput="renderModelsGrid()">
-      </div>
-
-      <div class="mw-header-actions">
-        <button class="mw-theme-btn" id="theme-toggle-btn" onclick="toggleLightDarkTheme()">
-          🌙 Chế Độ Tối
-        </button>
-        <button class="mw-btn-outline" onclick="switchMakerLabWeapon('stl')">
-          🔪 Báo Giá File .STL
-        </button>
-        <button class="mw-btn-outline" onclick="openOrderModal()">
-          🛒 Đơn Đặt In (<span id="cart-count">1</span>)
-        </button>
-        <button class="mw-btn-green" onclick="switchMakerLabWeapon('keychain')">
-          ⚡ Tạo Mẫu Cá Nhân Hóa
+        <button type="button" class="cart-pill" id="btn-open-cart" aria-label="Giỏ hàng">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m2.05 2.05 1.099-.028a1 1 0 0 1 1.008.815l2.69 14.347A1 1 0 0 0 7.83 18H18"/><path d="M4.563 5h16.435a1 1 0 0 1 .981 1.204l-1.026 6.226A2 2 0 0 1 18.962 14H6.25"/><circle cx="18" cy="20" r="2"/><circle cx="8" cy="20" r="2"/></svg>
+          <span class="cart-badge" id="cart-count-badge">0</span>
         </button>
       </div>
     </div>
-
-    <!-- THANH TAB NGANG CHUẨN MAKERWORLD -->
-    <nav class="mw-subnav">
-      <div class="mw-subnav-item active" onclick="scrollToSection('models-section')">🔥 Xu Hướng (Trending Models)</div>
-      <div class="mw-subnav-item" onclick="switchMakerLabWeapon('keychain')">
-        🛠️ MakerLab: Chỉnh Chữ & Móc Khóa 3D <span class="mw-hot-tag">HOT</span>
-      </div>
-      <div class="mw-subnav-item" onclick="switchMakerLabWeapon('relief')">🖼️ Tạo Ảnh 2D ➔ Khối Nổi 3D</div>
-      <div class="mw-subnav-item" onclick="switchMakerLabWeapon('qr')">📱 Tạo Bảng QR / NFC 3D</div>
-      <div class="mw-subnav-item" onclick="switchMakerLabWeapon('stl')">📐 Đo & Báo Giá Tự Động (.STL Slicer)</div>
-    </nav>
   </header>
 
-  <main class="mw-main">
-    <!-- 2. DẢI 4 CÔNG CỤ MAKERLAB ("VŨ KHÍ HẠNG NẶNG" CHẠY TRỰC TIẾP TRÊN WEB) -->
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
-      <div style="font-size:16px; font-weight:900;">⚡ MakerLab — Bộ Công Cụ Thiết Kế & Báo Giá 3D Trực Tuyến (Click Để Mở Ngay)</div>
-      <div style="font-size:12px; color:var(--mw-text-sub); font-weight:700;">Chạy 100% trên trình duyệt • Xuất file <code>.3MF</code> / <code>.STL</code> / <code>.DXF</code> thật</div>
-    </div>
+  <main id="top">
+    <!-- 2. PINNED 3D HERO RUNWAY (Exact Khối Xinh Hero) -->
+    <section class="pinned-runway" id="runway-wrap" aria-label="Mẫu nổi bật">
+      <div class="pinned-viewport">
+        <canvas id="runway-canvas"></canvas>
+        <div class="runway-fade-bottom"></div>
 
-    <section class="mw-makerlab-strip">
-      <div class="ml-tool-card active" id="card-w-keychain" onclick="switchMakerLabWeapon('keychain')">
-        <div class="ml-tool-icon" style="background:linear-gradient(135deg,#00ae42,#059669);">🔤</div>
-        <div class="ml-tool-info">
-          <h3>Make My Sign & Keychain</h3>
-          <p>Chỉnh từng chữ, bo góc R, phối 4 màu AMS & khắc SĐT mặt sau</p>
-        </div>
-      </div>
+        <a href="#sau-3d" class="runway-skip">Bỏ qua ↓</a>
+        <div class="runway-dots" id="runway-dots"></div>
 
-      <div class="ml-tool-card" id="card-w-relief" onclick="switchMakerLabWeapon('relief')">
-        <div class="ml-tool-icon" style="background:linear-gradient(135deg,#2563eb,#7c3aed);">🖼️</div>
-        <div class="ml-tool-info">
-          <h3>2D Logo ➔ 3D Relief Maker</h3>
-          <p>Tải ảnh 2D/Logo lên ➔ Tự động đùn khối nổi 3D & xuất .STL</p>
-        </div>
-      </div>
-
-      <div class="ml-tool-card" id="card-w-qr" onclick="switchMakerLabWeapon('qr')">
-        <div class="ml-tool-icon" style="background:linear-gradient(135deg,#ea580c,#f59e0b);">📱</div>
-        <div class="ml-tool-info">
-          <h3>Make My 3D QR / NFC Stand</h3>
-          <p>Nhập link Zalo/STK ➔ Sinh bảng QR 3D chuẩn Z-Stacking AMS</p>
-        </div>
-      </div>
-
-      <div class="ml-tool-card" id="card-w-stl" onclick="switchMakerLabWeapon('stl')">
-        <div class="ml-tool-icon" style="background:linear-gradient(135deg,#0284c7,#0d9488);">🔪</div>
-        <div class="ml-tool-info">
-          <h3>3D Slicer & Instant Quote</h3>
-          <p>Thả file .STL bất kỳ vào ➔ Tự đo gram nhựa, thời gian & báo giá</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- 3. BỘ LỌC DANH MỤC & KỆ 10 MẪU MÔ HÌNH 3D (TẤT CẢ ĐỀU SỐNG TRÊN CLOUD CDN) -->
-    <section id="models-section">
-      <div class="mw-filter-row">
-        <div class="mw-cat-pills" id="cat-pills">
-          <button class="mw-cat-pill active" onclick="setCategory('all', this)">Tất Cả Mẫu (10)</button>
-          <button class="mw-cat-pill" onclick="setCategory('keychain', this)">🏍️ Móc Khóa Racing & Tên Riêng</button>
-          <button class="mw-cat-pill" onclick="setCategory('plate', this)">🪪 Biển Số Xe & Thẻ SĐT</button>
-          <button class="mw-cat-pill" onclick="setCategory('qr', this)">📱 Bảng QR / NFC Cửa Hàng</button>
-          <button class="mw-cat-pill" onclick="setCategory('diorama', this)">🐉 Kệ Rồng, Decor & Showroom 3D</button>
-        </div>
-        <div style="font-size:12.5px; color:var(--mw-text-sub); font-weight:700;">
-          ✨ Tất cả 10 bộ Studio 3D đã được đồng bộ lên Cloud CDN vĩnh viễn!
-        </div>
-      </div>
-
-      <div class="mw-models-grid" id="models-grid"></div>
-    </section>
-
-    <!-- 4. TRẠM LÀM VIỆC MAKERLAB 4 VŨ KHÍ HẠNG NẶNG -->
-    <section id="makerlab-workspace">
-      <div class="ml-bar">
-        <div class="ml-tabs">
-          <button class="ml-tab-btn active" id="tab-w-keychain" onclick="switchMakerLabWeapon('keychain')">
-            🔤 1. Chỉnh Móc Khóa & Biển Chữ 3D
-          </button>
-          <button class="ml-tab-btn" id="tab-w-relief" onclick="switchMakerLabWeapon('relief')">
-            🖼️ 2. Ảnh 2D / Logo ➔ Khối Nổi 3D (.STL)
-          </button>
-          <button class="ml-tab-btn" id="tab-w-qr" onclick="switchMakerLabWeapon('qr')">
-            📱 3. Tạo Bảng QR / NFC 3D (.STL)
-          </button>
-          <button class="ml-tab-btn" id="tab-w-stl" onclick="switchMakerLabWeapon('stl')">
-            🔪 4. Đo Khối Lượng & Báo Giá File .STL
-          </button>
-        </div>
-
-        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-          <span style="font-size:12.5px; font-weight:800;">💰 Báo giá đặt in: <b id="q-price" style="color:var(--mw-green); font-size:14px;">39.000đ</b> (<span id="q-weight">6.8 g</span> • <span id="q-time">24 phút</span>)</span>
-          <button class="mw-btn-green" onclick="addCurrentCustomToOrder()">
-            🛒 Lưu Mẫu Vào Đơn Đặt In
-          </button>
-        </div>
-      </div>
-
-      <!-- VŨ KHÍ 1: STUDIO 3D CAD MÓC KHÓA LOGO R & BIỂN TÊN -->
-      <div class="ml-pane active" id="pane-keychain">
-        <div style="width:100%; height:760px; background:#090d16;">
-          <iframe id="studio-iframe" src="moc_khoa_logo_r_3d.html" style="width:100%; height:100%; border:none; display:block;" title="MakerLab Parametric Customizer"></iframe>
-        </div>
-      </div>
-
-      <!-- VŨ KHÍ 2: CHUYỂN ẢNH 2D / LOGO THÀNH KHỐI NỔI 3D (2D TO 3D RELIEF MAKER) -->
-      <div class="ml-pane" id="pane-relief">
-        <div class="weapon-split">
-          <div class="weapon-ctrl">
-            <h3>🖼️ Vũ Khí #2: Chuyển Ảnh 2D / Logo ➔ Phù Điêu & Móc Khóa 3D</h3>
-            <p style="font-size:12px; color:var(--mw-text-sub); line-height:1.45;">
-              Tải bất kỳ ảnh Logo, chữ viết tay hoặc sticker từ máy bạn lên ➔ Hệ thống tự động quét độ tương phản, đùn thành khối nổi 3D trên tấm đế và xuất file <code>.STL</code> liền khối!
-            </p>
-            <div class="w-field">
-              <span>1. Chọn ảnh 2D / Logo từ máy (PNG / JPG):</span>
-              <input type="file" id="inp-relief-img" accept="image/*" onchange="onReliefImageUpload(event)">
-            </div>
-            <div class="w-field">
-              <span>Hoặc chọn mẫu Logo có sẵn để thử ngay:</span>
-              <select id="sel-relief-preset" onchange="build3DReliefFromPreset()">
-                <option value="star">⭐ Logo Ngôi Sao Racing 3D</option>
-                <option value="shield">🛡️ Huy Hiệu Khiên Chiến Binh</option>
-                <option value="heart">❤️ Móc Khóa Trái Tim Đôi</option>
-              </select>
-            </div>
-            <div class="w-field">
-              <span>Độ dày tấm đế nền (mm): <b id="lbl-rel-base">2.0 mm</b></span>
-              <input type="range" id="sl-rel-base" min="1.2" max="4.0" step="0.2" value="2.0" oninput="rebuildRelief3D()">
-            </div>
-            <div class="w-field">
-              <span>Độ cao đùn khối nổi 3D (mm): <b id="lbl-rel-height">1.8 mm</b></span>
-              <input type="range" id="sl-rel-height" min="0.6" max="4.5" step="0.2" value="1.8" oninput="rebuildRelief3D()">
-            </div>
-            <div class="w-field">
-              <span>Đảo chiều Âm bản / Dương bản:</span>
-              <select id="sel-rel-invert" onchange="rebuildRelief3D()">
-                <option value="0">Đùn nổi phần sáng / có màu (Dương bản)</option>
-                <option value="1">Đùn nổi phần tối / nét vẽ (Âm bản)</option>
-              </select>
-            </div>
-            <button class="mw-btn-green" style="justify-content:center; padding:11px; margin-top:6px;" onclick="downloadWeaponSTL('relief')">
-              ⬇️ Tải File .STL Khối 2D➔3D Này Ngay
-            </button>
-          </div>
-          <div class="weapon-view" id="view-relief"></div>
-        </div>
-      </div>
-
-      <!-- VŨ KHÍ 3: TẠO BẢNG MÃ QR / THẺ NFC 3D CHUẨN Z-STACKING -->
-      <div class="ml-pane" id="pane-qr">
-        <div class="weapon-split">
-          <div class="weapon-ctrl">
-            <h3>📱 Vũ Khí #3: Tạo Bảng Mã QR / NFC 3D Chuẩn In 2 Màu AMS</h3>
-            <p style="font-size:12px; color:var(--mw-text-sub); line-height:1.45;">
-              Nhập đường dẫn Zalo, Facebook, Wifi hoặc Số điện thoại ➔ Tự động sinh ma trận khối QR 3D đùn nổi trên tấm đế bo góc (đổi màu đúng 1 lần ở tầng Z khi in Bambu Lab)!
-            </p>
-            <div class="w-field">
-              <span>Nội dung Mã QR (Link Zalo / SĐT / Wifi / Tên Shop):</span>
-              <input type="text" id="inp-qr-text" value="https://zalo.me/0988888888" oninput="rebuildQR3D()">
-            </div>
-            <div class="w-field">
-              <span>Kích thước bảng QR vuông (mm): <b id="lbl-qr-size">50 mm</b></span>
-              <input type="range" id="sl-qr-size" min="35" max="90" step="5" value="50" oninput="rebuildQR3D()">
-            </div>
-            <div class="w-field">
-              <span>Độ dày đế trắng (mm): <b id="lbl-qr-base">2.2 mm</b></span>
-              <input type="range" id="sl-qr-base" min="1.5" max="4.0" step="0.1" value="2.2" oninput="rebuildQR3D()">
-            </div>
-            <div class="w-field">
-              <span>Độ nổi mắt QR (Chuẩn Z-Stacking 0.8mm = 4 layer): <b id="lbl-qr-z">0.8 mm</b></span>
-              <input type="range" id="sl-qr-z" min="0.4" max="1.6" step="0.2" value="0.8" oninput="rebuildQR3D()">
-            </div>
-            <button class="mw-btn-green" style="justify-content:center; padding:11px; margin-top:6px;" onclick="downloadWeaponSTL('qr')">
-              ⬇️ Tải File .STL Bảng QR 3D Ngay
-            </button>
-          </div>
-          <div class="weapon-view" id="view-qr"></div>
-        </div>
-      </div>
-
-      <!-- VŨ KHÍ 4: TRÌNH ĐỌC FILE .STL & BÁO GIÁ CẮT LỚP SLICER TỰ ĐỘNG -->
-      <div class="ml-pane" id="pane-stl">
-        <div class="weapon-split">
-          <div class="weapon-ctrl">
-            <h3>🔪 Vũ Khí #4: Trình Đọc File .STL & Báo Giá In 3D Tự Động</h3>
-            <p style="font-size:12px; color:var(--mw-text-sub); line-height:1.45;">
-              Khách có sẵn file <code>.STL</code> muốn đặt xưởng in? Chọn file từ máy ➔ Hệ thống tự đo kích thước bao <code>X × Y × Z (mm)</code>, tính thể tích <code>cm³</code>, số gram nhựa và báo giá tức thì!
-            </p>
-            <div class="w-field">
-              <span>Chọn file .STL từ máy tính / điện thoại:</span>
-              <input type="file" id="inp-stl-file" accept=".stl" onchange="onSTLFileUpload(event)">
-            </div>
-            <div class="w-field">
-              <span>Loại vật liệu nhựa in 3D:</span>
-              <select id="sel-stl-mat" onchange="recalcSTLQuote()">
-                <option value="1.24|1200">Nhựa PLA Cao Cấp (1.24 g/cm³)</option>
-                <option value="1.27|1400">Nhựa PETG Chịu Nhiệt/Ngoài Trời (1.27 g/cm³)</option>
-                <option value="1.04|1600">Nhựa ABS Cơ Khí (1.04 g/cm³)</option>
-                <option value="1.20|2200">Nhựa Dẻo TPU Chống Va Đập (1.20 g/cm³)</option>
-              </select>
-            </div>
-            <div class="w-field">
-              <span>Độ đặc ruột (Infill %): <b id="lbl-stl-infill">25%</b></span>
-              <input type="range" id="sl-stl-infill" min="15" max="100" step="5" value="25" oninput="recalcSTLQuote()">
-            </div>
-
-            <div class="quote-result-card" id="stl-quote-box">
-              <div>📐 <b>Kích thước đo được:</b> <span id="st-dim">60.0 × 28.5 × 3.2 mm</span></div>
-              <div>🧊 <b>Thể tích hình học:</b> <span id="st-vol">4.85 cm³</span></div>
-              <div>⚖️ <b>Khối lượng nhựa in:</b> <span id="st-gram" style="font-weight:900; color:var(--mw-green);">6.8 gram</span></div>
-              <div>⏱️ <b>Thời gian máy chạy ước tính:</b> <span id="st-time">24 phút</span></div>
-              <div style="margin-top:6px; padding-top:6px; border-top:1px dashed var(--mw-green); font-size:14px;">
-                💰 <b>Đơn giá đặt in lẻ:</b> <b id="st-price" style="color:#ea580c; font-size:16px;">39.000đ</b>
+        <div class="runway-intro" id="runway-intro">
+          <div class="runway-intro-box">
+            <div class="runway-intro-content">
+              <p class="tag-highlight">Xưởng In 3D Gia Dụng · Decor · Học Tập · Quà Tặng</p>
+              <h1 class="hero-title">
+                Sống tiện nghi &amp; sáng tạo cùng <span class="hero-accent">Đồ In 3D</span> tinh xảo
+              </h1>
+              <p class="hero-sub">
+                Đồ gia dụng thông minh, kệ bếp, đèn decor phòng khách, góc học tập cho con, đồ chơi khớp động và quà tặng khắc tên. Giao toàn quốc 3 – 5 ngày.
+              </p>
+              <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:24px;">
+                <a href="#dat-in-3d" class="btn-clay">Bắt đầu thiết kế →</a>
+                <a href="#san-pham" class="btn-outline">Xem sản phẩm</a>
               </div>
             </div>
-
-            <button class="mw-btn-green" style="justify-content:center; padding:11px;" onclick="addSTLQuoteToCart()">
-              🛒 Đưa File .STL Này Vào Đơn Đặt In
-            </button>
           </div>
-          <div class="weapon-view" id="view-stl"></div>
         </div>
+
+        <div id="runway-stop-cards"></div>
+
+        <div class="runway-progress-track">
+          <div class="runway-progress-bar" id="runway-progress-bar"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. QUICK CATEGORY STRIP (#sau-3d) -->
+    <section id="sau-3d" class="kx-section" style="padding-top:28px;" aria-label="Danh mục">
+      <ul class="cat-top-strip" id="top-cat-strip">
+        <li><button type="button" class="cat-top-pill active" data-top-cat="all">📦 Tất cả sản phẩm</button></li>
+        <li><button type="button" class="cat-top-pill" data-top-cat="gia-dung-bep">🏠 Gia dụng &amp; Tiện ích bếp</button></li>
+        <li><button type="button" class="cat-top-pill" data-top-cat="qua-tang">🛋️ Đèn &amp; Trang trí phòng khách</button></li>
+        <li><button type="button" class="cat-top-pill" data-top-cat="do-dung-ban-hoc">📚 Góc học tập &amp; Bàn làm việc</button></li>
+        <li><button type="button" class="cat-top-pill" data-top-cat="figure-nhan-vat">🧸 Đồ chơi &amp; Thú khớp động</button></li>
+        <li><button type="button" class="cat-top-pill" data-top-cat="moc-khoa-the-ten">🎁 Móc khóa &amp; Quà tặng khắc tên</button></li>
+        <li><button type="button" class="cat-top-pill" data-top-cat="hoc-cu-khoa-hoc">⚙️ Đồ chơi Cơ khí &amp; STEM</button></li>
+        <li><button type="button" class="cat-top-pill" data-top-cat="van-hoa-viet">🏯 Văn hóa &amp; Kiến trúc Việt</button></li>
+      </ul>
+    </section>
+
+    <!-- 3.5. TOP LISTS HOT TREND SECTION (#top-thinh-hanh) -->
+    <section id="top-thinh-hanh" class="kx-section" style="padding-top:32px;" aria-label="Top sản phẩm thịnh hành">
+      <div class="sec-head" style="margin-bottom:18px;">
+        <div>
+          <span class="tag-highlight" style="display:inline-block;margin-bottom:6px;">🔥 BẢNG XẾP HẠNG 3D</span>
+          <h2 class="sec-title" style="margin-top:2px;">Top Sản Phẩm Thịnh Hành</h2>
+          <p style="color:var(--muted);font-size:14px;margin-top:4px;">
+            Mô hình in 3D được cộng đồng xem nhiều nhất, đặt in nhiều nhất và thả tim yêu thích nhất tuần qua.
+          </p>
+        </div>
+        <div class="top-list-tabs" id="top-list-tabs" role="tablist">
+          <button type="button" class="top-tab-pill" data-top-tab="views" role="tab" aria-selected="false">
+            <span style="font-size:15px;">👀</span> Top Xem Nhiều
+          </button>
+          <button type="button" class="top-tab-pill active" data-top-tab="purchases" role="tab" aria-selected="true">
+            <span style="font-size:15px;">🔥</span> Top Mua Nhiều
+          </button>
+          <button type="button" class="top-tab-pill" data-top-tab="likes" role="tab" aria-selected="false">
+            <span style="font-size:15px;">❤️</span> Top Quan Tâm
+          </button>
+        </div>
+      </div>
+
+      <div class="top-list-grid" id="top-list-grid">
+        <!-- Rendered dynamically by assets/khoixinh_3d_hub.js -->
+      </div>
+    </section>
+
+    <!-- 4. COMPLETE PRODUCT CATALOG SYSTEM (#san-pham — Exact 2-Col Sidebar + 3-Col Grid from route_san-pham.html) -->
+    <section id="san-pham" class="kx-section" style="padding-top:36px;">
+      <div class="sec-head">
+        <div>
+          <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--secondary-strong);">Danh mục</p>
+          <h2 class="sec-title" style="margin-top:2px;">Tất cả sản phẩm in 3D</h2>
+          <p style="color:var(--muted);font-size:14px;margin-top:4px;">Lọc nhanh theo nhu cầu gia đình, phòng bếp, phòng khách, góc học tập hoặc quà tặng. Bấm vào sản phẩm bất kỳ để ngắm mô hình 3D 360°.</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span id="kx-catalog-count" style="font-size:13.5px;font-weight:700;color:var(--muted);">28 sản phẩm</span>
+          <button type="button" id="kx-reset-filters" class="sidebar-pill" style="display:none;border-color:var(--accent);color:var(--accent-strong);">↺ Xóa bộ lọc</button>
+        </div>
+      </div>
+
+      <div class="catalog-layout">
+        <!-- Left Sidebar Filters (Exact route_san-pham.html structure) -->
+        <aside class="catalog-sidebar" aria-label="Bộ lọc sản phẩm">
+          <div>
+            <p class="filter-group-title">Tìm nhanh</p>
+            <input type="search" id="kx-search-input" class="kx-input" style="width:100%;" placeholder="Tên sản phẩm, mô tả…" />
+          </div>
+
+          <div>
+            <p class="filter-group-title">Danh mục</p>
+            <div class="filter-pills-wrap" id="filter-cat-pills">
+              <button type="button" class="sidebar-pill active" data-cat="all">Tất cả</button>
+              <button type="button" class="sidebar-pill" data-cat="gia-dung-bep">🏠 Gia dụng &amp; Bếp</button>
+              <button type="button" class="sidebar-pill" data-cat="qua-tang">🛋️ Đèn &amp; Decor phòng khách</button>
+              <button type="button" class="sidebar-pill" data-cat="do-dung-ban-hoc">📚 Góc học tập &amp; Làm việc</button>
+              <button type="button" class="sidebar-pill" data-cat="figure-nhan-vat">🧸 Đồ chơi &amp; Thú khớp động</button>
+              <button type="button" class="sidebar-pill" data-cat="moc-khoa-the-ten">🎁 Móc khóa &amp; Khắc tên</button>
+              <button type="button" class="sidebar-pill" data-cat="hoc-cu-khoa-hoc">⚙️ Cơ khí &amp; STEM</button>
+              <button type="button" class="sidebar-pill" data-cat="van-hoa-viet">🏯 Văn hóa Việt Nam</button>
+            </div>
+          </div>
+
+          <div>
+            <p class="filter-group-title">Hình dáng</p>
+            <div class="filter-pills-wrap" id="filter-shape-pills">
+              <button type="button" class="sidebar-pill active" data-shape="all">Tất cả</button>
+              <button type="button" class="sidebar-pill" data-shape="tron-cau">Tròn / cầu</button>
+              <button type="button" class="sidebar-pill" data-shape="khoi-hop">Khối hộp</button>
+              <button type="button" class="sidebar-pill" data-shape="dong-vat">Động vật</button>
+              <button type="button" class="sidebar-pill" data-shape="nhan-vat">Nhân vật</button>
+              <button type="button" class="sidebar-pill" data-shape="hinh-hoc">Đa diện / hình học</button>
+              <button type="button" class="sidebar-pill" data-shape="chu-ten">Chữ &amp; tên</button>
+              <button type="button" class="sidebar-pill" data-shape="co-khi-banh-rang">Cơ khí / bánh răng</button>
+              <button type="button" class="sidebar-pill" data-shape="hoa-la">Hoa lá</button>
+            </div>
+          </div>
+
+          <div style="display:none;">
+            <p class="filter-group-title">Cấp học</p>
+            <div class="filter-pills-wrap" id="filter-grade-pills">
+              <button type="button" class="sidebar-pill active" data-grade="all">Tất cả</button>
+              <button type="button" class="sidebar-pill" data-grade="tieu-hoc">Tiểu học</button>
+              <button type="button" class="sidebar-pill" data-grade="thcs">THCS</button>
+              <button type="button" class="sidebar-pill" data-grade="thpt">THPT</button>
+            </div>
+          </div>
+
+          <div style="display:none;">
+            <p class="filter-group-title">Môn học</p>
+            <div class="filter-pills-wrap" id="filter-subject-pills">
+              <button type="button" class="sidebar-pill active" data-subject="all">Tất cả</button>
+              <button type="button" class="sidebar-pill" data-subject="toan">Toán</button>
+              <button type="button" class="sidebar-pill" data-subject="ly">Vật lí</button>
+              <button type="button" class="sidebar-pill" data-subject="hoa">Hóa học</button>
+              <button type="button" class="sidebar-pill" data-subject="sinh">Sinh học</button>
+              <button type="button" class="sidebar-pill" data-subject="dia">Địa lí</button>
+              <button type="button" class="sidebar-pill" data-subject="tin">Tin học</button>
+              <button type="button" class="sidebar-pill" data-subject="my-thuat">Mỹ thuật</button>
+            </div>
+          </div>
+
+          <div>
+            <p class="filter-group-title">Sắp xếp</p>
+            <div class="filter-pills-wrap" id="filter-sort-pills">
+              <button type="button" class="sidebar-pill active" data-sort="featured">Phổ biến</button>
+              <button type="button" class="sidebar-pill" data-sort="price-asc">Giá tăng dần</button>
+              <button type="button" class="sidebar-pill" data-sort="price-desc">Giá giảm dần</button>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Right 3-Column Product Cards Grid -->
+        <div>
+          <div class="prod-grid" id="kx-product-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. INTERACTIVE 3D PRODUCT STAGE (#trung-mau-3d — Exact shot_2_product_detail.jpg Layout) -->
+    <section id="trung-mau-3d" class="kx-section">
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:20px;">
+        <div>
+          <p id="kx-detail-cat" style="font-size:13px;font-weight:600;color:var(--secondary-strong);">Quà tặng &amp; trang trí · Tròn / cầu</p>
+          <h2 id="kx-detail-title" class="font-display" style="font-size:clamp(26px,3.2vw,36px);font-weight:800;margin-top:2px;">Đèn ngủ mặt trăng</h2>
+          <p style="font-size:14px;color:var(--muted);margin-top:2px;">
+            <span id="kx-detail-short-summary">Đèn ngủ 3D hình mặt trăng, tặng bạn bè.</span> · <span id="kx-detail-rating" style="color:var(--highlight);font-weight:600;" hidden></span>
+          </p>
+        </div>
+                <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;" id="kx-quick-showcase-strip">
+          <button type="button" class="sidebar-pill active" data-Quick-Showcase="iguana-rainbow-3mf">🦎 Kỳ Nhông Gai Cầu Vồng (.3MF)</button>
+          <button type="button" class="sidebar-pill" data-Quick-Showcase="mini-dragon-keychain-3mf">🐉 Rồng Thần Khớp Động (91K Tải · .3MF)</button>
+          <button type="button" class="sidebar-pill" data-Quick-Showcase="fluffy-flexi-puppy-3mf">🐶 Thú Cưng 4 Màu Fluffy (.3MF)</button>
+          <button type="button" class="sidebar-pill" data-Quick-Showcase="planetary-gear-fidget-3mf">⚙️ Bánh Răng Hành Tinh (31K Tải · .3MF)</button>
+          <button type="button" class="sidebar-pill" data-Quick-Showcase="kumiko-desk-organizer-3mf">🎋 Ống Cắm Bút Kumiko (16.8K Tải)</button>
+          <button type="button" class="sidebar-pill" data-Quick-Showcase="bonsai-spirit-zen-3mf">🌳 Cây Bonsai Xoắn (.3MF)</button>
+          <button type="button" class="sidebar-pill" data-Quick-Showcase="lamella-nordic-lamp-3mf">💡 Đèn Lamella Bắc Âu (.3MF)</button>
+          <button type="button" class="sidebar-pill" data-Quick-Showcase="bambu-baby-dragon-3mf">🐲 Rồng Con Khớp Động (.3MF)</button>
+          <button type="button" class="sidebar-pill" data-Quick-Showcase="3dlab-traditional-vietnamese-communal-house-dinh">🏛️ Đình Làng Việt (.GLB)</button>
+          <button type="button" class="sidebar-pill" data-Quick-Showcase="3dlab-traditional-vietnamese-antique-wooden-ches">🪵 Rương Gỗ Cổ (.GLB)</button>
+        </div>
+      </div>
+
+      <div class="kx-showcase-grid">
+        <!-- Left: Unobstructed 3D Stage + Bottom Control Bar (Exact shot_2_product_detail.jpg) -->
+        <div>
+          <div class="kx-stage-frame">
+            <canvas id="kx-showcase-canvas"></canvas>
+            <div class="kx-stage-hint-top">🖱 Kéo để xoay 360° · Cuộn để phóng to</div>
+          </div>
+          <div class="kx-stage-toolbar-below">
+            <button type="button" class="kx-ctrl-pill" id="kx-ctrl-zoom-in">🔍+ Phóng to</button>
+            <button type="button" class="kx-ctrl-pill" id="kx-ctrl-zoom-out">🔍− Thu nhỏ</button>
+            <button type="button" class="kx-ctrl-pill" id="kx-ctrl-autorotate">⏸ Tự xoay</button>
+            <button type="button" class="kx-ctrl-pill" id="kx-ctrl-left">↺ Xoay trái</button>
+            <button type="button" class="kx-ctrl-pill" id="kx-ctrl-right">↻ Xoay phải</button>
+            <button type="button" class="kx-ctrl-pill" id="kx-ctrl-reset">⟲ Đặt lại góc nhìn</button>
+            <button type="button" class="kx-ctrl-pill" id="kx-ctrl-snap">📷 Chụp ảnh</button>
+            <button type="button" class="kx-ctrl-pill" id="kx-ctrl-fullscreen">⛶ Xem toàn màn hình</button>
+            <button type="button" class="kx-ctrl-pill" id="kx-ctrl-night">🌙 Đèn Đêm 2700K</button>
+            <button type="button" class="kx-ctrl-pill" id="kx-ctrl-desk">🪑 Ướm Bàn Học</button>
+          </div>
+        </div>
+
+        <!-- Right: Clean Product Purchase Card (Exact shot_2_product_detail.jpg) -->
+        <div class="kx-card-surface" style="padding:24px;">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;">
+            <span id="kx-detail-price" class="font-display" style="font-size:32px;font-weight:800;color:var(--accent-strong);">199.000 ₫</span>
+            <span id="kx-detail-spec-pill" style="font-size:12.5px;color:var(--secondary-strong);font-weight:600;">Còn hàng · Giao 3 – 5 ngày</span>
+          </div>
+
+          <p id="kx-detail-summary" style="color:var(--muted);font-size:14px;line-height:1.6;margin-top:12px;">
+            Đèn ngủ mặt trăng in 3D từ dữ liệu địa hình thật, ánh sáng vàng dịu cho góc học tập.
+          </p>
+
+          <div style="margin-top:18px;">
+            <div style="font-size:13.5px;font-weight:600;">
+              Màu sắc: <span id="kx-detail-color-name" style="color:var(--accent-strong);">Cam</span>
+            </div>
+            <div class="kx-swatch-row" id="kx-detail-swatches"></div>
+          </div>
+
+          <div id="kx-detail-custom-wrap" style="margin-top:16px;">
+            <label class="field-lbl">
+              <span id="kx-detail-custom-label">Khắc chữ / tên riêng (tùy chọn):</span>
+              <input type="text" id="kx-detail-custom-input" class="kx-input" maxlength="20" placeholder="Nhập tên muốn khắc (VD: MINH ANH)..." />
+            </label>
+          </div>
+
+          <!-- Clean Specs Box matching shot_2_product_detail.jpg -->
+          <div style="margin-top:18px;background:var(--surface-muted);border-radius:16px;padding:14px 16px;font-size:13px;display:flex;flex-direction:column;gap:6px;">
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--muted);">Kích thước</span><strong id="kx-detail-spec-size">12 × 12 × 12 cm</strong></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--muted);">Chất liệu</span><strong id="kx-detail-spec-material">PLA sinh học an toàn</strong></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--muted);">Thời gian in &amp; giao</span><strong id="kx-detail-spec-time">3 – 5 ngày</strong></div>
+          </div>
+
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:20px;">
+            <div class="kx-qty-pill">
+              <button type="button" id="kx-detail-qty-minus">−</button>
+              <span id="kx-detail-qty-val">1</span>
+              <button type="button" id="kx-detail-qty-plus">+</button>
+            </div>
+            <button type="button" class="btn-clay" id="kx-detail-add-cart" style="flex:1;">Thêm vào giỏ · 199.000 ₫</button>
+            <a id="kx-detail-download-glb" href="#" download class="btn-outline" style="display:none;border-color:var(--secondary);color:var(--secondary-strong);" title="Tải miễn phí file mô hình .GLB gốc">⬇ Tải .GLB Free</a>
+          </div>
+          <p id="kx-detail-freeship-hint" style="font-size:12.5px;color:var(--muted);margin-top:10px;"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Fullscreen 3D Dialog -->
+    <dialog id="kx-fullscreen-dialog">
+      <div style="display:flex;flex-direction:column;width:100%;height:100%;">
+        <div class="kx-fs-header">
+          <div class="kx-fs-title-row">
+            <div class="kx-fs-title-wrap">
+              <strong id="kx-fs-title">Xem 3D Toàn Màn Hình</strong>
+              <div id="kx-fs-sub">Nhựa PLA · Kích thước Chuẩn</div>
+            </div>
+            <button type="button" class="btn-clay kx-fs-close-btn" id="kx-fs-close">✕ Đóng</button>
+          </div>
+          <div class="kx-fs-toolbar">
+            <div id="kx-fs-swatches" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;"></div>
+            <button type="button" class="kx-ctrl-pill" id="kx-fs-zoom-in">🔍+ Phóng to</button>
+            <button type="button" class="kx-ctrl-pill" id="kx-fs-zoom-out">🔍− Thu nhỏ</button>
+            <button type="button" class="kx-ctrl-pill" id="kx-fs-autorotate">⏸ Tự xoay</button>
+            <button type="button" class="kx-ctrl-pill" id="kx-fs-reset">⟲ Đặt lại</button>
+            <button type="button" class="kx-ctrl-pill" id="kx-fs-snap">📷 Chụp ảnh</button>
+          </div>
+        </div>
+        <div style="position:relative;flex:1;min-height:0;background:#07080c;">
+          <canvas id="kx-fullscreen-canvas" style="width:100%;height:100%;display:block;"></canvas>
+        </div>
+      </div>
+    </dialog>
+
+    <!-- 6. IN THEO YÊU CẦU CHỈ 3 BƯỚC (#dat-in-3d) -->
+    <section id="dat-in-3d" class="kx-section">
+      <div class="clay-panel" id="in-theo-yeu-cau">
+        <div class="sec-head" style="margin-bottom:14px;">
+          <div>
+            <h2 class="sec-title">In theo yêu cầu chỉ 3 bước</h2>
+            <p style="color:var(--muted);font-size:14px;margin-top:4px;">Tải file .stl/.3mf/.obj của bạn lên để xem trước trên bàn in 256mm và nhận giá ước tính ngay lập tức.</p>
+          </div>
+          <button type="button" class="btn-outline" id="btn-load-sample-stl" style="height:40px;font-size:13px;">
+            Nạp thử file .3MF / .STL mẫu
+          </button>
+        </div>
+
+        <div id="kx-slicer-format-badge" style="background:rgba(20,184,166,0.10);border:1px solid rgba(20,184,166,0.35);color:var(--foreground);padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.5;margin-bottom:16px;">
+          💡 File 3D chuẩn lên màu tự động: <b>.3MF</b> (Bambu Studio / OrcaSlicer đa sắc AMS), <b>.GLB / .GLTF</b> (kèm Texture UV). File <b>.STL</b> là lưới hình học đơn sắc (chọn màu nhựa bên phải).
+        </div>
+
+        <ol class="steps-pills" id="slicer-steps">
+          <li class="active">1. Tải file hoặc chọn mẫu</li>
+          <li>2. Chọn vật liệu &amp; màu</li>
+          <li>3. In &amp; giao tận nhà</li>
+        </ol>
+
+        <form id="slicer-form" class="two-col">
+          <div>
+            <div class="drop-box" id="slicer-dropzone">
+              <input type="file" id="slicer-file-input" name="file" accept=".stl,.3mf,.obj,.glb,.gltf" style="display:none;" />
+              <div style="font-weight:700;font-size:15px;" id="slicer-file-label">Kéo thả hoặc bấm để chọn file .STL / .3MF / .OBJ</div>
+              <div style="font-size:12.5px;color:var(--muted);margin-top:4px;">Tối đa 50MB · Tự động đo kích thước bao (mm) và thể tích (cm³)</div>
+            </div>
+            <div class="slicer-preview-wrap">
+              <canvas id="slicer-canvas"></canvas>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div class="form-grid-2" style="margin-top:0;">
+              <label class="field-lbl">
+                Vật liệu nhựa in
+                <select name="material" id="slicer-material" class="kx-select">
+                  <option value="PLA">PLA Sinh Học (An toàn)</option>
+                  <option value="PLA_SILK">PLA Silk Ánh Lụa</option>
+                  <option value="PETG">PETG Chịu Nhiệt</option>
+                  <option value="TPU">TPU Dẻo Đàn Hồi</option>
+                  <option value="RESIN">Resin 8K Siêu Mịn</option>
+                </select>
+              </label>
+              <label class="field-lbl">
+                Màu sắc nhựa
+                <select name="colorHex" id="slicer-color" class="kx-select">
+                  <option value="FILE_ORIGINAL" data-name="Giữ Màu Gốc Theo File (.3MF / .GLB)" selected>🎨 Giữ Màu Gốc Theo File (.3MF / .GLB)</option>
+                  <option value="#ff6b2c" data-name="Cam Khối Xinh">Cam Khối Xinh</option>
+                  <option value="#14b8a6" data-name="Xanh Mint">Xanh Mint</option>
+                  <option value="#ffc83d" data-name="Vàng Nghệ">Vàng Nghệ</option>
+                  <option value="#f4f1ea" data-name="Trắng Ngà">Trắng Ngà</option>
+                  <option value="#22252a" data-name="Đen Carbon">Đen Carbon</option>
+                </select>
+              </label>
+              <label class="field-lbl">
+                Độ đặc ruột (Infill %)
+                <select name="infillPct" id="slicer-infill" class="kx-select">
+                  <option value="15">15% (Trưng bày)</option>
+                  <option value="20" selected>20% (Tiêu chuẩn)</option>
+                  <option value="40">40% (Chịu lực cơ khí)</option>
+                  <option value="80">80% (Đặc chắc)</option>
+                </select>
+              </label>
+              <label class="field-lbl">
+                Số lượng (Chiếc)
+                <input type="number" name="quantity" id="slicer-qty" value="1" min="1" max="500" class="kx-input" />
+              </label>
+            </div>
+
+            <button type="submit" class="btn-clay" id="btn-calc-quote" style="width:100%;">
+              Tính giá ước tính ngay
+            </button>
+
+            <div class="quote-result-box" id="quote-dynamic-output" style="display:none;"></div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- 7. TẠO TƯỢNG CHIBI TỪ ẢNH 2D (#tao-tuong) -->
+    <section id="tao-tuong" class="kx-section">
+      <div class="clay-panel">
+        <div class="sec-head" style="margin-bottom:20px;">
+          <div>
+            <h2 class="sec-title">Tạo tượng Chibi 3D từ ảnh chụp</h2>
+            <p style="color:var(--muted);font-size:14px;margin-top:4px;">Gửi 1 ảnh chân dung, gia đình hoặc thú cưng — chúng tôi dựng mẫu 3D và in nhiều màu sắc nét (Hoàn thiện &amp; giao 3 – 5 ngày).</p>
+          </div>
+          <button type="button" class="btn-outline" id="btn-load-sample-fig-photo" style="height:40px;font-size:13px;">
+            📸 Dùng ảnh chân dung mẫu
+          </button>
+        </div>
+
+        <form id="figure-form" class="two-col">
+          <div>
+            <div class="drop-box" id="fig-dropzone">
+              <input type="file" id="fig-photo-input" name="photo" accept="image/*" style="display:none;" />
+              <div style="font-weight:700;font-size:15px;" id="fig-photo-label">Bấm để tải ảnh chân dung / thú cưng (.JPG, .PNG)</div>
+              <div style="font-size:12.5px;color:var(--muted);margin-top:4px;">Ảnh rõ mặt giúp tượng Chibi giống thật và sinh động nhất</div>
+              <img id="fig-photo-preview" alt="Preview" style="display:none;max-height:180px;margin:12px auto 0;border-radius:14px;border:1px solid var(--border);" />
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div class="form-grid-2" style="margin-top:0;">
+              <label class="field-lbl">
+                Chiều cao tượng
+                <select name="heightMm" id="fig-height" class="kx-select">
+                  <option value="80">Cao 8cm (Để bàn gọn)</option>
+                  <option value="100">Cao 10cm (Phổ biến)</option>
+                  <option value="120" selected>Cao 12cm (Chuẩn quà tặng)</option>
+                  <option value="150">Cao 15cm (Trưng bày lớn)</option>
+                </select>
+              </label>
+              <label class="field-lbl">
+                Số màu in 3D
+                <select name="colorCount" id="fig-colors" class="kx-select">
+                  <option value="1">Đơn sắc 1 màu</option>
+                  <option value="4" selected>4 Màu</option>
+                  <option value="7">7 Màu chi tiết</option>
+                </select>
+              </label>
+            </div>
+
+            <label class="field-lbl">
+              Chữ khắc lên bảng tên đế tượng (Miễn phí)
+              <input type="text" name="customText" id="fig-custom-text" placeholder="VD: Cô Giáo Hải Ngọc - 20/11" maxlength="32" class="kx-input" />
+            </label>
+
+            <label style="display:flex;align-items:center;gap:8px;font-size:13.5px;cursor:pointer;">
+              <input type="checkbox" name="withBase" id="fig-base" value="true" checked />
+              Kèm đế tròn &amp; bảng tên khắc nổi (+30.000 ₫)
+            </label>
+
+            <div class="quote-result-box" style="flex-direction:row;align-items:center;justify-content:space-between;">
+              <div>
+                <div style="font-size:12px;color:var(--muted);">Giá trọn gói dựng 3D &amp; in:</div>
+                <div class="quote-big-price" id="fig-live-price" style="font-size:26px;">690.000 ₫</div>
+              </div>
+              <button type="submit" class="btn-clay">Đặt làm tượng →</button>
+            </div>
+            <div id="fig-order-msg" style="display:none;padding:12px;border-radius:12px;background:rgba(20,184,166,0.14);border:1px solid var(--secondary);font-size:13px;"></div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- 8. GIỎ HÀNG & THANH TOÁN 3 BƯỚC (#gio-hang-day-du & #thanh-toan-3-buoc) -->
+    <section id="gio-hang-day-du" class="kx-section">
+      <div class="sec-head" style="margin-bottom:20px;">
+        <div>
+          <h2 class="sec-title">Giỏ hàng &amp; Thanh toán</h2>
+          <p style="color:var(--muted);font-size:14px;margin-top:4px;">Miễn phí vận chuyển cho đơn từ 500.000 ₫ · Thanh toán VietQR, VNPay hoặc COD.</p>
+        </div>
+      </div>
+
+      <div class="two-col" style="align-items:start;">
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="kx-card-surface" style="padding:16px 18px;">
+            <p id="kx-fullcart-ship-msg" style="font-size:13.5px;">Mua thêm <b>500.000 ₫</b> để được miễn phí vận chuyển.</p>
+            <div class="freeship-bar">
+              <div id="kx-fullcart-bar" class="freeship-fill" style="width:0%;"></div>
+            </div>
+          </div>
+          <div id="kx-fullcart-items" style="display:flex;flex-direction:column;gap:10px;"></div>
+        </div>
+
+        <form id="kx-checkout-form" class="kx-card-surface" style="padding:24px;display:flex;flex-direction:column;gap:14px;">
+          <h3 id="thanh-toan-3-buoc" class="font-display" style="font-size:20px;font-weight:800;">Thông tin nhận hàng</h3>
+          <div class="form-grid-2" style="margin-top:0;">
+            <label class="field-lbl">Họ và tên *
+              <input type="text" id="kx-co-name" required class="kx-input" placeholder="Nguyễn Văn A" />
+            </label>
+            <label class="field-lbl">Số điện thoại *
+              <input type="tel" id="kx-co-phone" required class="kx-input" placeholder="Nhập số điện thoại nhận hàng..." />
+            </label>
+            <label class="field-lbl">Tỉnh / Thành phố *
+              <select id="kx-co-province" class="kx-select">
+                <option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>
+                <option value="Hà Nội">Hà Nội</option>
+                <option value="Đà Nẵng">Đà Nẵng</option>
+                <option value="Cần Thơ">Cần Thơ</option>
+                <option value="Hải Phòng">Hải Phòng</option>
+                <option value="Bình Dương">Bình Dương</option>
+                <option value="Đồng Nai">Đồng Nai</option>
+              </select>
+            </label>
+            <label class="field-lbl">Phường / Xã *
+              <select id="kx-co-ward" class="kx-select"></select>
+            </label>
+          </div>
+          <label class="field-lbl">Địa chỉ chi tiết *
+            <input type="text" id="kx-co-address" required class="kx-input" placeholder="Số nhà, tên đường..." />
+          </label>
+          <input type="hidden" id="kx-co-email" value="" />
+          <input type="hidden" id="kx-co-note" value="" />
+
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px;">
+            <span style="font-size:13px;font-weight:600;">Phương thức thanh toán</span>
+            <label class="kx-pay-option active">
+              <input type="radio" name="kxPaymentMethod" value="VIETQR" checked style="margin-top:3px;" />
+              <div>
+                <div style="font-weight:700;font-size:13.5px;">Chuyển khoản QR (VietQR)</div>
+                <div style="font-size:12px;color:var(--muted);">Quét mã QR ngân hàng, xác nhận tự động</div>
+              </div>
+            </label>
+            <label class="kx-pay-option">
+              <input type="radio" name="kxPaymentMethod" value="COD" style="margin-top:3px;" />
+              <div>
+                <div style="font-weight:700;font-size:13.5px;">Thanh toán khi nhận hàng (COD)</div>
+                <div style="font-size:12px;color:var(--muted);">Áp dụng cho đơn tiêu chuẩn</div>
+              </div>
+            </label>
+          </div>
+
+          <div style="display:flex;gap:8px;">
+            <input type="text" id="kx-co-coupon-input" class="kx-input" placeholder="Mã giảm giá (VD: LOP10, KHOIXINH10, FREESHIP)" style="flex:1;text-transform:uppercase;" />
+            <button type="button" class="btn-outline" id="kx-co-apply-coupon" style="height:44px;padding:0 16px;">Áp dụng</button>
+          </div>
+          <div id="kx-co-coupon-msg" style="display:none;font-size:12.5px;font-weight:600;margin-top:-4px;"></div>
+
+          <div style="border-top:1px solid var(--border);padding-top:12px;font-size:13.5px;display:flex;flex-direction:column;gap:6px;">
+            <div id="kx-co-items" style="display:none;"></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--muted);">Tạm tính</span><span id="kx-co-subtotal">0 ₫</span></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--muted);">Giảm giá</span><span id="kx-co-discount" style="color:var(--secondary-strong);">0 ₫</span></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--muted);">Phí vận chuyển</span><span id="kx-co-ship">0 ₫</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:17px;font-weight:800;padding-top:6px;border-top:1px solid var(--border);">
+              <span>Tổng thanh toán</span><span id="kx-co-total" style="color:var(--highlight);">0 ₫</span>
+            </div>
+          </div>
+
+          <label style="display:none;"><input type="checkbox" id="kx-co-save-addr" checked /></label>
+          <button type="submit" class="btn-clay" id="kx-co-submit-btn" style="width:100%;">Đặt hàng · 0 ₫</button>
+        </form>
+      </div>
+      <div id="kx-order-success-box" class="kx-card-surface" style="display:none;margin-top:18px;padding:22px;border-color:var(--secondary);"></div>
+    </section>
+
+    <!-- 9. ĐƯỢC HỌC SINH & PHỤ HUYNH YÊU THÍCH + VÌ SAO MUA Ở ĐÂY (Exact Khối Xinh Sections) -->
+    <section class="kx-section">
+      <h2 class="sec-title">Vì sao mua ở đây?</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:20px;">
+        <div class="kx-card-surface" style="background:var(--surface-muted);padding:20px;">
+          <p class="font-display" style="font-size:18px;font-weight:700;color:var(--accent-strong);">Xem thử 3D miễn phí</p>
+          <p style="font-size:14px;color:var(--muted);margin-top:4px;">Xoay mô hình 360° trực tiếp trước khi đặt, không mất phí.</p>
+        </div>
+        <div class="kx-card-surface" style="background:var(--surface-muted);padding:20px;">
+          <p class="font-display" style="font-size:18px;font-weight:700;color:var(--accent-strong);">Nhựa PLA an toàn</p>
+          <p style="font-size:14px;color:var(--muted);margin-top:4px;">Vật liệu sinh học phù hợp học sinh, không mùi, bề mặt mịn.</p>
+        </div>
+        <div class="kx-card-surface" style="background:var(--surface-muted);padding:20px;">
+          <p class="font-display" style="font-size:18px;font-weight:700;color:var(--accent-strong);">Giá học sinh</p>
+          <p style="font-size:14px;color:var(--muted);margin-top:4px;">Ưu đãi giảm 10% khi đặt theo lớp, theo nhóm (Mã: LOP10).</p>
+        </div>
+        <div class="kx-card-surface" style="background:var(--surface-muted);padding:20px;">
+          <p class="font-display" style="font-size:18px;font-weight:700;color:var(--accent-strong);">Giao toàn quốc</p>
+          <p style="font-size:14px;color:var(--muted);margin-top:4px;">Theo dõi đơn bằng mã đơn và số điện thoại dễ dàng.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. TRA CỨU ĐƠN HÀNG, DÀN MÁY IN 3D LIVE & CÂU HỎI THƯỜNG GẶP (#theo-doi-don & #hoi-dap) -->
+    <section id="theo-doi-don" class="kx-section">
+      <div class="two-col" style="align-items:start;">
+        <div class="kx-card-surface" style="padding:24px;display:none !important;" aria-hidden="true">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
+            <h2 class="sec-title" style="font-size:24px;">Theo dõi đơn hàng</h2>
+            <button type="button" class="sidebar-pill" id="btn-demo-track-order" style="font-size:12px;">🔍 Xem đơn mẫu</button>
+          </div>
+          <p style="font-size:14px;color:var(--muted);margin-top:4px;">Nhập mã đơn (VD: KX-...) hoặc số điện thoại nhận hàng để kiểm tra tiến độ in 3D.</p>
+          <form id="kx-track-form" style="display:flex;gap:8px;margin-top:14px;">
+            <input type="text" id="kx-track-input" class="kx-input" placeholder="Mã đơn KX-... + 4 số cuối SĐT (VD: KX-1031-AB12CD 3333)" style="flex:1;" />
+            <button type="submit" class="btn-clay" style="height:44px;">Tra cứu</button>
+          </form>
+          <div id="kx-track-results" style="margin-top:14px;display:flex;flex-direction:column;gap:8px;"></div>
+
+          <div class="kx-printer-farm-section" style="display:none !important;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+              <strong style="font-size:13.5px;color:var(--foreground);">📦 Tiến độ hoàn thiện đơn hàng</strong>
+              <span style="font-size:11.5px;color:var(--secondary-strong);"></span>
+            </div>
+            <div id="kx-printer-farm-grid" style="display:none !important;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;"></div>
+          </div>
+        </div>
+
+        <div id="hoi-dap" class="kx-card-surface" style="padding:24px;grid-column:1 / -1;">
+          <h2 class="sec-title" style="font-size:24px;">Câu hỏi thường gặp</h2>
+          <div style="margin-top:12px;display:flex;flex-direction:column;gap:10px;font-size:14px;">
+            <details style="border-bottom:1px solid var(--border);padding-bottom:10px;" open>
+              <summary style="font-weight:600;cursor:pointer;">Thời gian in và giao mất bao lâu?</summary>
+              <p style="color:var(--muted);margin-top:6px;">Hàng in 3D handmade / khắc tên riêng hoàn thiện &amp; giao nhanh trong <b>3 – 5 ngày</b>. Phụ kiện đặt xưởng Order 1688 từ <b>12 – 15 ngày</b>.</p>
+            </details>
+            <details style="border-bottom:1px solid var(--border);padding-bottom:10px;">
+              <summary style="font-weight:600;cursor:pointer;">Tôi có thể in file 3D của riêng mình không?</summary>
+              <p style="color:var(--muted);margin-top:6px;">Có. Vào mục “In theo yêu cầu”, tải file .stl/.3mf/.obj và nhận báo giá tự động ngay.</p>
+            </details>
+            <details>
+              <summary style="font-weight:600;cursor:pointer;">Sản phẩm lỗi thì sao?</summary>
+              <p style="color:var(--muted);margin-top:6px;">Nếu lỗi in hoặc gãy vỡ khi vận chuyển, chúng tôi in lại mới 100% hoặc hoàn tiền.</p>
+            </details>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11. CTA BAND -->
+    <section class="kx-section">
+      <div class="cta-band">
+        <h2 class="font-display" style="font-size:32px;font-weight:800;color:#ffffff;">Sẵn sàng tạo một chiếc chứ?</h2>
+        <p style="color:rgba(255,255,255,0.8);margin-top:6px;">Mất khoảng hai phút để có giá ước tính.</p>
+        <a href="#dat-in-3d" class="btn-clay" style="margin-top:20px;">Bắt đầu thiết kế</a>
       </div>
     </section>
   </main>
 
-  <!-- MODAL GIỎ HÀNG ĐẶT IN -->
-  <div class="mw-modal-backdrop" id="order-modal">
-    <div class="mw-modal">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-        <h3 style="font-size:17px; font-weight:900; color:var(--mw-green);">🛒 Đơn Đặt In 3D & File Cấu Hình Của Khách</h3>
-        <button onclick="closeOrderModal()" style="background:transparent; border:none; color:var(--mw-muted); font-size:20px; cursor:pointer;">✕</button>
+  <!-- 12. CLEAN 4-COLUMN FOOTER (Exact Khối Xinh Footer) -->
+  <footer style="margin-top:72px;border-top:1px solid var(--border);background:linear-gradient(180deg,var(--background),var(--surface));">
+    <div style="max-width:1152px;margin:0 auto;padding:48px 16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:32px;">
+      <div>
+        <p class="font-display" style="font-size:24px;font-weight:800;"><span style="color:var(--accent);">■</span> Khối Xinh</p>
+        <p style="font-size:14px;color:var(--muted);margin-top:8px;">Đồ in 3D vui và hữu ích cho học sinh — làm theo đơn, giao toàn quốc.</p>
       </div>
-      <div id="order-list-box" style="max-height:260px; overflow-y:auto; margin-bottom:12px;"></div>
-      <div style="background:var(--mw-surface-2); border:1px solid var(--mw-border); border-radius:8px; padding:10px 12px; margin-bottom:14px; font-size:12px; line-height:1.5;">
-        <div>📦 <b>Thời gian gia công in 3D Handmade theo yêu cầu:</b> Giao nhanh <b>3 – 5 ngày</b>.</div>
-        <div>✅ <b>Định dạng file xuất trực tiếp:</b> <code>.3MF</code> (Bambu AMS), <code>.STL</code> (Liền khối), <code>.DXF</code> (AutoCAD).</div>
-      </div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-        <button class="mw-btn-green" style="justify-content:center; padding:10px;" onclick="copyOrderSummary()">
-          📋 Sao Chép Mã Đơn Gửi Zalo/Shop
-        </button>
-        <button class="mw-btn-outline" style="justify-content:center; padding:10px;" onclick="triggerIframe3MFDownload()">
-          ⬇️ Tải Ngay File .3MF Đã Chỉnh
-        </button>
-      </div>
+      <nav aria-label="Cửa hàng">
+        <p style="font-weight:600;margin-bottom:8px;">Cửa hàng</p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--muted);">
+          <li><a href="#san-pham">Tất cả sản phẩm</a></li>
+          <li><a href="#san-pham" data-footer-cat="hoc-cu-khoa-hoc">Học cụ khoa học</a></li>
+          <li><a href="#san-pham" data-footer-cat="stem-kit">STEM kit</a></li>
+          <li><a href="#san-pham" data-footer-cat="moc-khoa-the-ten">Móc khóa &amp; thẻ tên</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Trợ giúp">
+        <p style="font-weight:600;margin-bottom:8px;">Trợ giúp</p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--muted);">
+          <li><a href="#hoi-dap">Câu hỏi thường gặp</a></li>
+          <li><a href="#theo-doi-don" style="display:none !important;">Theo dõi đơn</a></li>
+          <li><a href="#dat-in-3d">In theo yêu cầu</a></li>
+          <li><a href="#tao-tuong">Tạo tượng từ ảnh</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Liên hệ">
+        <p style="font-weight:600;margin-bottom:8px;">Hỗ trợ nhanh</p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--muted);">
+          <li id="kx-footer-hotline" style="display:none;"></li>
+          <li>Giao hàng: 3 – 5 ngày toàn quốc</li>
+          <li>Miễn phí ship đơn từ 500.000 ₫</li>
+        </ul>
+      </nav>
     </div>
+    <div style="border-top:1px solid var(--border);padding:16px;text-align:center;font-size:12px;color:var(--muted);">
+      Thanh toán: VietQR · VNPay · COD &nbsp;|&nbsp; Vận chuyển: Giao Hàng Nhanh &nbsp;|&nbsp; © 2026 Khối Xinh
+    </div>
+  </footer>
+
+  <!-- SLIDE-OVER CART DRAWER -->
+  <div class="cart-backdrop" id="cart-backdrop">
+    <aside class="cart-drawer">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h3 class="font-display" style="font-size:20px;font-weight:800;">Giỏ hàng của bạn</h3>
+        <button type="button" class="btn-outline" id="btn-close-cart" style="height:34px;padding:0 12px;">✕ Đóng</button>
+      </div>
+
+      <div style="background:var(--surface-muted);padding:12px 14px;border-radius:14px;border:1px solid var(--border);">
+        <div id="freeship-text" style="font-size:12.5px;">Mua thêm <b>500.000 ₫</b> để được <b>Freeship toàn quốc</b>!</div>
+        <div class="freeship-bar"><div class="freeship-fill" id="freeship-fill" style="width:0%"></div></div>
+      </div>
+
+      <div id="cart-items-list" style="display:flex;flex-direction:column;gap:10px;flex:1;"></div>
+
+      <div style="border-top:1px solid var(--border);padding-top:12px;display:flex;flex-direction:column;gap:6px;font-size:13.5px;">
+        <div style="display:flex;justify-content:space-between;"><span>Tạm tính:</span><b id="cart-subtotal">0 ₫</b></div>
+        <div style="display:flex;justify-content:space-between;"><span>Tổng khối lượng:</span><span id="cart-weight">0g</span></div>
+        <div style="display:flex;justify-content:space-between;"><span>Phí ship:</span><b id="cart-ship">0 ₫</b></div>
+        <div style="display:flex;justify-content:space-between;font-size:17px;font-weight:800;color:var(--highlight);margin-top:4px;">
+          <span>Tổng cộng:</span><span id="cart-total">0 ₫</span>
+        </div>
+        <button type="button" class="btn-clay" id="btn-checkout-now" style="width:100%;margin-top:10px;">
+          Tiến hành đặt hàng →
+        </button>
+      </div>
+    </aside>
   </div>
 
-  <script>
-    const MODELS_DB = [
-      {
-        id: 'r1_default',
-        cat: 'keychain',
-        title: 'Móc Khóa Racing Logo R-u-1-D (Bản Gốc Sắc Cạnh + Khắc Mặt Sau)',
-        desc: 'Chuẩn form kim loại phay xước & nhựa AMS 4 màu. Cho phép sửa từng chữ, chỉnh độ sắc/bo góc R, lề đều 4 phía 1.30mm và khắc SĐT mặt sau.',
-        badge: '⚡ Customizable',
-        amsColors: ['#8d99ae', '#ef4444', '#facc15', '#38bdf8'],
-        weight: '6.8 g',
-        time: '24 phút',
-        price: 39000,
-        downloads: '1.4k',
-        likes: '386',
-        presetConfig: {
-          chars: ['R', 'u', '1', 'D'],
-          theme: 'racing4',
-          fillet: 0.00,
-          margin: 1.30,
-          enableBack: false,
-          backText: 'ALI - 0988.888',
-          enableFrontSub: false,
-          frontSub: 'YAMAHA R1M'
-        },
-        svgPreview: `<svg viewBox="0 0 240 120"><polygon points="28,98 48,22 65,30 78,20 125,48 212,62 216,76 205,86 112,102 82,76 62,100" fill="#1e293b" stroke="#38bdf8" stroke-width="2.5"/><text x="45" y="84" fill="#ef4444" font-size="52" font-weight="900" font-style="italic" font-family="Segoe UI">R</text><text x="102" y="82" fill="#facc15" font-size="38" font-weight="900" font-style="italic" font-family="Segoe UI">u</text><text x="145" y="80" fill="#38bdf8" font-size="36" font-weight="900" font-style="italic" font-family="Segoe UI">1</text><text x="178" y="79" fill="#f8fafc" font-size="34" font-weight="900" font-style="italic" font-family="Segoe UI">D</text></svg>`
-      },
-      {
-        id: 'r1_back_engraved',
-        cat: 'plate',
-        title: 'Móc Khóa Logo R + Khắc Tên & SĐT Chống Mất Mặt Sau (2 Mặt AMS)',
-        desc: 'Mặt trước giữ nguyên logo R-u-1-D sang trọng, mặt lưng khắc nổi/in phẳng đa sắc Tên chủ xe + Số điện thoại + Dòng chữ YAMAHA R1M cạnh dưới.',
-        badge: '🎁 Khắc 2 Mặt',
-        amsColors: ['#0f172a', '#facc15', '#fde047', '#f59e0b'],
-        weight: '7.4 g',
-        time: '27 phút',
-        price: 45000,
-        downloads: '980',
-        likes: '295',
-        presetConfig: {
-          chars: ['R', 'u', '1', 'D'],
-          theme: 'gold',
-          fillet: 0.00,
-          margin: 1.30,
-          enableBack: true,
-          backText: 'ALI - 0988.888',
-          enableFrontSub: true,
-          frontSub: 'YAMAHA R1M'
-        },
-        svgPreview: `<svg viewBox="0 0 240 120"><polygon points="24,102 46,20 125,46 216,60 212,92 108,108" fill="#0f172a" stroke="#facc15" stroke-width="2.5"/><text x="38" y="74" fill="#facc15" font-size="22" font-weight="900" font-family="Segoe UI">ALI - 0988.888</text><text x="68" y="96" fill="#38bdf8" font-size="13" font-weight="800" font-family="Segoe UI">★ MẶT SAU KHẮC TÊN & SĐT ★</text></svg>`
-      },
-      {
-        id: 'custom_name_kai9',
-        cat: 'keychain',
-        title: 'Móc Khóa Tên Riêng 4 Ký Tự Tự Chọn (Đế Tự Động Co Giãn Theo Chữ)',
-        desc: 'Đổi 4 ô chữ sang bất kỳ tên viết tắt hoặc số áo nào (VD: K-A-I-9, A-L-I-1). Khung đế nền tự động uốn lượn ôm khít từng chữ cách đều 1.30mm.',
-        badge: '✨ Đế Co Giãn',
-        amsColors: ['#334155', '#f472b6', '#c084fc', '#38bdf8'],
-        weight: '6.5 g',
-        time: '22 phút',
-        price: 39000,
-        downloads: '820',
-        likes: '214',
-        presetConfig: {
-          chars: ['K', 'A', 'I', '9'],
-          theme: 'pastel',
-          fillet: 0.05,
-          margin: 1.30,
-          enableBack: true,
-          backText: 'KAI STUDIO 3D',
-          enableFrontSub: false,
-          frontSub: ''
-        },
-        svgPreview: `<svg viewBox="0 0 240 120"><rect x="24" y="28" width="192" height="64" rx="14" fill="#1e293b" stroke="#c084fc" stroke-width="2.5"/><text x="42" y="74" fill="#f472b6" font-size="38" font-weight="900" font-style="italic" font-family="Segoe UI">K</text><text x="86" y="74" fill="#c084fc" font-size="38" font-weight="900" font-style="italic" font-family="Segoe UI">A</text><text x="134" y="74" fill="#38bdf8" font-size="38" font-weight="900" font-style="italic" font-family="Segoe UI">I</text><text x="166" y="74" fill="#fb923c" font-size="38" font-weight="900" font-style="italic" font-family="Segoe UI">9</text></svg>`
-      },
-      {
-        id: 'license_plate_29a1',
-        cat: 'plate',
-        title: 'Móc Khóa Biển Số Xe Máy / Ô Tô 3D Nổi (Kèm SĐT Mặt Lưng)',
-        desc: 'Nhập 4 ký tự mã tỉnh/biển số mặt trước + khắc đầy đủ dãy biển số & SĐT ở mặt sau. Chữ nổi cắm âm 0.40mm vào đế siêu bền không bong.',
-        badge: '🏍️ Biển Số Xe',
-        amsColors: ['#1e3a8a', '#f8fafc', '#facc15', '#38bdf8'],
-        weight: '6.2 g',
-        time: '20 phút',
-        price: 35000,
-        downloads: '1.1k',
-        likes: '310',
-        presetConfig: {
-          chars: ['2', '9', 'A', '1'],
-          theme: 'bambu',
-          fillet: 0.00,
-          margin: 1.40,
-          enableBack: true,
-          backText: '29A1 - 888.88',
-          enableFrontSub: true,
-          frontSub: '0988.888.888'
-        },
-        svgPreview: `<svg viewBox="0 0 240 120"><rect x="26" y="26" width="188" height="68" rx="10" fill="#1e3a8a" stroke="#f8fafc" stroke-width="3"/><text x="45" y="72" fill="#ffffff" font-size="36" font-weight="900" font-family="Segoe UI">29A1</text><text x="138" y="70" fill="#facc15" font-size="16" font-weight="800" font-family="Segoe UI">888.88</text></svg>`
-      },
-      {
-        id: 'ferrari_edition',
-        cat: 'keychain',
-        title: 'Móc Khóa Đỏ Đua Scuderia Ferrari / Ducati Corse (Nét Sắc Cơ Khí)',
-        desc: 'Phối màu Đen Carbon + Đỏ Đua Ferrari + Vàng Kim. Đỉnh chữ R sắc góc cạnh 100% (R=0.00mm) kèm dòng chữ phụ SCUDERIA chạy dọc cạnh dưới.',
-        badge: '🏎️ Racing',
-        amsColors: ['#18181b', '#ef4444', '#f8fafc', '#facc15'],
-        weight: '7.1 g',
-        time: '25 phút',
-        price: 42000,
-        downloads: '740',
-        likes: '198',
-        presetConfig: {
-          chars: ['R', '1', 'M', 'S'],
-          theme: 'ferrari',
-          fillet: 0.00,
-          margin: 1.35,
-          enableBack: true,
-          backText: 'LIMITED EDITION',
-          enableFrontSub: true,
-          frontSub: 'SCUDERIA RACING'
-        },
-        svgPreview: `<svg viewBox="0 0 240 120"><polygon points="28,98 48,22 125,48 214,62 205,90 108,104" fill="#18181b" stroke="#ef4444" stroke-width="2.5"/><text x="48" y="78" fill="#ef4444" font-size="40" font-weight="900" font-style="italic" font-family="Segoe UI">R1MS</text><text x="82" y="96" fill="#facc15" font-size="12" font-weight="800" font-family="Segoe UI">SCUDERIA RACING</text></svg>`
-      },
-      {
-        id: 'qr_nfc_stand',
-        cat: 'qr',
-        title: 'Bảng Quét Mã QR / Thẻ NFC Cửa Hàng Đùn Khối 3D (Z-Stacking)',
-        desc: 'Tự động tạo bảng QR 3D từ link Zalo/Ngân hàng. Chuẩn kỹ thuật in 3D Bambu Lab đổi màu đúng 1 lần ở tầng Z.',
-        badge: '📱 Tạo QR 3D',
-        amsColors: ['#064e3b', '#fde047', '#34d399', '#ffffff'],
-        weight: '12.5 g',
-        time: '32 phút',
-        price: 59000,
-        downloads: '650',
-        likes: '175',
-        weaponTarget: 'qr',
-        svgPreview: `<svg viewBox="0 0 240 120"><rect x="30" y="22" width="180" height="76" rx="12" fill="#064e3b" stroke="#34d399" stroke-width="2.5"/><rect x="44" y="34" width="52" height="52" rx="6" fill="#fff"/><rect x="52" y="42" width="14" height="14" fill="#064e3b"/><rect x="74" y="42" width="14" height="14" fill="#064e3b"/><rect x="52" y="64" width="14" height="14" fill="#064e3b"/><text x="108" y="62" fill="#fde047" font-size="22" font-weight="900" font-family="Segoe UI">QR 3D</text><text x="108" y="80" fill="#a7f3d0" font-size="11" font-weight="700" font-family="Segoe UI">TẠO TRỰC TIẾP</text></svg>`
-      },
-      {
-        id: 'charizard_shelf',
-        cat: 'diorama',
-        title: 'Kệ Trưng Bày Rồng Lửa Charizard & Đèn LED Đa Tầng (5 Tầng)',
-        desc: 'Mẫu kệ trưng bày mô hình kết hợp diorama rồng Charizard nổi 3D. Có sẵn file .3MF chia mâm in Bambu Lab & hướng dẫn lắp LED.',
-        badge: '🐉 Studio 3D',
-        amsColors: ['#111827', '#f97316', '#facc15', '#38bdf8'],
-        weight: '185 g',
-        time: '3h 40p',
-        price: 289000,
-        downloads: '520',
-        likes: '162',
-        externalUrl: 'studio_ke_rong_charizard.html',
-        svgPreview: `<svg viewBox="0 0 240 120"><rect x="36" y="18" width="168" height="84" rx="10" fill="#1c1917" stroke="#f97316" stroke-width="2.5"/><line x1="36" y1="46" x2="204" y2="46" stroke="#f59e0b" stroke-width="2"/><line x1="36" y1="74" x2="204" y2="74" stroke="#f59e0b" stroke-width="2"/><text x="54" y="38" fill="#fde047" font-size="14" font-weight="900" font-family="Segoe UI">🔥 KỆ RỒNG CHARIZARD</text><text x="64" y="65" fill="#fb923c" font-size="12" font-weight="700" font-family="Segoe UI">5 TẦNG • TÍCH HỢP LED</text><text x="68" y="92" fill="#38bdf8" font-size="11" font-weight="700" font-family="Segoe UI">MỞ STUDIO 3D XOAY 360°</text></svg>`
-      },
-      {
-        id: 'charizard_mini_cute',
-        cat: 'diorama',
-        title: 'Mô Hình Diorama Rồng Charizard Mini Cute Đèn Ngủ 3D',
-        desc: 'Phiên bản Chibi dễ thương đặt bàn làm việc, tích hợp hốc lắp đèn LED tròn ấm áp, xoay 360° trực tiếp trên trình duyệt.',
-        badge: '🐉 Diorama 3D',
-        amsColors: ['#f97316', '#facc15', '#38bdf8', '#ffffff'],
-        weight: '95 g',
-        time: '1h 50p',
-        price: 165000,
-        downloads: '610',
-        likes: '205',
-        externalUrl: 'studio_charizard_mini_cute_diorama.html',
-        svgPreview: `<svg viewBox="0 0 240 120"><rect x="36" y="18" width="168" height="84" rx="14" fill="#0f172a" stroke="#fb923c" stroke-width="2.5"/><circle cx="120" cy="54" r="24" fill="#f97316"/><text x="60" y="94" fill="#fde047" font-size="12" font-weight="900" font-family="Segoe UI">CHARIZARD MINI DIORAMA</text></svg>`
-      },
-      {
-        id: 'nordic_decor_room',
-        cat: 'diorama',
-        title: 'Showroom Nội Thất & Decor In 3D Phong Cách Bắc Âu (Shop This Room)',
-        desc: 'Không gian 3D tương tác trưng bày bình hoa xoắn Spiral Vase, đèn ngủ Moon Lamp và khay phụ kiện in 3D.',
-        badge: '🏠 Showroom 3D',
-        amsColors: ['#334155', '#f8fafc', '#fbbf24', '#38bdf8'],
-        weight: '120 g',
-        time: '2h 15p',
-        price: 195000,
-        downloads: '490',
-        likes: '148',
-        externalUrl: 'diorama_3d_decor.html',
-        svgPreview: `<svg viewBox="0 0 240 120"><rect x="32" y="20" width="176" height="80" rx="10" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/><circle cx="80" cy="60" r="22" fill="#fbbf24" opacity="0.85"/><rect x="122" y="42" width="60" height="38" rx="6" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/><text x="128" y="65" fill="#f8fafc" font-size="11" font-weight="800" font-family="Segoe UI">DECOR 3D</text></svg>`
-      },
-      {
-        id: 'cartier_showroom',
-        cat: 'diorama',
-        title: 'Showroom Trưng Bày Trang Sức & Phụ Kiện Cao Cấp 3D',
-        desc: 'Không gian trưng bày 3D ánh sáng PBR cao cấp cho khay đựng đồng hồ, nhẫn và móc khóa kim loại.',
-        badge: '💎 Luxury 3D',
-        amsColors: ['#7f1d1d', '#facc15', '#f8fafc', '#18181b'],
-        weight: '140 g',
-        time: '2h 30p',
-        price: 220000,
-        downloads: '410',
-        likes: '132',
-        externalUrl: 'showroom_3d_cartier.html',
-        svgPreview: `<svg viewBox="0 0 240 120"><rect x="32" y="20" width="176" height="80" rx="10" fill="#450a0a" stroke="#facc15" stroke-width="2.5"/><text x="58" y="64" fill="#fde047" font-size="15" font-weight="900" font-family="Segoe UI">LUXURY 3D SHOWROOM</text></svg>`
-      }
-    ];
-
-    let activeCategory = 'all';
-    let orderCart = [
-      {
-        title: 'Móc Khóa Racing Logo R-u-1-D (Chuẩn Nét Sắc)',
-        detail: 'Chữ: [R-u-1-D] • Lề đều: 1.30mm • 4 Màu AMS • Liền khối',
-        price: 39000
-      }
-    ];
-
-    function formatVND(n) {
-      return Math.round(n).toLocaleString('vi-VN') + 'đ';
-    }
-
-    function toggleLightDarkTheme() {
-      const root = document.documentElement;
-      const curr = root.getAttribute('data-theme') || 'light';
-      const next = (curr === 'light') ? 'dark' : 'light';
-      root.setAttribute('data-theme', next);
-      document.getElementById('theme-toggle-btn').innerText = (next === 'light') ? '🌙 Chế Độ Tối' : '☀️ Chế Độ Sáng';
-    }
-
-    function renderModelsGrid() {
-      const q = (document.getElementById('mw-search').value || '').trim().toLowerCase();
-      const grid = document.getElementById('models-grid');
-      const filtered = MODELS_DB.filter(m => {
-        const matchCat = (activeCategory === 'all') || (m.cat === activeCategory);
-        const matchQ = !q || m.title.toLowerCase().includes(q) || m.desc.toLowerCase().includes(q);
-        return matchCat && matchQ;
-      });
-
-      grid.innerHTML = filtered.map(m => {
-        const dotsHtml = m.amsColors.map(c => `<span class="mw-dot" style="background:${c}"></span>`).join('');
-        let custAction = `openCustomizerWithPreset('${m.id}', '${m.title.replace(/'/g, "\\'")}')`;
-        let custLabel = '🎨 Tùy Chỉnh 3D';
-        if (m.externalUrl) {
-          custAction = `window.open('${m.externalUrl}', '_blank')`;
-          custLabel = '🌐 Mở Phòng 3D';
-        } else if (m.weaponTarget) {
-          custAction = `switchMakerLabWeapon('${m.weaponTarget}')`;
-          custLabel = '⚡ Tạo QR 3D Ngay';
-        }
-
-        return `
-          <article class="mw-model-card">
-            <div class="mw-thumb" onclick="${custAction}">
-              <div class="mw-tag-customizable">${m.badge}</div>
-              ${m.svgPreview}
-              <div class="mw-tag-ams">
-                ${dotsHtml}
-                <span>AMS</span>
-              </div>
-              <div class="mw-tag-time">⏱️ ${m.time} • ${m.weight}</div>
-            </div>
-
-            <div class="mw-card-content">
-              <div>
-                <div class="mw-card-name">${m.title}</div>
-                <div class="mw-card-sub">${m.desc}</div>
-              </div>
-
-              <div>
-                <div class="mw-author-row">
-                  <div class="mw-author-badge">
-                    <span class="mw-avatar">G</span>
-                    <span>Góc Nhỏ 3D • <b style="color:var(--mw-green);">${formatVND(m.price)}</b></span>
-                  </div>
-                  <div class="mw-metrics">
-                    <span>⬇️ ${m.downloads}</span>
-                    <span>❤️ ${m.likes}</span>
-                  </div>
-                </div>
-
-                <div class="mw-card-btn-row">
-                  <button class="mw-btn-green" style="justify-content:center; border-radius:8px; padding:8px;" onclick="${custAction}">${custLabel}</button>
-                  <button class="mw-btn-outline" style="justify-content:center; border-radius:8px; padding:8px;" onclick="quickAddModelToCart('${m.id}')">🛒 Đặt In</button>
-                </div>
-              </div>
-            </div>
-          </article>
-        `;
-      }).join('');
-    }
-
-    function setCategory(cat, btnEl) {
-      activeCategory = cat;
-      document.querySelectorAll('#cat-pills .mw-cat-pill').forEach(b => b.classList.remove('active'));
-      if (btnEl) btnEl.classList.add('active');
-      renderModelsGrid();
-    }
-
-    function scrollToSection(id) {
-      const el = document.getElementById(id);
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-
-    function switchMakerLabWeapon(wKey) {
-      ['keychain', 'relief', 'qr', 'stl'].forEach(k => {
-        const t = document.getElementById('tab-w-' + k);
-        const c = document.getElementById('card-w-' + k);
-        const p = document.getElementById('pane-' + k);
-        if (t) t.classList.toggle('active', k === wKey);
-        if (c) c.classList.toggle('active', k === wKey);
-        if (p) p.classList.toggle('active', k === wKey);
-      });
-      scrollToSection('makerlab-workspace');
-      setTimeout(() => {
-        if (wKey === 'relief') initOrResizeWeapon3D('relief');
-        if (wKey === 'qr') initOrResizeWeapon3D('qr');
-        if (wKey === 'stl') initOrResizeWeapon3D('stl');
-      }, 120);
-    }
-
-    function openCustomizerWithPreset(modelId, titleText) {
-      switchMakerLabWeapon('keychain');
-      const model = MODELS_DB.find(m => m.id === modelId);
-      if (model) {
-        document.getElementById('q-weight').innerText = model.weight;
-        document.getElementById('q-time').innerText = model.time;
-        document.getElementById('q-price').innerText = formatVND(model.price);
-      }
-
-      const iframe = document.getElementById('studio-iframe');
-      if (iframe && iframe.contentWindow && model && model.presetConfig) {
-        try {
-          const w = iframe.contentWindow;
-          const cfg = model.presetConfig;
-          if (w.document && w.document.getElementById('ch-1')) {
-            w.document.getElementById('ch-1').value = cfg.chars[0] || 'R';
-            w.document.getElementById('ch-2').value = cfg.chars[1] || 'u';
-            w.document.getElementById('ch-3').value = cfg.chars[2] || '1';
-            w.document.getElementById('ch-4').value = cfg.chars[3] || 'D';
-            w.document.getElementById('sl-r1').value = cfg.fillet;
-            w.document.getElementById('sl-r2').value = cfg.fillet;
-            w.document.getElementById('sl-r3').value = cfg.fillet;
-            w.document.getElementById('sl-r4').value = cfg.fillet;
-            w.document.getElementById('sl-margin').value = cfg.margin;
-
-            const chkBack = w.document.getElementById('chk-back-text');
-            const inpBack = w.document.getElementById('inp-back-text');
-            const chkFront = w.document.getElementById('chk-front-sub');
-            const inpFront = w.document.getElementById('inp-front-sub');
-
-            if (chkBack && inpBack) {
-              chkBack.checked = !!cfg.enableBack;
-              if (cfg.backText) inpBack.value = cfg.backText;
-            }
-            if (chkFront && inpFront) {
-              chkFront.checked = !!cfg.enableFrontSub;
-              if (cfg.frontSub) inpFront.value = cfg.frontSub;
-            }
-
-            if (typeof w.setPresetTheme === 'function') w.setPresetTheme(cfg.theme || 'metal');
-            if (typeof w.onParamChange === 'function') w.onParamChange();
-            if (typeof w.onPersonalizeChange === 'function') w.onPersonalizeChange();
-            if (typeof w.setCameraView === 'function') {
-              w.setCameraView(cfg.enableBack && !cfg.enableFrontSub ? 'back' : 'iso');
-            }
-          }
-        } catch (err) {}
-      }
-    }
-
-    /* =========================================================================
-       BỘ MÁY 3D CHO 3 VŨ KHÍ HẠNG NẶNG (2D->3D RELIEF, 3D QR CODE, STL SLICER)
-       ========================================================================= */
-    const weaponScenes = {};
-
-    function initOrResizeWeapon3D(key) {
-      const container = document.getElementById('view-' + key);
-      if (!container) return;
-      const w = Math.max(300, container.clientWidth || 640);
-      const h = Math.max(380, container.clientHeight || 520);
-
-      if (!weaponScenes[key]) {
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(38, w / h, 0.5, 1000);
-        camera.position.set(0, -65, 75);
-        camera.up.set(0, 0, 1);
-
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(w, h);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-        container.innerHTML = '';
-        container.appendChild(renderer.domElement);
-
-        const controls = new THREE.OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-
-        scene.add(new THREE.AmbientLight(0xffffff, 0.75));
-        const dLight1 = new THREE.DirectionalLight(0xffffff, 1.15);
-        dLight1.position.set(-40, -50, 80);
-        scene.add(dLight1);
-        const dLight2 = new THREE.DirectionalLight(0x38bdf8, 0.55);
-        dLight2.position.set(50, 40, 45);
-        scene.add(dLight2);
-
-        const grid = new THREE.GridHelper(110, 22, 0x00ae42, 0x1e293b);
-        grid.rotation.x = Math.PI / 2;
-        scene.add(grid);
-
-        const group = new THREE.Group();
-        scene.add(group);
-
-        weaponScenes[key] = { scene, camera, renderer, controls, group };
-
-        function anim() {
-          requestAnimationFrame(anim);
-          controls.update();
-          renderer.render(scene, camera);
-        }
-        anim();
-
-        if (key === 'relief') build3DReliefFromPreset();
-        if (key === 'qr') rebuildQR3D();
-        if (key === 'stl') buildDefaultSampleSTL();
-      } else {
-        const ws = weaponScenes[key];
-        ws.camera.aspect = w / h;
-        ws.camera.updateProjectionMatrix();
-        ws.renderer.setSize(w, h);
-      }
-    }
-
-    let reliefImagePixels = null;
-    let reliefGridW = 44, reliefGridH = 44;
-
-    function build3DReliefFromPreset() {
-      const preset = document.getElementById('sel-relief-preset').value;
-      const c = document.createElement('canvas');
-      c.width = reliefGridW;
-      c.height = reliefGridH;
-      const ctx = c.getContext('2d');
-      ctx.fillStyle = '#000';
-      ctx.fillRect(0, 0, reliefGridW, reliefGridH);
-      ctx.fillStyle = '#fff';
-      ctx.font = 'bold 30px Segoe UI';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      if (preset === 'star') ctx.fillText('★', reliefGridW / 2, reliefGridH / 2);
-      else if (preset === 'shield') ctx.fillText('❖', reliefGridW / 2, reliefGridH / 2);
-      else ctx.fillText('♥', reliefGridW / 2, reliefGridH / 2);
-      reliefImagePixels = ctx.getImageData(0, 0, reliefGridW, reliefGridH).data;
-      rebuildRelief3D();
-    }
-
-    function onReliefImageUpload(ev) {
-      const file = ev.target.files && ev.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = e => {
-        const img = new Image();
-        img.onload = () => {
-          const c = document.createElement('canvas');
-          c.width = reliefGridW;
-          c.height = reliefGridH;
-          const ctx = c.getContext('2d');
-          ctx.fillStyle = '#000';
-          ctx.fillRect(0, 0, reliefGridW, reliefGridH);
-          ctx.drawImage(img, 3, 3, reliefGridW - 6, reliefGridH - 6);
-          reliefImagePixels = ctx.getImageData(0, 0, reliefGridW, reliefGridH).data;
-          rebuildRelief3D();
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function rebuildRelief3D() {
-      const ws = weaponScenes['relief'];
-      if (!ws || !reliefImagePixels) return;
-      while (ws.group.children.length > 0) ws.group.remove(ws.group.children[0]);
-
-      const baseZ = parseFloat(document.getElementById('sl-rel-base').value) || 2.0;
-      const relH = parseFloat(document.getElementById('sl-rel-height').value) || 1.8;
-      const invert = document.getElementById('sel-rel-invert').value === '1';
-
-      document.getElementById('lbl-rel-base').innerText = baseZ.toFixed(1) + ' mm';
-      document.getElementById('lbl-rel-height').innerText = relH.toFixed(1) + ' mm';
-
-      const plateGeom = new THREE.CylinderGeometry(24, 24, baseZ, 48);
-      plateGeom.rotateX(Math.PI / 2);
-      plateGeom.translate(0, 0, baseZ * 0.5);
-      const plateMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.4, roughness: 0.4 });
-      ws.group.add(new THREE.Mesh(plateGeom, plateMat));
-
-      const voxelMat = new THREE.MeshStandardMaterial({ color: 0xfacc15, metalness: 0.65, roughness: 0.25 });
-      const cellSize = 38.0 / reliefGridW;
-      for (let y = 0; y < reliefGridH; y++) {
-        for (let x = 0; x < reliefGridW; x++) {
-          const idx = (y * reliefGridW + x) * 4;
-          const lum = (reliefImagePixels[idx] * 0.299 + reliefImagePixels[idx + 1] * 0.587 + reliefImagePixels[idx + 2] * 0.114) / 255.0;
-          const val = invert ? (1.0 - lum) : lum;
-          const px = (x - reliefGridW * 0.5) * cellSize;
-          const py = (reliefGridH * 0.5 - y) * cellSize;
-          if (val > 0.28 && Math.hypot(px, py) < 21.5) {
-            const h = Math.max(0.3, val * relH);
-            const g = new THREE.BoxGeometry(cellSize * 1.02, cellSize * 1.02, h + 0.3);
-            g.translate(px, py, baseZ + h * 0.5 - 0.15);
-            ws.group.add(new THREE.Mesh(g, voxelMat));
-          }
-        }
-      }
-    }
-
-    // VŨ KHÍ 3: BẢNG MÃ QR 3D Z-STACKING
-    function rebuildQR3D() {
-      const ws = weaponScenes['qr'];
-      if (!ws) return;
-      while (ws.group.children.length > 0) ws.group.remove(ws.group.children[0]);
-
-      const txt = (document.getElementById('inp-qr-text').value || 'GOCNHO3D').trim();
-      const sz = parseFloat(document.getElementById('sl-qr-size').value) || 50;
-      const baseZ = parseFloat(document.getElementById('sl-qr-base').value) || 2.2;
-      const qrZ = parseFloat(document.getElementById('sl-qr-z').value) || 0.8;
-
-      document.getElementById('lbl-qr-size').innerText = sz.toFixed(0) + ' mm';
-      document.getElementById('lbl-qr-base').innerText = baseZ.toFixed(1) + ' mm';
-      document.getElementById('lbl-qr-z').innerText = qrZ.toFixed(1) + ' mm';
-
-      const baseGeom = new THREE.BoxGeometry(sz, sz, baseZ);
-      baseGeom.translate(0, 0, baseZ * 0.5);
-      const baseMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.3 });
-      ws.group.add(new THREE.Mesh(baseGeom, baseMat));
-
-      const N = 21;
-      const cell = (sz * 0.82) / N;
-      const qrMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.25 });
-
-      function isFinderPattern(r, c) {
-        const inTL = (r < 7 && c < 7);
-        const inTR = (r < 7 && c >= N - 7);
-        const inBL = (r >= N - 7 && c < 7);
-        if (!inTL && !inTR && !inBL) return null;
-        const lr = r >= N - 7 ? r - (N - 7) : r;
-        const lc = c >= N - 7 ? c - (N - 7) : c;
-        if (lr === 0 || lr === 6 || lc === 0 || lc === 6) return true;
-        if (lr >= 2 && lr <= 4 && lc >= 2 && lc <= 4) return true;
-        return false;
-      }
-
-      let hash = 2166136261;
-      for (let i = 0; i < txt.length; i++) {
-        hash ^= txt.charCodeAt(i);
-        hash = Math.imul(hash, 16777619);
-      }
-
-      for (let r = 0; r < N; r++) {
-        for (let c = 0; c < N; c++) {
-          const fp = isFinderPattern(r, c);
-          let bit = false;
-          if (fp !== null) {
-            bit = fp;
-          } else {
-            const seed = Math.imul(hash ^ (r * 31 + c * 17), 2654435761) >>> 0;
-            bit = (seed % 10) < 5;
-          }
-          if (bit) {
-            const bx = (c - (N - 1) * 0.5) * cell;
-            const by = ((N - 1) * 0.5 - r) * cell;
-            const bGeom = new THREE.BoxGeometry(cell * 0.96, cell * 0.96, qrZ + 0.3);
-            bGeom.translate(bx, by, baseZ + qrZ * 0.5 - 0.15);
-            ws.group.add(new THREE.Mesh(bGeom, qrMat));
-          }
-        }
-      }
-    }
-
-    // VŨ KHÍ 4: ĐỌC FILE .STL & BÁO GIÁ TỰ ĐỘNG
-    let currentSTLVolumeCm3 = 4.85;
-    let currentSTLDims = [60.0, 28.5, 3.2];
-    let currentSTLName = 'Moc_Khoa_Mau.stl';
-
-    function buildDefaultSampleSTL() {
-      const ws = weaponScenes['stl'];
-      if (!ws) return;
-      while (ws.group.children.length > 0) ws.group.remove(ws.group.children[0]);
-      const g = new THREE.TorusKnotGeometry(14, 4.2, 96, 24);
-      g.translate(0, 0, 18);
-      const m = new THREE.MeshStandardMaterial({ color: 0x00ae42, metalness: 0.35, roughness: 0.3 });
-      ws.group.add(new THREE.Mesh(g, m));
-      recalcSTLQuote();
-    }
-
-    function onSTLFileUpload(ev) {
-      const file = ev.target.files && ev.target.files[0];
-      if (!file) return;
-      currentSTLName = file.name;
-      const reader = new FileReader();
-      reader.onload = e => {
-        const buf = e.target.result;
-        parseAndRenderBinarySTL(buf);
-      };
-      reader.readAsArrayBuffer(file);
-    }
-
-    function parseAndRenderBinarySTL(arrayBuffer) {
-      const ws = weaponScenes['stl'];
-      if (!ws) return;
-      const dv = new DataView(arrayBuffer);
-      if (arrayBuffer.byteLength < 84) return;
-      const triCount = dv.getUint32(80, true);
-      const expectedLen = 84 + triCount * 50;
-      if (expectedLen > arrayBuffer.byteLength) return;
-
-      const positions = new Float32Array(triCount * 9);
-      let minX = Infinity, minY = Infinity, minZ = Infinity;
-      let maxX = -Infinity, maxY = -Infinity, maxZ = -Infinity;
-      let totalSignedVol = 0;
-
-      let offset = 84;
-      for (let i = 0; i < triCount; i++) {
-        offset += 12; // Bỏ qua normal
-        const x1 = dv.getFloat32(offset, true), y1 = dv.getFloat32(offset + 4, true), z1 = dv.getFloat32(offset + 8, true);
-        const x2 = dv.getFloat32(offset + 12, true), y2 = dv.getFloat32(offset + 16, true), z2 = dv.getFloat32(offset + 20, true);
-        const x3 = dv.getFloat32(offset + 24, true), y3 = dv.getFloat32(offset + 28, true), z3 = dv.getFloat32(offset + 32, true);
-        offset += 38;
-
-        const base = i * 9;
-        positions[base] = x1; positions[base+1] = y1; positions[base+2] = z1;
-        positions[base+3] = x2; positions[base+4] = y2; positions[base+5] = z2;
-        positions[base+6] = x3; positions[base+7] = y3; positions[base+8] = z3;
-
-        minX = Math.min(minX, x1, x2, x3); maxX = Math.max(maxX, x1, x2, x3);
-        minY = Math.min(minY, y1, y2, y3); maxY = Math.max(maxY, y1, y2, y3);
-        minZ = Math.min(minZ, z1, z2, z3); maxZ = Math.max(maxZ, z1, z2, z3);
-
-        totalSignedVol += (x1 * (y2 * z3 - y3 * z2) - x2 * (y1 * z3 - y3 * z1) + x3 * (y1 * z2 - y2 * z1)) / 6.0;
-      }
-
-      const geom = new THREE.BufferGeometry();
-      geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-      geom.computeVertexNormals();
-
-      const cx = (minX + maxX) * 0.5, cy = (minY + maxY) * 0.5;
-      geom.translate(-cx, -cy, -minZ);
-
-      while (ws.group.children.length > 0) ws.group.remove(ws.group.children[0]);
-      const mat = new THREE.MeshStandardMaterial({ color: 0x00ae42, metalness: 0.3, roughness: 0.35 });
-      ws.group.add(new THREE.Mesh(geom, mat));
-
-      currentSTLDims = [Math.max(0.1, maxX - minX), Math.max(0.1, maxY - minY), Math.max(0.1, maxZ - minZ)];
-      currentSTLVolumeCm3 = Math.max(0.2, Math.abs(totalSignedVol) / 1000.0);
-      recalcSTLQuote();
-    }
-
-    function recalcSTLQuote() {
-      const matParts = (document.getElementById('sel-stl-mat').value || '1.24|1200').split('|');
-      const density = parseFloat(matParts[0]) || 1.24;
-      const pricePerGram = parseFloat(matParts[1]) || 1200;
-      const infill = parseFloat(document.getElementById('sl-stl-infill').value) || 25;
-
-      document.getElementById('lbl-stl-infill').innerText = infill + '%';
-
-      // Hệ số vỏ ngoài (Shells 45%) + Ruột (Infill 55%)
-      const effectiveFactor = 0.45 + 0.55 * (infill / 100.0);
-      const grams = Math.max(2.0, currentSTLVolumeCm3 * density * effectiveFactor);
-      const mins = Math.max(10, Math.round(grams * 3.4));
-      const cost = Math.max(25000, Math.round((18000 + grams * pricePerGram) / 1000) * 1000);
-
-      document.getElementById('st-dim').innerText = `${currentSTLDims[0].toFixed(1)} × ${currentSTLDims[1].toFixed(1)} × ${currentSTLDims[2].toFixed(1)} mm`;
-      document.getElementById('st-vol').innerText = currentSTLVolumeCm3.toFixed(2) + ' cm³';
-      document.getElementById('st-gram').innerText = grams.toFixed(1) + ' gram';
-      document.getElementById('st-time').innerText = mins + ' phút';
-      document.getElementById('st-price').innerText = formatVND(cost);
-    }
-
-    function addSTLQuoteToCart() {
-      const gText = document.getElementById('st-gram').innerText;
-      const dText = document.getElementById('st-dim').innerText;
-      const pText = document.getElementById('st-price').innerText.replace(/[^\d]/g, '');
-      orderCart.push({
-        title: `Đặt In File .STL: ${currentSTLName}`,
-        detail: `KT: ${dText} • Khối lượng: ${gText}`,
-        price: parseInt(pText, 10) || 39000
-      });
-      updateCartBadge();
-      openOrderModal();
-    }
-
-    function downloadWeaponSTL(key) {
-      const ws = weaponScenes[key];
-      if (!ws) return;
-      ws.group.updateMatrixWorld(true);
-      const exporter = new THREE.STLExporter();
-      const res = exporter.parse(ws.group, { binary: true });
-      const blob = new Blob([res], { type: 'application/octet-stream' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = (key === 'qr') ? 'Bang_Ma_QR_3D_ZStacking.stl' : 'Logo_2D_Sang_3D_Relief.stl';
-      a.click();
-    }
-
-    // GIỎ ĐẶT IN CHUNG
-    function addCurrentCustomToOrder() {
-      const iframe = document.getElementById('studio-iframe');
-      let itemTitle = 'Móc Khóa 3D Cá Nhân Hóa (MakerLab)';
-      let detailStr = 'Chuẩn Liền Khối • .3MF Đa Màu AMS';
-      let priceVal = 39000;
-
-      try {
-        const w = iframe.contentWindow;
-        if (w && w.params) {
-          const p = w.params;
-          const charsStr = (p.chars || ['R','u','1','D']).join('-');
-          const backInfo = p.enableBackText ? ` | Mặt sau: "${p.backText}"` : '';
-          const frontInfo = p.enableFrontSub ? ` | Cạnh dưới: "${p.frontSubText}"` : '';
-          itemTitle = `Móc Khóa 3D Chữ [${charsStr}]`;
-          detailStr = `KT: ${p.length.toFixed(1)}×${p.height.toFixed(1)}mm | Lề: ${p.margin.toFixed(2)}mm${backInfo}${frontInfo}`;
-          priceVal = 39000 + (p.enableBackText ? 6000 : 0) + (p.enableFrontSub ? 5000 : 0);
-        }
-      } catch (e) {}
-
-      orderCart.push({ title: itemTitle, detail: detailStr, price: priceVal });
-      updateCartBadge();
-      openOrderModal();
-    }
-
-    function quickAddModelToCart(modelId) {
-      const m = MODELS_DB.find(x => x.id === modelId);
-      if (!m) return;
-      orderCart.push({
-        title: m.title,
-        detail: `Thời gian in: ${m.time} • Khối lượng: ${m.weight} • Chuẩn Bambu AMS`,
-        price: m.price
-      });
-      updateCartBadge();
-      openOrderModal();
-    }
-
-    function updateCartBadge() {
-      document.getElementById('cart-count').innerText = orderCart.length;
-    }
-
-    function openOrderModal() {
-      const box = document.getElementById('order-list-box');
-      if (orderCart.length === 0) {
-        box.innerHTML = `<div style="color:var(--mw-muted); font-size:13px; text-align:center; padding:18px;">Chưa có mẫu nào trong đơn!</div>`;
-      } else {
-        let total = 0;
-        box.innerHTML = orderCart.map((it, idx) => {
-          total += it.price;
-          return `
-            <div class="order-item">
-              <div>
-                <div style="font-size:13px; font-weight:800;">${idx + 1}. ${it.title}</div>
-                <div style="font-size:11.5px; color:var(--mw-text-sub); margin-top:2px;">${it.detail}</div>
-              </div>
-              <div style="text-align:right;">
-                <div style="font-size:13.5px; font-weight:900; color:var(--mw-green);">${formatVND(it.price)}</div>
-                <button onclick="removeOrderItem(${idx})" style="background:transparent; border:none; color:#ef4444; font-size:11px; cursor:pointer;">Xóa</button>
-              </div>
-            </div>
-          `;
-        }).join('') + `
-          <div style="display:flex; justify-content:space-between; padding:10px 4px 2px; font-size:14.5px; font-weight:900; color:var(--mw-green);">
-            <span>TỔNG CỘNG TẠM TÍNH:</span>
-            <span>${formatVND(total)}</span>
-          </div>
-        `;
-      }
-      document.getElementById('order-modal').style.display = 'flex';
-    }
-
-    function removeOrderItem(idx) {
-      orderCart.splice(idx, 1);
-      updateCartBadge();
-      openOrderModal();
-    }
-
-    function closeOrderModal() {
-      document.getElementById('order-modal').style.display = 'none';
-    }
-
-    function copyOrderSummary() {
-      const lines = orderCart.map((it, i) => `${i + 1}. ${it.title} (${it.detail}) - ${formatVND(it.price)}`);
-      const text = `ĐƠN ĐẶT IN 3D MAKERWORLD STUDIO:\n` + lines.join('\n') + `\n(Giao hàng tiêu chuẩn 3 - 5 ngày)`;
-      if (navigator.clipboard) navigator.clipboard.writeText(text);
-      alert('Đã sao chép thông số Đơn Đặt In 3D! Bạn có thể dán gửi ngay qua Zalo / Messenger cho xưởng.');
-    }
-
-    function triggerIframe3MFDownload() {
-      const iframe = document.getElementById('studio-iframe');
-      try {
-        if (iframe && iframe.contentWindow && typeof iframe.contentWindow.export3MF === 'function') {
-          iframe.contentWindow.export3MF();
-          return;
-        }
-      } catch (e) {}
-      window.open('moc_khoa_logo_r_3d.html', '_blank');
-    }
-
-    renderModelsGrid();
-  </script>
+  <script src="assets/khoixinh_3d_models_proc.js?v=20261101_v10"></script>
+  <script src="assets/khoixinh_3d_models_extra.js?v=20261101_v10"></script>
+  <script src="assets/khoixinh_showcase_stage.js?v=20261101_v10"></script>
+  <script src="assets/khoixinh_checkout_and_thumbs.js?v=20261101_v10"></script>
+  <script src="assets/khoixinh_showcase_store.js?v=20261101_v10"></script>
+  <script src="assets/khoixinh_runway_hero.js?v=20261101_v10"></script>
+  <script src="assets/kx_model_colors.js?v=20261101_v10"></script>
+  <script src="assets/khoixinh_slicer_and_chibi.js?v=20261101_v10"></script>
+  <script src="assets/kx_direct_3d_2d_viewer.js?v=20261101_v10"></script>
+  <script src="assets/khoixinh_3d_hub.js?v=20261101_v10"></script>
+  <script src="assets/multisite_dock_suite.js?v=20261101_v10"></script>
+  <script src="assets/multisite_dock.js?v=20261101_v10"></script>
+  <script src="assets/gamified_3d_styles_and_routes.js?v=20261101_v10"></script>
+  <script src="assets/gamified_3d_staff_runner.js?v=20261101_v10"></script>
+  <script src="assets/gamified_3d_cart_and_delivery.js?v=20261101_v10"></script>
+  <script src="/static/js/airi_vrm_cskh_widget.js" defer></script>
 </body>
 </html>
